@@ -34,7 +34,7 @@ test("le joueur voit sa colonne modifiable et le reste de son inventaire, rangé
 
   const view = tradeView(trade({}), 0, inventory, t);
 
-  assert.deepEqual(view.parties.map((party) => [party.name, party.isMine, party.editable]), [["Bartoras", true, true], ["Ilsa", false, false]]);
+  assert.deepEqual(view.parties.map((party) => [party.name, party.isMine, party.editable]), [["Ilsa", false, false], ["Bartoras", true, true]]);
   assert.deepEqual(view.inventoryGroups, [
     { id: "combat", label: "Combat", items: [{ id: "sword", name: "Épée", img: "s.webp", available: 1 }] },
     { id: "gear", label: "Inventaire", items: [{ id: "torch", name: "Torche", img: "t.webp", available: 1 }, { id: "rope", name: "Corde", img: "r.webp", available: 1 }] }
@@ -47,9 +47,16 @@ test("l'argent du joueur indique ce qu'il possède, celui de l'autre se résume 
 
   const view = tradeView(trade({}), 0, inventory, t);
 
-  assert.deepEqual(view.parties[0].wealth.map((coin) => [coin.denomination, coin.value, coin.owned]), [["gc", 0, 2], ["ss", 0, 12], ["cp", 0, 0], ["bits", 0, 5]]);
-  assert.equal(view.parties[1].wealthText, "1 CO, 3 SC");
-  assert.equal(view.parties[0].wealthText, "Aucun argent");
+  const [partner, mine] = view.parties;
+  assert.deepEqual(mine.wealth.map((coin) => [coin.denomination, coin.value, coin.owned]), [["gc", 0, 2], ["ss", 0, 12], ["cp", 0, 0], ["bits", 0, 5]]);
+  assert.equal(partner.wealthText, "1 CO, 3 SC");
+  assert.equal(mine.wealthText, "Aucun argent");
+});
+
+test("le joueur voit son partenaire à gauche et sa propre colonne contre son inventaire, le MJ garde l'ordre de l'échange", () => {
+  assert.deepEqual(tradeView(trade({}), 0, { wealth: { gc: 0, ss: 0, cp: 0, bits: 0 }, items: [] }, t).parties.map((party) => party.name), ["Ilsa", "Bartoras"]);
+  assert.deepEqual(tradeView(trade({}), 1, { wealth: { gc: 0, ss: 0, cp: 0, bits: 0 }, items: [] }, t).parties.map((party) => party.name), ["Bartoras", "Ilsa"]);
+  assert.deepEqual(tradeView(trade({}), "gm", null, t).parties.map((party) => party.name), ["Bartoras", "Ilsa"]);
 });
 
 test("le MJ peut approuver uniquement quand les deux joueurs ont validé", () => {

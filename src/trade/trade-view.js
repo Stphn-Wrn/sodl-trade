@@ -75,6 +75,11 @@ function partyView(party, index, role, negotiating, inventory, t) {
   };
 }
 
+// A player sees their partner first, then their own column right next to their inventory.
+function orderForViewer(parties) {
+  return [...parties.filter((party) => !party.isMine), ...parties.filter((party) => party.isMine)];
+}
+
 export function tradeView(trade, role, inventory, t) {
   const negotiating = trade.status === STATUS.NEGOTIATING;
   const isParty = role === 0 || role === 1;
@@ -87,7 +92,7 @@ export function tradeView(trade, role, inventory, t) {
     status: trade.status,
     statusLabel: t(`SODLTRADE.Status.${trade.status}`),
     isGM: role === GM_ROLE,
-    parties: trade.parties.map((party, index) => partyView(party, index, role, negotiating, inventory, t)),
+    parties: orderForViewer(trade.parties.map((party, index) => partyView(party, index, role, negotiating, inventory, t))),
     inventoryGroups: inventoryGroups(availableItems(inventory, mine?.offer ?? { items: [] }), t),
     showInventory: isParty && negotiating,
     canAccept: isParty && negotiating && !mine.accepted,
