@@ -20,9 +20,10 @@ L'onglet **Récompenses** est le butin commun du groupe.
 
 - Les récompenses sont **fermées par défaut** : l'onglet est grisé pour les joueurs. Le MJ prépare le butin tranquillement, puis clique **Ouvrir aux joueurs** ; un message dans le chat les prévient. **Fermer aux joueurs** le referme à tout moment.
 - **Tout ce que le MJ dépose est caché** (œil barré). Il prépare le butin à l'avance, puis dévoile chaque trésor d'un clic sur l'œil, l'argent à part, ou tout d'un coup avec **Tout dévoiler**. Chaque dévoilement est annoncé dans le chat (« Trésor dévoilé : Épée longue »), sauf tant que les récompenses sont fermées.
-- **Le MJ** y glisse ce que le groupe a trouvé (objets de la barre latérale, d'un compendium ou de la fiche d'un PNJ) et y inscrit l'argent. L'objet déposé est une copie : l'original reste où il était.
+- Le MJ voit l'onglet en **vue de jeu** (trésors avec leur œil, argent, partage). Le bouton **Préparer** passe en édition pour déposer des objets, régler les quantités et saisir l'argent ; **Terminer** en sort.
+- **En préparation**, le MJ y glisse ce que le groupe a trouvé (objets de la barre latérale, d'un compendium ou de la fiche d'un PNJ) et y inscrit l'argent. L'objet déposé est une copie : l'original reste où il était.
 - **Les joueurs** prennent directement ce qu'ils veulent, à l'unité, pour leur personnage, ainsi que l'argent. Ils reçoivent une notification quand de nouvelles récompenses arrivent.
-- **Partager l'argent** : le MJ coche les personnages concernés et partage l'argent à parts égales. La monnaie est faite automatiquement (1 CO = 10 CA = 100 SC = 1000 éclats), et ce qui ne se divise pas reste dans le butin.
+- **Partager l'argent** : le MJ sélectionne les personnages concernés (tous par défaut) et partage l'argent à parts égales. La monnaie est faite automatiquement (1 CO = 10 CA = 100 SC = 1000 éclats), et ce qui ne se divise pas reste dans le butin.
 
 Chaque prise et chaque partage est annoncé publiquement dans le chat.
 
@@ -30,9 +31,10 @@ Chaque prise et chaque partage est annoncé publiquement dans le chat.
 
 L'onglet **Achats** regroupe des boutiques en catégories (Forgeron, Alchimiste…).
 
-- **Le MJ** crée une catégorie, puis la remplit : en collant l'ID (ou l'UUID) d'un dossier d'objets et en cliquant **Importer**, en glissant un dossier entier sur la catégorie, ou en y glissant des objets un par un. Les sous-dossiers sont inclus, et les dossiers de compendium fonctionnent aussi.
+- Le MJ voit les boutiques comme les joueurs ; le bouton **Modifier les boutiques** passe en mode édition, **Terminer** en sort. Chaque catégorie se replie d'un clic sur son en-tête.
+- **En mode édition**, le MJ crée une catégorie, puis la remplit : en collant l'ID (ou l'UUID) d'un dossier d'objets et en cliquant **Importer**, en glissant un dossier entier sur la catégorie, ou en y glissant des objets un par un. Les sous-dossiers sont inclus, et les dossiers de compendium fonctionnent aussi.
 - Chaque objet reprend son **nom**, son **prix** et sa **disponibilité** (commun, inhabituel, rare, exotique). Le MJ peut modifier le prix (par exemple « 1 CO 5 CA ») et la disponibilité de chaque objet.
-- Un prix qui n'est qu'un nombre, comme « 5 », est compté dans l'unité choisie dans les paramètres du module (CA par défaut). Un objet sans prix lisible affiche « Prix à fixer » et ne peut pas être acheté.
+- Un prix qui n'est qu'un nombre, comme « 5 » ou « 0.5 », est compté dans l'unité choisie dans les paramètres du module (CO par défaut, comme le système). Les décimales sont converties en pièces : 0.5 CO devient 5 CA. Un objet sans prix lisible affiche « Prix à fixer » et ne peut pas être acheté.
 - **Les joueurs** achètent directement : le prix est débité de leur bourse, et le marchand rend la monnaie. Un objet vendu en lot (20 flèches, par exemple) est livré en entier pour le prix du lot.
 - La boutique garde une référence vers l'objet d'origine : s'il est supprimé, il ne peut plus être acheté.
 
@@ -44,7 +46,7 @@ Dans *Paramètres → Configurer les paramètres → L'Ombre du Seigneur Démon 
 
 - **Annoncer les récompenses dans le chat** (activé par défaut) : ouverture des récompenses, trésors dévoilés, prises et partages d'argent.
 - **Annoncer les achats dans le chat** (activé par défaut).
-- **Unité des prix sans unité** (CA par défaut).
+- **Unité des prix sans unité** (CO par défaut).
 
 Les messages d'échange entre joueurs sont toujours envoyés, en privé au MJ et aux deux joueurs.
 

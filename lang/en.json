@@ -39,7 +39,9 @@
       "Reveal": "Reveal to players",
       "Hide": "Hide from players",
       "RevealAll": "Reveal all",
-      "RevealHint": "What you drop stays hidden (crossed eye) until you reveal it."
+      "Prepare": "Prepare",
+      "Treasures": "Treasures",
+      "NoTreasure": "No treasure. Click Prepare to add some."
     },
     "Shop": {
       "Title": "Shop",
@@ -62,7 +64,12 @@
         "U": "Uncommon",
         "R": "Rare",
         "E": "Exotic"
-      }
+      },
+      "Edit": "Edit shops",
+      "DoneEditing": "Done",
+      "ToggleCategory": "Collapse or expand",
+      "Count": "{count} item(s)",
+      "CategoryEmpty": "No item in this category."
     },
     "Window": {
       "Offer": "Offer",
@@ -148,7 +155,7 @@
     "Settings": {
       "PriceUnit": {
         "Name": "Unit of unitless prices",
-        "Hint": "Unit used when an item's price is a plain number, such as \"5\"."
+        "Hint": "Unit used when an item's price is a plain number, such as \"5\" or \"0.5\". The Shadow of the Demon Lord system stores its prices in gold crowns."
       },
       "AnnounceLoot": {
         "Name": "Announce rewards in the chat",

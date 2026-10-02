@@ -11,8 +11,55 @@ function sendLoot(action) {
   sendRequest("loot", { action });
 }
 
-function splitIds(app, base) {
-  return base.characters.map((actor) => actor.id).filter((id) => !app.excludedFromSplit.has(id));
+function splitIds(app, characters) {
+  return characters.map((actor) => actor.id).filter((id) => !app.excludedFromSplit.has(id));
+}
+
+function describeWealth(wealth) {
+  return describeOffer({ items: [], wealth }, t);
+}
+
+function splitView(app, characters, wealth) {
+  const ids = splitIds(app, characters);
+  let sharePreview = "";
+  if (ids.length > 0) {
+    const { share } = splitWealth(wealth, ids.length);
+    if (!isEmptyWealth(share)) {
+      sharePreview = describeWealth(share);
+    }
+  }
+  return {
+    characters: characters.map((actor) => ({ id: actor.id, name: actor.name, included: !app.excludedFromSplit.has(actor.id) })),
+    count: ids.length,
+    sharePreview
+  };
+}
+
+function gmView(app, base, loot) {
+  return {
+    editing: app.lootEditing,
+    open: loot.open === true,
+    items: loot.items.map(({ id, name, img, quantity, revealed }) => ({ id, name, img, quantity, revealed: revealed === true })),
+    itemCount: loot.items.length,
+    wealth: wealthRows(loot.wealth),
+    wealthText: describeWealth(loot.wealth),
+    hasWealth: !isEmptyWealth(loot.wealth),
+    wealthRevealed: loot.wealthRevealed === true,
+    hasHidden: loot.items.some((item) => !item.revealed) || (!loot.wealthRevealed && !isEmptyWealth(loot.wealth)),
+    split: splitView(app, base.characters, loot.wealth)
+  };
+}
+
+function playerView(loot) {
+  const items = loot.items.filter((item) => item.revealed).map(({ id, name, img, quantity }) => ({ id, name, img, quantity }));
+  const wealth = visibleWealth(loot);
+  return {
+    items,
+    itemCount: items.length,
+    wealth: wealthRows(wealth),
+    hasWealth: !isEmptyWealth(wealth),
+    isEmpty: items.length === 0 && isEmptyWealth(wealth)
+  };
 }
 
 export const lootPanel = {
@@ -25,35 +72,14 @@ export const lootPanel = {
 
   prepare(app, base) {
     const loot = readLoot();
-    const ids = splitIds(app, base);
-    let sharePreview = "";
-    if (ids.length > 0 && !isEmptyWealth(loot.wealth)) {
-      sharePreview = describeOffer({ items: [], wealth: splitWealth(loot.wealth, ids.length).share }, t);
+    if (base.isGM) {
+      return gmView(app, base, loot);
     }
-    let items = loot.items;
-    let wealth = loot.wealth;
-    if (!base.isGM) {
-      items = items.filter((item) => item.revealed);
-      wealth = visibleWealth(loot);
-    }
-    return {
-      items: items.map(({ id, name, img, quantity, revealed }) => ({ id, name, img, quantity, revealed: revealed === true })),
-      wealth: wealthRows(wealth),
-      hasWealth: !isEmptyWealth(wealth),
-      wealthRevealed: loot.wealthRevealed === true,
-      hasHidden: loot.items.some((item) => !item.revealed) || (!loot.wealthRevealed && !isEmptyWealth(loot.wealth)),
-      isEmpty: items.length === 0 && isEmptyWealth(wealth),
-      open: loot.open === true,
-      split: {
-        characters: base.characters.map((actor) => ({ id: actor.id, name: actor.name, checked: !app.excludedFromSplit.has(actor.id) })),
-        count: ids.length,
-        sharePreview
-      }
-    };
+    return playerView(loot);
   },
 
   bind(app) {
-    if (!game.user.isGM) {
+    if (!game.user.isGM || !app.lootEditing) {
       return;
     }
     const panel = app.element.querySelector("[data-panel=loot]");
@@ -66,16 +92,6 @@ export const lootPanel = {
     }
     for (const input of panel.querySelectorAll("[data-loot-wealth]")) {
       input.addEventListener("change", () => sendLoot({ type: "setWealth", wealth: readWealthInputs(panel, "data-loot-wealth") }));
-    }
-    for (const input of panel.querySelectorAll("[data-split-actor]")) {
-      input.addEventListener("change", () => {
-        if (input.checked) {
-          app.excludedFromSplit.delete(input.dataset.splitActor);
-        } else {
-          app.excludedFromSplit.add(input.dataset.splitActor);
-        }
-        app.render();
-      });
     }
   },
 
@@ -94,6 +110,19 @@ export const lootPanel = {
   },
 
   actions: {
+    lootToggleEdit() {
+      this.lootEditing = !this.lootEditing;
+      this.render();
+    },
+    lootToggleSplit(event, target) {
+      const actorId = target.dataset.actorId;
+      if (this.excludedFromSplit.has(actorId)) {
+        this.excludedFromSplit.delete(actorId);
+      } else {
+        this.excludedFromSplit.add(actorId);
+      }
+      this.render();
+    },
     lootToggleReveal(event, target) {
       sendLoot({ type: "setRevealed", id: target.dataset.id, revealed: target.dataset.revealed !== "true" });
     },
@@ -110,8 +139,7 @@ export const lootPanel = {
       sendLoot({ type: "setQuantity", id: target.dataset.id, quantity: 0 });
     },
     lootSplit() {
-      const actorIds = game.actors.filter(isPlayerCharacter).map((actor) => actor.id).filter((id) => !this.excludedFromSplit.has(id));
-      sendLoot({ type: "split", actorIds });
+      sendLoot({ type: "split", actorIds: splitIds(this, game.actors.filter(isPlayerCharacter)) });
     },
     lootTake(event, target) {
       const id = target.dataset.id;

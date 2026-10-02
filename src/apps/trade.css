@@ -6,8 +6,14 @@
   --trade-waiting: #c9932e;
 }
 
+/* Foundry hides overflow in window content, so long shops and loot lists need their own scrolling. */
 .sodl-trade .window-content {
   padding: 10px;
+  overflow-y: auto;
+}
+
+.sodl-trade .window-content > * {
+  flex-shrink: 0;
 }
 
 .sodl-trade button {
@@ -207,24 +213,6 @@
   border-bottom-color: var(--trade-waiting);
 }
 
-.sodl-trade-split,
-.sodl-trade-taker {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.sodl-trade-split .sodl-trade-hint {
-  width: 100%;
-  text-align: left;
-}
-
-.sodl-trade-taker select {
-  flex: 1;
-}
-
 .sodl-trade-offer input {
   width: 48px;
 }
@@ -345,30 +333,150 @@
   color: var(--trade-accepted);
 }
 
-.sodl-trade-reveal-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
-.sodl-trade-reveal-bar .sodl-trade-hint {
-  flex: 1;
-  margin: 0;
-  text-align: left;
-}
-
-.sodl-trade-offer li.is-hidden,
-.sodl-trade-wealth.is-hidden {
-  opacity: 0.55;
-  font-style: italic;
+.sodl-trade-offer li.is-hidden .sodl-trade-item-name,
+.sodl-trade-offer li.is-hidden img,
+.sodl-trade-offer li.is-hidden .sodl-trade-qty,
+.sodl-trade-box.is-hidden .sodl-trade-box-text {
+  opacity: 0.5;
 }
 
 .sodl-trade-eye {
   color: var(--trade-accepted);
 }
 
-.is-hidden .sodl-trade-eye,
-.sodl-trade-wealth.is-hidden .sodl-trade-eye {
+.is-hidden .sodl-trade-eye {
   color: var(--trade-muted);
+}
+
+.sodl-trade-shop-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.sodl-trade-shop-toolbar input {
+  flex: 1;
+}
+
+.sodl-trade-category-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+  border: none;
+  background: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.sodl-trade-category-header .sodl-trade-category-toggle:only-of-type {
+  flex: 1;
+}
+
+.sodl-trade-category-count {
+  font-size: 11px;
+  font-weight: normal;
+  color: var(--trade-muted);
+  white-space: nowrap;
+}
+
+.sodl-trade-category.is-collapsed .sodl-trade-category-header {
+  margin-bottom: 0;
+}
+
+.sodl-trade-catalog li {
+  padding: 2px 0;
+}
+
+.sodl-trade-catalog img {
+  width: 20px;
+  height: 20px;
+}
+
+.sodl-trade-catalog .sodl-trade-availability {
+  padding: 0 6px;
+  border: 1px solid var(--trade-border);
+  border-radius: 8px;
+}
+
+.sodl-trade-box {
+  margin-bottom: 8px;
+  padding: 8px;
+  border: 1px solid var(--trade-border);
+  border-radius: 6px;
+}
+
+.sodl-trade-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.sodl-trade-box-header > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sodl-trade-box-text {
+  margin: 0;
+}
+
+.sodl-trade-box-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.sodl-trade-box-footer .sodl-trade-hint {
+  margin: 0;
+  text-align: left;
+}
+
+.sodl-trade-box .sodl-trade-dropzone {
+  min-height: 60px;
+}
+
+.sodl-trade-coins {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.sodl-trade-coins label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--trade-muted);
+}
+
+.sodl-trade-coins input {
+  width: 100%;
+}
+
+.sodl-trade-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.sodl-trade-chip {
+  padding: 2px 10px;
+  border: 1px solid var(--trade-border);
+  border-radius: 12px;
+  background: none;
+  color: var(--trade-muted);
+  cursor: pointer;
+}
+
+.sodl-trade-chip.is-active {
+  border-color: var(--trade-accepted);
+  color: inherit;
 }

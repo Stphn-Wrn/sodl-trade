@@ -39,7 +39,9 @@
       "Reveal": "Dévoiler aux joueurs",
       "Hide": "Cacher aux joueurs",
       "RevealAll": "Tout dévoiler",
-      "RevealHint": "Ce que vous déposez reste caché (œil barré) jusqu'à ce que vous le dévoiliez."
+      "Prepare": "Préparer",
+      "Treasures": "Trésors",
+      "NoTreasure": "Aucun trésor. Cliquez sur Préparer pour en ajouter."
     },
     "Shop": {
       "Title": "Achats",
@@ -62,7 +64,12 @@
         "U": "Inhabituel",
         "R": "Rare",
         "E": "Exotique"
-      }
+      },
+      "Edit": "Modifier les boutiques",
+      "DoneEditing": "Terminer",
+      "ToggleCategory": "Replier ou déplier",
+      "Count": "{count} objet(s)",
+      "CategoryEmpty": "Aucun objet dans cette catégorie."
     },
     "Window": {
       "Offer": "Offre",
@@ -148,7 +155,7 @@
     "Settings": {
       "PriceUnit": {
         "Name": "Unité des prix sans unité",
-        "Hint": "Unité utilisée quand le prix d'un objet est un simple nombre, comme « 5 »."
+        "Hint": "Unité utilisée quand le prix d'un objet est un simple nombre, comme « 5 » ou « 0.5 ». Le système Shadow of the Demon Lord stocke ses prix en couronnes d'or."
       },
       "AnnounceLoot": {
         "Name": "Annoncer les récompenses dans le chat",

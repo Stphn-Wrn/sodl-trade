@@ -1,3 +1,5 @@
+import { isPartyCharacter } from "../trade/inventory.js";
+
 export function t(key, data) {
   if (data) {
     return game.i18n.format(key, data);
@@ -18,7 +20,12 @@ export function ownsActor(user) {
 }
 
 export function isPlayerCharacter(actor) {
-  return Boolean(actor) && actor.type === "character" && actor.hasPlayerOwner;
+  if (!actor) {
+    return false;
+  }
+  const players = game.users.players;
+  const assignedIds = players.map((user) => user.character?.id).filter(Boolean);
+  return isPartyCharacter(actor, players.map((user) => user.id), assignedIds);
 }
 
 export function openApps(AppClass) {

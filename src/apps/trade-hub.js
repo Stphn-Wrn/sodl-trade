@@ -16,7 +16,7 @@ export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
     id: "sodl-trade-hub",
     classes: ["sodl-trade"],
     window: { title: "SODLTRADE.Title", icon: "fas fa-right-left", resizable: true },
-    position: { width: 520, height: "auto" },
+    position: { width: 520, height: 640 },
     // "tab" is reserved by ApplicationV2 for its own tab groups, hence "switchPanel".
     actions: Object.assign({ switchPanel: TradeHub.#onSwitchPanel }, ...PANELS.map((panel) => panel.actions))
   };
@@ -48,6 +48,10 @@ export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
   actingId = null;
   // Characters left out of the next money split; everyone shares by default.
   excludedFromSplit = new Set();
+  // The GM browses shops like players do, and switches to edit mode to change them.
+  shopEditing = false;
+  lootEditing = false;
+  collapsedCategories = new Set();
 
   #ownedCharacters(characters) {
     if (game.user.isGM) {

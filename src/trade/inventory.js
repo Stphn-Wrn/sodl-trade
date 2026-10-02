@@ -39,3 +39,17 @@ export function resolveRole(trade, user, ownsActor) {
   }
   return index;
 }
+
+const OWNER_LEVEL = 3;
+
+// The party is made of characters assigned to a player or explicitly owned by one.
+// Ownership granted to everyone by default (shared tokens, map markers) does not count.
+export function isPartyCharacter(actor, playerIds, assignedIds) {
+  if (actor.type !== "character") {
+    return false;
+  }
+  if (assignedIds.includes(actor.id)) {
+    return true;
+  }
+  return playerIds.some((userId) => (actor.ownership?.[userId] ?? 0) >= OWNER_LEVEL);
+}

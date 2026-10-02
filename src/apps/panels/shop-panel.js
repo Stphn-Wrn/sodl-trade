@@ -104,16 +104,17 @@ export const shopPanel = {
   template: modulePath("src/apps/panels/shop-panel.html"),
 
   prepare(app, base) {
-    const categories = readShop().categories.map((category) => ({
+    const editing = base.isGM && app.shopEditing;
+    let categories = readShop().categories.map((category) => ({
       id: category.id,
       name: category.name,
+      collapsed: app.collapsedCategories.has(category.id),
       items: category.items.map(itemView)
     }));
-    if (base.isGM) {
-      return { categories, isEmpty: categories.length === 0 };
+    if (!base.isGM) {
+      categories = categories.filter((category) => category.items.length > 0);
     }
-    const stocked = categories.filter((category) => category.items.length > 0);
-    return { categories: stocked, isEmpty: stocked.length === 0 };
+    return { categories, editing, isEmpty: categories.length === 0 };
   },
 
   bind(app) {
@@ -139,6 +140,19 @@ export const shopPanel = {
   },
 
   actions: {
+    shopToggleEdit() {
+      this.shopEditing = !this.shopEditing;
+      this.render();
+    },
+    shopToggleCategory(event, target) {
+      const categoryId = target.dataset.categoryId;
+      if (this.collapsedCategories.has(categoryId)) {
+        this.collapsedCategories.delete(categoryId);
+      } else {
+        this.collapsedCategories.add(categoryId);
+      }
+      this.render();
+    },
     shopAddCategory() {
       const input = this.element.querySelector("[name=newCategory]");
       sendShop({ type: "addCategory", id: foundry.utils.randomID(), name: input.value || t("SODLTRADE.Shop.Unnamed") });

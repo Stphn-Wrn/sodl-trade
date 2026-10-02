@@ -85,7 +85,7 @@ Hooks.once("init", () => {
     config: true,
     type: String,
     choices: { gc: "SODLTRADE.Wealth.gc", ss: "SODLTRADE.Wealth.ss", cp: "SODLTRADE.Wealth.cp", bits: "SODLTRADE.Wealth.bits" },
-    default: "ss"
+    default: "gc"
   });
   game.settings.register(MODULE_ID, ANNOUNCE_LOOT_SETTING, {
     name: "SODLTRADE.Settings.AnnounceLoot.Name",
