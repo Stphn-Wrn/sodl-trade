@@ -1,0 +1,69 @@
+<section class="sodl-trade-panel" data-panel="shop" {{#unless shop.visible}}hidden{{/unless}}>
+  {{#if isGM}}
+  <div class="sodl-trade-propose">
+    <input type="text" name="newCategory" placeholder="{{localize 'SODLTRADE.Shop.CategoryPlaceholder'}}">
+    <button type="button" class="is-primary" data-action="shopAddCategory"><i class="fas fa-plus"></i> {{localize "SODLTRADE.Shop.AddCategory"}}</button>
+  </div>
+  {{/if}}
+
+  {{#if shop.isEmpty}}
+  <p class="sodl-trade-empty">{{localize "SODLTRADE.Shop.Empty"}}</p>
+  {{/if}}
+
+  {{#each shop.categories}}
+  <article class="sodl-trade-category">
+    <header class="sodl-trade-category-header">
+      {{#if @root.isGM}}
+      <input type="text" value="{{this.name}}" data-category-name="{{this.id}}">
+      <button type="button" class="sodl-trade-icon" data-action="shopRemoveCategory" data-category-id="{{this.id}}" title="{{localize 'SODLTRADE.Shop.RemoveCategory'}}"><i class="fas fa-trash"></i></button>
+      {{else}}
+      <span class="sodl-trade-category-name">{{this.name}}</span>
+      {{/if}}
+    </header>
+
+    {{#if @root.isGM}}
+    <div class="sodl-trade-import">
+      <input type="text" data-folder-ref="{{this.id}}" placeholder="{{localize 'SODLTRADE.Shop.FolderPlaceholder'}}">
+      <button type="button" data-action="shopImport" data-category-id="{{this.id}}"><i class="fas fa-folder-open"></i> {{localize "SODLTRADE.Shop.Import"}}</button>
+    </div>
+    <div class="sodl-trade-dropzone" data-shop-dropzone="{{this.id}}">
+      <ul class="sodl-trade-offer">
+        {{#each this.items}}
+        <li>
+          <img src="{{this.img}}" alt="">
+          <span class="sodl-trade-item-name">{{this.name}}{{#if this.isBundle}} <small>×{{this.bundle}}</small>{{/if}}</span>
+          <input type="text" class="sodl-trade-price" value="{{this.priceText}}" placeholder="{{localize 'SODLTRADE.Shop.NoPrice'}}" data-shop-price="{{../id}}/{{this.id}}" title="{{localize 'SODLTRADE.Shop.PriceHint'}}">
+          <select data-shop-availability="{{../id}}/{{this.id}}" title="{{localize 'SODLTRADE.Shop.AvailabilityTitle'}}">
+            {{#each this.availabilities}}<option value="{{this.code}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>{{/each}}
+          </select>
+          <button type="button" class="sodl-trade-icon" data-action="shopRemoveItem" data-category-id="{{../id}}" data-item-id="{{this.id}}" title="{{localize 'SODLTRADE.Window.Remove'}}"><i class="fas fa-xmark"></i></button>
+        </li>
+        {{/each}}
+      </ul>
+      <p class="sodl-trade-dropzone-hint"><i class="fas fa-hand-pointer"></i> {{localize "SODLTRADE.Shop.DropHint"}}</p>
+    </div>
+
+    {{else}}
+
+    <ul class="sodl-trade-offer">
+      {{#each this.items}}
+      <li>
+        <img src="{{this.img}}" alt="">
+        <span class="sodl-trade-item-name">{{this.name}}{{#if this.isBundle}} <small>{{localize "SODLTRADE.Shop.Lot" count=this.bundle}}</small>{{/if}}</span>
+        {{#if this.availability}}<span class="sodl-trade-availability is-{{this.availability}}">{{this.availabilityLabel}}</span>{{/if}}
+        {{#if this.hasPrice}}
+        <span class="sodl-trade-price-tag">{{this.priceText}}</span>
+        {{#if @root.acting}}
+        <input type="number" min="1" value="1" data-buy-quantity="{{../id}}/{{this.id}}" title="{{localize 'SODLTRADE.Window.Quantity'}}">
+        <button type="button" data-action="shopBuy" data-category-id="{{../id}}" data-item-id="{{this.id}}"><i class="fas fa-cart-shopping"></i> {{localize "SODLTRADE.Shop.Buy"}}</button>
+        {{/if}}
+        {{else}}
+        <span class="sodl-trade-empty">{{localize "SODLTRADE.Shop.NoPrice"}}</span>
+        {{/if}}
+      </li>
+      {{/each}}
+    </ul>
+    {{/if}}
+  </article>
+  {{/each}}
+</section>

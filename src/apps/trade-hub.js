@@ -1,50 +1,39 @@
 import { modulePath } from "../shared/constants.js";
 import { isPlayerCharacter, openApps, t } from "../shared/foundry-adapter.js";
-import { sendRequest } from "../socket.js";
-import { readTrades, roleOf } from "../trade/trade-store.js";
-import { TradeWindow } from "./trade-window.js";
+import { describeOffer } from "../trade/trade-view.js";
+import { toWealth } from "../trade/wealth.js";
+import { lootPanel } from "./panels/loot-panel.js";
+import { shopPanel } from "./panels/shop-panel.js";
+import { tradesPanel } from "./panels/trades-panel.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-function visibleTrades() {
-  return Object.values(readTrades())
-    .filter((trade) => roleOf(trade, game.user) !== null)
-    .map((trade) => ({
-      id: trade.id,
-      first: trade.parties[0].name,
-      second: trade.parties[1].name,
-      statusLabel: t(`SODLTRADE.Status.${trade.status}`),
-      status: trade.status
-    }));
-}
-
-function choice(actor) {
-  return { id: actor.id, name: actor.name };
-}
+// Each tab is a panel with its own template, context, listeners and actions.
+const PANELS = [tradesPanel, lootPanel, shopPanel];
 
 export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "sodl-trade-hub",
     classes: ["sodl-trade"],
-    window: { title: "SODLTRADE.Title", icon: "fas fa-right-left" },
-    position: { width: 420, height: "auto" },
-    actions: {
-      open: TradeHub.#onOpen,
-      propose: TradeHub.#onPropose
-    }
+    window: { title: "SODLTRADE.Title", icon: "fas fa-right-left", resizable: true },
+    position: { width: 520, height: "auto" },
+    actions: Object.assign({ tab: TradeHub.#onTab }, ...PANELS.map((panel) => panel.actions))
   };
 
   static PARTS = {
-    body: { template: modulePath("src/apps/trade-hub.html") }
+    header: { template: modulePath("src/apps/hub-header.html") },
+    ...Object.fromEntries(PANELS.map((panel) => [panel.id, { template: panel.template }]))
   };
 
-  static open() {
-    const existing = openApps(TradeHub)[0];
-    if (existing) {
-      existing.bringToFront();
-      return;
+  static open(tab) {
+    let hub = openApps(TradeHub)[0];
+    if (!hub) {
+      hub = new TradeHub();
     }
-    new TradeHub().render({ force: true });
+    if (tab) {
+      hub.tab = tab;
+    }
+    hub.render({ force: true });
   }
 
   static refreshAll() {
@@ -53,26 +42,57 @@ export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  tab = "trades";
+  // The player's character used to propose trades, take loot and buy.
+  actingId = null;
+  // Characters left out of the next money split; everyone shares by default.
+  excludedFromSplit = new Set();
+
+  #ownedCharacters(characters) {
+    if (game.user.isGM) {
+      return [];
+    }
+    return characters.filter((actor) => actor.isOwner);
+  }
+
   async _prepareContext() {
     const characters = game.actors.filter(isPlayerCharacter);
-    return {
-      trades: visibleTrades(),
-      canPropose: !game.user.isGM,
-      mine: characters.filter((actor) => actor.isOwner).map(choice),
-      partners: characters.filter((actor) => !actor.isOwner).map(choice)
-    };
-  }
-
-  static #onOpen(event, target) {
-    TradeWindow.open(target.dataset.tradeId);
-  }
-
-  static #onPropose() {
-    const initiatorActorId = this.element.querySelector("[name=initiator]")?.value;
-    const targetActorId = this.element.querySelector("[name=target]")?.value;
-    if (!initiatorActorId || !targetActorId) {
-      return;
+    const mine = this.#ownedCharacters(characters);
+    if (!mine.some((actor) => actor.id === this.actingId)) {
+      this.actingId = mine[0]?.id ?? null;
     }
-    sendRequest("create", { initiatorActorId, targetActorId });
+    const actingActor = mine.find((actor) => actor.id === this.actingId);
+    let acting = null;
+    if (actingActor) {
+      acting = { id: actingActor.id, purse: describeOffer({ items: [], wealth: toWealth(actingActor.system.wealth) }, t) };
+    }
+    const base = { isGM: game.user.isGM, characters };
+    const context = {
+      isGM: game.user.isGM,
+      tabs: PANELS.map((panel) => ({ id: panel.id, label: t(`SODLTRADE.Hub.Tabs.${panel.id}`), active: panel.id === this.tab })),
+      mine: mine.map((actor) => ({ id: actor.id, name: actor.name, selected: actor.id === this.actingId })),
+      noCharacter: !game.user.isGM && mine.length === 0,
+      acting
+    };
+    for (const panel of PANELS) {
+      context[panel.id] = { visible: panel.id === this.tab, ...(await panel.prepare(this, base)) };
+    }
+    return context;
+  }
+
+  _onRender(context, options) {
+    super._onRender(context, options);
+    this.element.querySelector("[name=acting]")?.addEventListener("change", (event) => {
+      this.actingId = event.target.value;
+      this.render();
+    });
+    for (const panel of PANELS) {
+      panel.bind?.(this);
+    }
+  }
+
+  static #onTab(event, target) {
+    this.tab = target.dataset.tab;
+    this.render();
   }
 }

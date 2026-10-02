@@ -11,6 +11,15 @@ function toQuantity(value) {
   return Math.max(0, number);
 }
 
+// Quantity an item comes with when copied from its source, such as a bundle of 20 arrows.
+export function sourceQuantity(data) {
+  const quantity = Math.trunc(Number(data.system?.quantity));
+  if (!Number.isFinite(quantity) || quantity < 1) {
+    return 1;
+  }
+  return quantity;
+}
+
 export function toInventory(actor) {
   return {
     wealth: toWealth(actor.system.wealth),

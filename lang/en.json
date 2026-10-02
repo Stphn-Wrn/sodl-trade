@@ -13,7 +13,47 @@
       "Partner": "With",
       "Propose": "Propose",
       "NoCharacter": "You don't own any character.",
-      "NoPartner": "No other player character."
+      "NoPartner": "No other player character.",
+      "Tabs": {
+        "trades": "Trades",
+        "loot": "Rewards",
+        "shop": "Shop"
+      },
+      "Acting": "Character"
+    },
+    "Loot": {
+      "Title": "Rewards",
+      "Empty": "No reward yet.",
+      "DropHint": "Drop here what the group found: items from the sidebar, a compendium or an NPC sheet.",
+      "Take": "Take",
+      "TakeFor": "For",
+      "TakeWealth": "Take money",
+      "SplitBetween": "Split the money between",
+      "SharePreview": "{count} shares of: {share}",
+      "Split": "Split the money"
+    },
+    "Shop": {
+      "Title": "Shop",
+      "Empty": "No shop yet.",
+      "CategoryPlaceholder": "New category (e.g. Blacksmith)",
+      "AddCategory": "Add",
+      "RemoveCategory": "Delete the category",
+      "Unnamed": "Unnamed",
+      "FolderPlaceholder": "ID or UUID of an item folder",
+      "Import": "Import",
+      "DropHint": "Drop items or a whole item folder here.",
+      "NoPrice": "Price to set",
+      "PriceHint": "Price, for example \"1 GC 5 SS\"",
+      "AvailabilityTitle": "Availability",
+      "Buy": "Buy",
+      "Lot": "(bundle of {count})",
+      "Availability": {
+        "None": "—",
+        "C": "Common",
+        "U": "Uncommon",
+        "R": "Rare",
+        "E": "Exotic"
+      }
     },
     "Window": {
       "Offer": "Offer",
@@ -52,7 +92,12 @@
       "rejected": "The GM rejected the trade between {first} and {second}.",
       "cancelled": "The trade between {first} and {second} was cancelled by {user}.",
       "Gives": "{name} gives",
-      "Open": "Open the trade"
+      "Open": "Open the trade",
+      "Receives": "{name} receives",
+      "taken": "{name} helps themselves to the rewards.",
+      "split": "The GM splits the reward money between {names}.",
+      "Share": "Each receives",
+      "bought": "{name} buys {item} for {cost}."
     },
     "Errors": {
       "NoGM": "A GM must be connected to handle trades.",
@@ -69,10 +114,28 @@
       "EmptyTrade": "Nobody gives anything in this trade.",
       "NotAllowed": "You cannot do that in this trade.",
       "WrongStatus": "This action is not possible at this stage of the trade.",
-      "UnknownAction": "Unknown action."
+      "UnknownAction": "Unknown action.",
+      "NotLootable": "\"{name}\" cannot go in the rewards: only equipment can.",
+      "LootGone": "This item is no longer in the rewards.",
+      "NoRecipient": "Tick at least one character.",
+      "NothingToSplit": "There is not enough money to split.",
+      "CategoryGone": "This category no longer exists.",
+      "ShopItemGone": "This item is no longer for sale.",
+      "NothingImported": "No new equipment to add.",
+      "InvalidPrice": "Unreadable price: write for example \"1 GC 5 SS\".",
+      "InvalidAvailability": "Unknown availability.",
+      "NoPrice": "\"{name}\" has no price yet.",
+      "FolderNotFound": "No item folder with this identifier."
     },
     "Notify": {
-      "Invited": "{name} offers you a trade."
+      "Invited": "{name} offers you a trade.",
+      "LootAdded": "New rewards are available."
+    },
+    "Settings": {
+      "PriceUnit": {
+        "Name": "Unit of unitless prices",
+        "Hint": "Unit used when an item's price is a plain number, such as \"5\"."
+      }
     }
   }
 }

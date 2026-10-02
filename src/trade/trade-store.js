@@ -2,6 +2,8 @@ import { MODULE_ID, TRADES_SETTING } from "../shared/constants.js";
 import { errorMessage, isPlayerCharacter, ownsActor } from "../shared/foundry-adapter.js";
 import { LocalizedError } from "../shared/i18n.js";
 import { postTradeEvent } from "./chat-log.js";
+import { handleLootRequest } from "./loot-store.js";
+import { handleShopRequest } from "./shop-store.js";
 import { resolveRole, toInventory } from "./inventory.js";
 import { FINAL_STATUSES, STATUS, applyAction, createTrade, reopenTrade } from "./trade.js";
 import { executePlan } from "./trade-executor.js";
@@ -95,7 +97,7 @@ async function act(user, { tradeId, action }, trades) {
   }
 }
 
-const REQUESTS = { create, act };
+const REQUESTS = { create, act, loot: handleLootRequest, shop: handleShopRequest };
 
 let queue = Promise.resolve();
 

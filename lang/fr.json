@@ -13,7 +13,47 @@
       "Partner": "Avec",
       "Propose": "Proposer",
       "NoCharacter": "Vous ne possédez aucun personnage.",
-      "NoPartner": "Aucun autre personnage joueur."
+      "NoPartner": "Aucun autre personnage joueur.",
+      "Tabs": {
+        "trades": "Échanges",
+        "loot": "Récompenses",
+        "shop": "Achats"
+      },
+      "Acting": "Personnage"
+    },
+    "Loot": {
+      "Title": "Récompenses",
+      "Empty": "Aucune récompense pour le moment.",
+      "DropHint": "Glissez ici ce que le groupe a trouvé : objets de la barre latérale, d'un compendium ou de la fiche d'un PNJ.",
+      "Take": "Prendre",
+      "TakeFor": "Pour",
+      "TakeWealth": "Prendre l'argent",
+      "SplitBetween": "Partager l'argent entre",
+      "SharePreview": "{count} parts de : {share}",
+      "Split": "Partager l'argent"
+    },
+    "Shop": {
+      "Title": "Achats",
+      "Empty": "Aucune boutique pour le moment.",
+      "CategoryPlaceholder": "Nouvelle catégorie (ex. Forgeron)",
+      "AddCategory": "Ajouter",
+      "RemoveCategory": "Supprimer la catégorie",
+      "Unnamed": "Sans nom",
+      "FolderPlaceholder": "ID ou UUID d'un dossier d'objets",
+      "Import": "Importer",
+      "DropHint": "Glissez ici des objets ou un dossier d'objets entier.",
+      "NoPrice": "Prix à fixer",
+      "PriceHint": "Prix, par exemple « 1 CO 5 CA »",
+      "AvailabilityTitle": "Disponibilité",
+      "Buy": "Acheter",
+      "Lot": "(lot de {count})",
+      "Availability": {
+        "None": "—",
+        "C": "Commun",
+        "U": "Inhabituel",
+        "R": "Rare",
+        "E": "Exotique"
+      }
     },
     "Window": {
       "Offer": "Offre",
@@ -52,7 +92,12 @@
       "rejected": "Le MJ a refusé l'échange entre {first} et {second}.",
       "cancelled": "L'échange entre {first} et {second} a été annulé par {user}.",
       "Gives": "{name} donne",
-      "Open": "Ouvrir l'échange"
+      "Open": "Ouvrir l'échange",
+      "Receives": "{name} reçoit",
+      "taken": "{name} se sert dans les récompenses.",
+      "split": "Le MJ partage l'argent des récompenses entre {names}.",
+      "Share": "Chacun reçoit",
+      "bought": "{name} achète {item} pour {cost}."
     },
     "Errors": {
       "NoGM": "Un MJ doit être connecté pour gérer les échanges.",
@@ -69,10 +114,28 @@
       "EmptyTrade": "Personne ne donne rien dans cet échange.",
       "NotAllowed": "Vous ne pouvez pas faire cela dans cet échange.",
       "WrongStatus": "Cette action n'est pas possible à cette étape de l'échange.",
-      "UnknownAction": "Action inconnue."
+      "UnknownAction": "Action inconnue.",
+      "NotLootable": "« {name} » ne peut pas aller dans les récompenses : seul l'équipement le peut.",
+      "LootGone": "Cet objet n'est plus dans les récompenses.",
+      "NoRecipient": "Cochez au moins un personnage.",
+      "NothingToSplit": "Il n'y a pas assez d'argent à partager.",
+      "CategoryGone": "Cette catégorie n'existe plus.",
+      "ShopItemGone": "Cet objet n'est plus en vente.",
+      "NothingImported": "Aucun nouvel objet d'équipement à ajouter.",
+      "InvalidPrice": "Prix illisible : écrivez par exemple « 1 CO 5 CA ».",
+      "InvalidAvailability": "Disponibilité inconnue.",
+      "NoPrice": "« {name} » n'a pas encore de prix.",
+      "FolderNotFound": "Aucun dossier d'objets avec cet identifiant."
     },
     "Notify": {
-      "Invited": "{name} vous propose un échange."
+      "Invited": "{name} vous propose un échange.",
+      "LootAdded": "De nouvelles récompenses sont disponibles."
+    },
+    "Settings": {
+      "PriceUnit": {
+        "Name": "Unité des prix sans unité",
+        "Hint": "Unité utilisée quand le prix d'un objet est un simple nombre, comme « 5 »."
+      }
     }
   }
 }

@@ -176,3 +176,140 @@
   margin: 4px 0;
   padding-left: 16px;
 }
+
+.sodl-trade-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--trade-border);
+}
+
+.sodl-trade-tabs button {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  opacity: 0.6;
+}
+
+.sodl-trade-tabs button.is-active {
+  opacity: 1;
+  font-weight: bold;
+}
+
+.sodl-trade-split,
+.sodl-trade-taker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.sodl-trade-split .sodl-trade-hint {
+  width: 100%;
+  text-align: left;
+}
+
+.sodl-trade-taker select {
+  flex: 1;
+}
+
+.sodl-trade-offer input {
+  width: 48px;
+}
+
+.sodl-trade-dropzone {
+  min-height: 80px;
+  padding: 6px;
+  border: 2px dashed var(--trade-border);
+  border-radius: 6px;
+}
+
+.sodl-trade-dropzone input {
+  width: 48px;
+}
+
+.sodl-trade-dropzone-hint {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--trade-muted);
+  text-align: center;
+}
+
+.sodl-trade-hub-header {
+  margin-bottom: 8px;
+}
+
+.sodl-trade-acting {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sodl-trade-acting label {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+}
+
+.sodl-trade-purse {
+  margin-left: auto;
+  color: var(--trade-muted);
+}
+
+.sodl-trade-category {
+  margin-top: 10px;
+  padding: 6px;
+  border: 1px solid var(--trade-border);
+  border-radius: 6px;
+}
+
+.sodl-trade-category-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.sodl-trade-category-header input {
+  flex: 1;
+  font-weight: bold;
+}
+
+.sodl-trade-category-name {
+  font-size: 14px;
+}
+
+.sodl-trade-import {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.sodl-trade-import input {
+  flex: 1;
+}
+
+.sodl-trade-offer input.sodl-trade-price {
+  width: 90px;
+}
+
+.sodl-trade-offer select {
+  width: auto;
+}
+
+.sodl-trade-price-tag {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.sodl-trade-availability {
+  font-size: 11px;
+  color: var(--trade-muted);
+}
+
+.sodl-trade-availability.is-R,
+.sodl-trade-availability.is-E {
+  color: var(--trade-waiting);
+}

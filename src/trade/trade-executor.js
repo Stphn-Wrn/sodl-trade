@@ -1,5 +1,5 @@
 import { prepareReceivedItem } from "./transfer-plan.js";
-import { DENOMINATIONS } from "./wealth.js";
+import { DENOMINATIONS, emptyWealth, isEmptyWealth, settleWealth, toWealth } from "./wealth.js";
 
 function receivedItems(change) {
   return change.receiveItems.map((entry) => {
@@ -8,7 +8,7 @@ function receivedItems(change) {
   });
 }
 
-function wealthUpdate(wealth) {
+export function wealthUpdate(wealth) {
   return Object.fromEntries(DENOMINATIONS.map((denomination) => [`system.wealth.${denomination}`, wealth[denomination]]));
 }
 
@@ -31,4 +31,20 @@ export async function executePlan(plan) {
     }
     await actor.update(wealthUpdate(change.wealth));
   }
+}
+
+// Loot is granted from the GM's client, which owns every actor.
+export async function executeGrant(actor, grant) {
+  const items = grant.items.map((entry) => prepareReceivedItem(entry.data, entry.quantity));
+  if (items.length > 0) {
+    await actor.createEmbeddedDocuments("Item", items);
+  }
+  if (!isEmptyWealth(grant.wealth)) {
+    await actor.update(wealthUpdate(settleWealth(toWealth(actor.system.wealth), emptyWealth(), grant.wealth)));
+  }
+}
+
+export async function executePurchase(actor, itemData, wealth) {
+  await actor.createEmbeddedDocuments("Item", [itemData]);
+  await actor.update(wealthUpdate(wealth));
 }

@@ -1,7 +1,7 @@
-<section class="sodl-trade-hub">
+<section class="sodl-trade-panel" {{#unless trades.visible}}hidden{{/unless}}>
   <h3>{{localize "SODLTRADE.Hub.Active"}}</h3>
   <ul class="sodl-trade-list">
-    {{#each trades}}
+    {{#each trades.trades}}
     <li>
       <span class="sodl-trade-list-names">{{this.first}} ⇄ {{this.second}}</span>
       <span class="sodl-trade-status-chip is-{{this.status}}">{{this.statusLabel}}</span>
@@ -12,28 +12,19 @@
     {{/each}}
   </ul>
 
-  {{#if canPropose}}
+  {{#if acting}}
   <h3>{{localize "SODLTRADE.Hub.New"}}</h3>
-  {{#unless mine.length}}
-  <p class="sodl-trade-empty">{{localize "SODLTRADE.Hub.NoCharacter"}}</p>
-  {{else}}
-  {{#unless partners.length}}
-  <p class="sodl-trade-empty">{{localize "SODLTRADE.Hub.NoPartner"}}</p>
-  {{else}}
+  {{#if trades.partners.length}}
   <div class="sodl-trade-propose">
-    <label>{{localize "SODLTRADE.Hub.MyCharacter"}}
-      <select name="initiator">
-        {{#each mine}}<option value="{{this.id}}">{{this.name}}</option>{{/each}}
-      </select>
-    </label>
     <label>{{localize "SODLTRADE.Hub.Partner"}}
       <select name="target">
-        {{#each partners}}<option value="{{this.id}}">{{this.name}}</option>{{/each}}
+        {{#each trades.partners}}<option value="{{this.id}}">{{this.name}}</option>{{/each}}
       </select>
     </label>
     <button type="button" class="is-primary" data-action="propose"><i class="fas fa-handshake"></i> {{localize "SODLTRADE.Hub.Propose"}}</button>
   </div>
-  {{/unless}}
-  {{/unless}}
+  {{else}}
+  <p class="sodl-trade-empty">{{localize "SODLTRADE.Hub.NoPartner"}}</p>
+  {{/if}}
   {{/if}}
 </section>

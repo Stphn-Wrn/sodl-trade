@@ -1,0 +1,26 @@
+<header class="sodl-trade-hub-header">
+  <nav class="sodl-trade-tabs">
+    {{#each tabs}}
+    <button type="button" class="{{#if this.active}}is-active{{/if}}" data-action="tab" data-tab="{{this.id}}">{{this.label}}</button>
+    {{/each}}
+  </nav>
+
+  {{#if noCharacter}}
+  <p class="sodl-trade-empty">{{localize "SODLTRADE.Hub.NoCharacter"}}</p>
+  {{/if}}
+
+  {{#if acting}}
+  <div class="sodl-trade-acting">
+    {{#if mine.[1]}}
+    <label>{{localize "SODLTRADE.Hub.Acting"}}
+      <select name="acting">
+        {{#each mine}}<option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>{{/each}}
+      </select>
+    </label>
+    {{else}}
+    <span class="sodl-trade-party-name">{{mine.[0].name}}</span>
+    {{/if}}
+    <span class="sodl-trade-purse"><i class="fas fa-coins"></i> {{acting.purse}}</span>
+  </div>
+  {{/if}}
+</header>
