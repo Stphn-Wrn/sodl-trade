@@ -8,26 +8,29 @@ import { DENOMINATIONS } from "../trade/wealth.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-function ownInventory(trade, role) {
-  if (role !== 0 && role !== 1) {
+const PARTY_WIDTH = 880;
+const GM_WIDTH = 640;
+
+function isParty(role) {
+  return role === 0 || role === 1;
+}
+
+function ownActor(trade, role) {
+  if (!isParty(role)) {
     return null;
   }
-  const actor = game.actors.get(trade.parties[role].actorId);
-  if (!actor) {
-    return null;
-  }
-  return toInventory(actor);
+  return game.actors.get(trade.parties[role].actorId) ?? null;
 }
 
 export class TradeWindow extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     classes: ["sodl-trade"],
     window: { icon: "fas fa-right-left", resizable: true },
-    position: { width: 620, height: "auto" },
+    position: { width: PARTY_WIDTH, height: "auto" },
     actions: {
-      addItem: TradeWindow.#onAddItem,
+      addOne: TradeWindow.#onAddOne,
       removeItem: TradeWindow.#onRemoveItem,
-      setWealth: TradeWindow.#onSetWealth,
+      inventoryTab: TradeWindow.#onInventoryTab,
       accept: TradeWindow.#onSimpleAction,
       withdraw: TradeWindow.#onSimpleAction,
       cancel: TradeWindow.#onSimpleAction,
@@ -64,9 +67,16 @@ export class TradeWindow extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   constructor(tradeId) {
-    super({ id: `sodl-trade-${tradeId}` });
+    let width = PARTY_WIDTH;
+    if (game.user.isGM) {
+      width = GM_WIDTH;
+    }
+    super({ id: `sodl-trade-${tradeId}`, position: { width } });
     this.tradeId = tradeId;
   }
+
+  // Inventory tab shown in the side panel, mirroring the character sheet.
+  inventoryTab = "combat";
 
   get title() {
     const trade = getTrade(this.tradeId);
@@ -79,34 +89,96 @@ export class TradeWindow extends HandlebarsApplicationMixin(ApplicationV2) {
   async _prepareContext() {
     const trade = getTrade(this.tradeId);
     if (!trade) {
-      return { parties: [] };
+      return { parties: [], inventoryGroups: [] };
     }
     const role = roleOf(trade, game.user);
-    return tradeView(trade, role, ownInventory(trade, role), t);
+    const actor = ownActor(trade, role);
+    let inventory = null;
+    if (actor) {
+      inventory = toInventory(actor);
+    }
+    const view = tradeView(trade, role, inventory, t);
+    view.inventoryGroups = view.inventoryGroups.map((group) => ({ ...group, active: group.id === this.inventoryTab }));
+    return view;
   }
 
-  static #onAddItem() {
-    const itemId = this.element.querySelector("[name=itemId]")?.value;
-    const quantity = Number(this.element.querySelector("[name=quantity]")?.value);
-    if (!itemId) {
+  _onRender(context, options) {
+    super._onRender(context, options);
+    const trade = getTrade(this.tradeId);
+    if (!trade) {
       return;
     }
+    const actor = ownActor(trade, roleOf(trade, game.user));
+    if (!actor) {
+      return;
+    }
+
+    for (const entry of this.element.querySelectorAll("[data-inventory-item]")) {
+      entry.addEventListener("dragstart", (event) => {
+        const item = actor.items.get(entry.dataset.inventoryItem);
+        event.dataTransfer.setData("text/plain", JSON.stringify({ type: "Item", uuid: item.uuid }));
+      });
+    }
+
+    const offer = this.element.querySelector(".sodl-trade-party.is-editable");
+    if (offer) {
+      offer.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        offer.classList.add("is-dragover");
+      });
+      offer.addEventListener("dragleave", () => offer.classList.remove("is-dragover"));
+      offer.addEventListener("drop", (event) => this.#onDrop(event, actor));
+    }
+
+    for (const input of this.element.querySelectorAll("[data-offer-quantity]")) {
+      input.addEventListener("change", () => sendAction(this.tradeId, { type: "setItem", itemId: input.dataset.offerQuantity, quantity: input.value }));
+    }
+    for (const input of this.element.querySelectorAll("[data-offer-wealth]")) {
+      input.addEventListener("change", () => sendAction(this.tradeId, { type: "setWealth", wealth: this.#readWealth() }));
+    }
+  }
+
+  #readWealth() {
+    return Object.fromEntries(DENOMINATIONS.map((denomination) => [denomination, this.element.querySelector(`[data-offer-wealth="${denomination}"]`)?.value ?? 0]));
+  }
+
+  #addOne(itemId) {
     const trade = getTrade(this.tradeId);
     const offered = trade.parties[roleOf(trade, game.user)].offer.items.find((item) => item.itemId === itemId);
-    let total = quantity;
+    let quantity = 1;
     if (offered) {
-      total += offered.quantity;
+      quantity += offered.quantity;
     }
-    sendAction(this.tradeId, { type: "setItem", itemId, quantity: total });
+    sendAction(this.tradeId, { type: "setItem", itemId, quantity });
+  }
+
+  // Accepts items dragged from the side panel or from the character's own sheet.
+  async #onDrop(event, actor) {
+    event.preventDefault();
+    event.currentTarget.classList.remove("is-dragover");
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    if (data?.type !== "Item") {
+      return;
+    }
+    const item = await fromUuid(data.uuid);
+    if (!item || item.parent?.id !== actor.id) {
+      ui.notifications.warn(t("SODLTRADE.Errors.ItemNotOwned"));
+      return;
+    }
+    this.#addOne(item.id);
+  }
+
+  static #onAddOne(event, target) {
+    this.#addOne(target.dataset.inventoryItem);
   }
 
   static #onRemoveItem(event, target) {
     sendAction(this.tradeId, { type: "setItem", itemId: target.dataset.itemId, quantity: 0 });
   }
 
-  static #onSetWealth() {
-    const wealth = Object.fromEntries(DENOMINATIONS.map((denomination) => [denomination, this.element.querySelector(`[name="wealth.${denomination}"]`).value]));
-    sendAction(this.tradeId, { type: "setWealth", wealth });
+  static #onInventoryTab(event, target) {
+    this.inventoryTab = target.dataset.group;
+    this.render();
   }
 
   static #onSimpleAction(event, target) {

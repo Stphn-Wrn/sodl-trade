@@ -242,18 +242,35 @@
 .sodl-trade-acting {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 6px 8px;
+  border: 1px solid var(--trade-border);
+  border-radius: 6px;
+  background: var(--trade-surface);
 }
 
-.sodl-trade-acting label {
+.sodl-trade-acting img {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.sodl-trade-acting-identity {
   display: flex;
   flex: 1;
-  align-items: center;
-  gap: 6px;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sodl-trade-acting-identity select {
+  width: auto;
+  max-width: 220px;
 }
 
 .sodl-trade-purse {
-  margin-left: auto;
+  font-size: 12px;
   color: var(--trade-muted);
 }
 
@@ -479,4 +496,141 @@
 .sodl-trade-chip.is-active {
   border-color: var(--trade-accepted);
   color: inherit;
+}
+
+.sodl-trade-offer input.sodl-trade-stock {
+  width: 64px;
+}
+
+.sodl-trade-stock-tag {
+  font-size: 11px;
+  color: var(--trade-muted);
+  white-space: nowrap;
+}
+
+.sodl-trade-stock-tag.is-out {
+  color: var(--trade-waiting);
+  font-weight: bold;
+}
+
+.sodl-trade-layout {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.sodl-trade-layout .sodl-trade-columns {
+  flex: 1;
+  min-width: 0;
+}
+
+.sodl-trade-party.is-editable {
+  border-style: dashed;
+}
+
+.sodl-trade-party.is-dragover {
+  border-color: var(--trade-waiting);
+  background: var(--trade-surface);
+}
+
+.sodl-trade-party .sodl-trade-offer {
+  flex: 1;
+}
+
+.sodl-trade-drop-hint {
+  justify-content: center;
+  padding: 16px 0;
+  color: var(--trade-muted);
+  font-size: 11px;
+  text-align: center;
+}
+
+.sodl-trade-party-money {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--trade-border);
+}
+
+.sodl-trade-party-money .sodl-trade-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: auto;
+}
+
+.sodl-trade-inventory {
+  display: flex;
+  flex-direction: column;
+  width: 230px;
+  flex: 0 0 230px;
+  padding: 8px;
+  border: 1px solid var(--trade-border);
+  border-radius: 6px;
+}
+
+.sodl-trade-inventory .sodl-trade-offer {
+  flex: 1;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.sodl-trade-inventory-item {
+  cursor: grab;
+}
+
+.sodl-trade-inventory-item:hover {
+  background: var(--trade-surface);
+}
+
+.sodl-trade-inventory .sodl-trade-hint {
+  margin-top: 6px;
+  text-align: left;
+}
+
+.sodl-trade-catalog li img + img {
+  margin-left: -10px;
+}
+
+.sodl-trade-partners {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 6px;
+}
+
+.sodl-trade-partner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border: 1px solid var(--trade-border);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+
+.sodl-trade-partner:hover {
+  border-color: var(--trade-waiting);
+  background: var(--trade-surface);
+}
+
+.sodl-trade-partner img {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.sodl-trade-partner span {
+  font-size: 12px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.sodl-trade-box .sodl-trade-hint {
+  margin: 6px 0 0;
+  text-align: left;
 }

@@ -17,9 +17,9 @@ test("l'inventaire échangeable ne garde que l'équipement, pas les sorts, talen
   assert.deepEqual(toInventory(actor), {
     wealth: { gc: 1, ss: 2, cp: 3, bits: 4 },
     items: [
-      { id: "i1", name: "Épée", img: "s.webp", quantity: 1 },
-      { id: "i2", name: "Flèches", img: "f.webp", quantity: 20 },
-      { id: "i4", name: "Corde", img: "c.webp", quantity: 1 }
+      { id: "i1", name: "Épée", img: "s.webp", type: "weapon", quantity: 1 },
+      { id: "i2", name: "Flèches", img: "f.webp", type: "ammo", quantity: 20 },
+      { id: "i4", name: "Corde", img: "c.webp", type: "item", quantity: 1 }
     ]
   });
 });

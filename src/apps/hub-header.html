@@ -11,16 +11,17 @@
 
   {{#if acting}}
   <div class="sodl-trade-acting">
-    {{#if mine.[1]}}
-    <label>{{localize "SODLTRADE.Hub.Acting"}}
-      <select name="acting">
+    <img src="{{acting.img}}" alt="">
+    <div class="sodl-trade-acting-identity">
+      {{#if mine.[1]}}
+      <select name="acting" title="{{localize 'SODLTRADE.Hub.Acting'}}">
         {{#each mine}}<option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>{{/each}}
       </select>
-    </label>
-    {{else}}
-    <span class="sodl-trade-party-name">{{mine.[0].name}}</span>
-    {{/if}}
-    <span class="sodl-trade-purse"><i class="fas fa-coins"></i> {{acting.purse}}</span>
+      {{else}}
+      <span class="sodl-trade-party-name">{{acting.name}}</span>
+      {{/if}}
+      <span class="sodl-trade-purse"><i class="fas fa-coins"></i> {{acting.purse}}</span>
+    </div>
   </div>
   {{/if}}
 </header>

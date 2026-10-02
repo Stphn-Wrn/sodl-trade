@@ -34,14 +34,14 @@ test("le nom d'une catégorie est débarrassé des espaces superflus", () => {
   assert.equal(shop.categories[0].name, "Forgeron");
 });
 
-test("remplir une catégorie reprend le nom, le prix, la disponibilité et la taille du lot de chaque objet", () => {
+test("remplir une catégorie reprend le nom, le prix, la disponibilité et la taille du lot de chaque objet, en stock illimité", () => {
   const entries = [entry({}), entry({ id: "i2", sourceUuid: "Item.arrows", name: "Flèches", type: "ammo", value: "1 cp", quantity: 20, availability: "" })];
 
   const shop = gm(smithy([]), { type: "addItems", categoryId: "c1", entries }).shop;
 
   assert.deepEqual(shop.categories[0].items, [
-    { id: "i1", sourceUuid: "Item.sword", name: "Épée", img: "s.webp", bundle: 1, price: { gc: 0, ss: 5, cp: 0, bits: 0 }, availability: "C" },
-    { id: "i2", sourceUuid: "Item.arrows", name: "Flèches", img: "s.webp", bundle: 20, price: { gc: 0, ss: 0, cp: 1, bits: 0 }, availability: "" }
+    { id: "i1", sourceUuid: "Item.sword", name: "Épée", img: "s.webp", bundle: 1, price: { gc: 0, ss: 5, cp: 0, bits: 0 }, availability: "C", stock: null },
+    { id: "i2", sourceUuid: "Item.arrows", name: "Flèches", img: "s.webp", bundle: 20, price: { gc: 0, ss: 0, cp: 1, bits: 0 }, availability: "", stock: null }
   ]);
 });
 
@@ -79,4 +79,40 @@ test("un objet sans prix ne peut pas être acheté, et un joueur n'achète que p
   assert.throws(() => player(shop, { type: "buy", categoryId: "c1", itemId: "i1", actorId: "a", quantity: 1 }), { message: "SODLTRADE.Errors.NoPrice" });
   assert.throws(() => player(shop, { type: "buy", categoryId: "c1", itemId: "i1", actorId: "b", quantity: 1 }), { message: "SODLTRADE.Errors.NotYourCharacter" });
   assert.throws(() => player(shop, { type: "addCategory", id: "c2", name: "Alchimiste" }), { message: "SODLTRADE.Errors.NotAllowed" });
+});
+
+test("le MJ fixe le stock d'un objet, ou le rend illimité en vidant le champ", () => {
+  const shop = smithy([{ id: "i1", sourceUuid: "Item.sword", name: "Épée", img: "s.webp", bundle: 1, price: null, availability: "", stock: null }]);
+
+  const stocked = gm(shop, { type: "setStock", categoryId: "c1", itemId: "i1", stock: "3" }).shop;
+  assert.equal(stocked.categories[0].items[0].stock, 3);
+
+  assert.equal(gm(stocked, { type: "setStock", categoryId: "c1", itemId: "i1", stock: "" }).shop.categories[0].items[0].stock, null);
+  assert.throws(() => gm(shop, { type: "setStock", categoryId: "c1", itemId: "i1", stock: "-2" }), { message: "SODLTRADE.Errors.InvalidQuantity" });
+  assert.throws(() => player(shop, { type: "setStock", categoryId: "c1", itemId: "i1", stock: "9" }), { message: "SODLTRADE.Errors.NotAllowed" });
+});
+
+test("un achat retire du stock les lots achetés", () => {
+  const shop = smithy([{ id: "i1", sourceUuid: "Item.sword", name: "Épée", img: "s.webp", bundle: 1, price: { gc: 0, ss: 5, cp: 0, bits: 0 }, availability: "C", stock: 3 }]);
+
+  const result = player(shop, { type: "buy", categoryId: "c1", itemId: "i1", actorId: "a", quantity: 2 });
+
+  assert.equal(result.shop.categories[0].items[0].stock, 1);
+  assert.equal(result.purchase.units, 2);
+});
+
+test("on ne peut pas acheter plus que le stock, ni un objet épuisé", () => {
+  const shop = smithy([
+    { id: "i1", sourceUuid: "Item.sword", name: "Épée", img: "s.webp", bundle: 1, price: { gc: 0, ss: 5, cp: 0, bits: 0 }, availability: "C", stock: 1 },
+    { id: "i2", sourceUuid: "Item.shield", name: "Bouclier", img: "b.webp", bundle: 1, price: { gc: 0, ss: 5, cp: 0, bits: 0 }, availability: "C", stock: 0 }
+  ]);
+
+  assert.throws(() => player(shop, { type: "buy", categoryId: "c1", itemId: "i1", actorId: "a", quantity: 2 }), { message: "SODLTRADE.Errors.NotEnoughStock" });
+  assert.throws(() => player(shop, { type: "buy", categoryId: "c1", itemId: "i2", actorId: "a", quantity: 1 }), { message: "SODLTRADE.Errors.OutOfStock" });
+});
+
+test("un objet en stock illimité reste toujours disponible", () => {
+  const shop = smithy([{ id: "i1", sourceUuid: "Item.sword", name: "Épée", img: "s.webp", bundle: 1, price: { gc: 0, ss: 5, cp: 0, bits: 0 }, availability: "C", stock: null }]);
+
+  assert.equal(player(shop, { type: "buy", categoryId: "c1", itemId: "i1", actorId: "a", quantity: 50 }).shop.categories[0].items[0].stock, null);
 });

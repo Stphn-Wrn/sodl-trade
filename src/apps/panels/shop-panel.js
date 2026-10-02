@@ -24,6 +24,16 @@ function priceText(price) {
   return describeOffer({ items: [], wealth: price }, t);
 }
 
+function stockView(stock) {
+  if (stock === null) {
+    return { stock: "", limited: false, outOfStock: false, stockLabel: "" };
+  }
+  if (stock === 0) {
+    return { stock: 0, limited: true, outOfStock: true, stockLabel: t("SODLTRADE.Shop.OutOfStock") };
+  }
+  return { stock, limited: true, outOfStock: false, stockLabel: t("SODLTRADE.Shop.Stock", { count: stock }) };
+}
+
 function itemView(item) {
   return {
     id: item.id,
@@ -35,6 +45,7 @@ function itemView(item) {
     hasPrice: Boolean(item.price),
     availability: item.availability,
     availabilityLabel: availabilityLabel(item.availability),
+    ...stockView(item.stock ?? null),
     availabilities: AVAILABILITIES.map((code) => ({ code, label: availabilityLabel(code), selected: code === item.availability }))
   };
 }
@@ -132,6 +143,10 @@ export const shopPanel = {
     for (const input of panel.querySelectorAll("[data-shop-price]")) {
       const [categoryId, itemId] = input.dataset.shopPrice.split("/");
       input.addEventListener("change", () => sendShop({ type: "setPrice", categoryId, itemId, text: input.value }));
+    }
+    for (const input of panel.querySelectorAll("[data-shop-stock]")) {
+      const [categoryId, itemId] = input.dataset.shopStock.split("/");
+      input.addEventListener("change", () => sendShop({ type: "setStock", categoryId, itemId, stock: input.value }));
     }
     for (const select of panel.querySelectorAll("[data-shop-availability]")) {
       const [categoryId, itemId] = select.dataset.shopAvailability.split("/");

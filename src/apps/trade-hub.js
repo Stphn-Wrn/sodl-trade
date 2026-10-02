@@ -1,12 +1,19 @@
 import { modulePath } from "../shared/constants.js";
 import { isPlayerCharacter, openApps, t } from "../shared/foundry-adapter.js";
 import { describeOffer } from "../trade/trade-view.js";
-import { toWealth } from "../trade/wealth.js";
+import { isEmptyWealth, toWealth } from "../trade/wealth.js";
 import { lootPanel } from "./panels/loot-panel.js";
 import { shopPanel } from "./panels/shop-panel.js";
 import { tradesPanel } from "./panels/trades-panel.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+function describePurse(wealth) {
+  if (isEmptyWealth(wealth)) {
+    return t("SODLTRADE.Window.NoMoney");
+  }
+  return describeOffer({ items: [], wealth }, t);
+}
 
 // Each tab is a panel with its own template, context, listeners and actions.
 const PANELS = [tradesPanel, lootPanel, shopPanel];
@@ -69,7 +76,7 @@ export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
     const actingActor = mine.find((actor) => actor.id === this.actingId);
     let acting = null;
     if (actingActor) {
-      acting = { id: actingActor.id, purse: describeOffer({ items: [], wealth: toWealth(actingActor.system.wealth) }, t) };
+      acting = { id: actingActor.id, name: actingActor.name, img: actingActor.img, purse: describePurse(toWealth(actingActor.system.wealth)) };
     }
     const base = { isGM: game.user.isGM, characters };
     const closed = PANELS.filter((panel) => !game.user.isGM && panel.isOpen && !panel.isOpen()).map((panel) => panel.id);

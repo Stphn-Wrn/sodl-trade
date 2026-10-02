@@ -1,6 +1,9 @@
 import { toWealth } from "./wealth.js";
 
 export const TRADABLE_TYPES = ["item", "weapon", "armor", "ammo", "relic"];
+
+// Same split as the character sheet: weapons, armor and ammo live under "Combat", the rest under "Inventory".
+export const COMBAT_TYPES = ["weapon", "armor", "ammo"];
 export const GM_ROLE = "gm";
 
 function toQuantity(value) {
@@ -25,7 +28,7 @@ export function toInventory(actor) {
     wealth: toWealth(actor.system.wealth),
     items: actor.items
       .filter((item) => TRADABLE_TYPES.includes(item.type))
-      .map((item) => ({ id: item.id, name: item.name, img: item.img, quantity: toQuantity(item.system.quantity) }))
+      .map((item) => ({ id: item.id, name: item.name, img: item.img, type: item.type, quantity: toQuantity(item.system.quantity) }))
   };
 }
 

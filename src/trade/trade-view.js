@@ -1,6 +1,6 @@
-import { GM_ROLE } from "./inventory.js";
+import { COMBAT_TYPES, GM_ROLE } from "./inventory.js";
 import { STATUS } from "./trade.js";
-import { DENOMINATIONS } from "./wealth.js";
+import { DENOMINATIONS, emptyWealth, isEmptyWealth } from "./wealth.js";
 
 function describeItem(item) {
   if (item.quantity === 1) {
@@ -31,13 +31,32 @@ function availableItems(inventory, offer) {
       if (offered) {
         available -= offered.quantity;
       }
-      return { id: item.id, name: item.name, available };
+      return { id: item.id, name: item.name, img: item.img, type: item.type, available };
     })
     .filter((item) => item.available > 0);
 }
 
-function partyView(party, index, role, negotiating, t) {
+function inventoryGroups(items, t) {
+  const entry = ({ id, name, img, available }) => ({ id, name, img, available });
+  return [
+    { id: "combat", label: t("SODLTRADE.Window.Combat"), items: items.filter((item) => COMBAT_TYPES.includes(item.type)).map(entry) },
+    { id: "gear", label: t("SODLTRADE.Window.Gear"), items: items.filter((item) => !COMBAT_TYPES.includes(item.type)).map(entry) }
+  ];
+}
+
+function describeWealth(wealth, t) {
+  if (isEmptyWealth(wealth)) {
+    return t("SODLTRADE.Window.NoMoney");
+  }
+  return describeOffer({ items: [], wealth }, t);
+}
+
+function partyView(party, index, role, negotiating, inventory, t) {
   const isMine = index === role;
+  let owned = emptyWealth();
+  if (isMine && inventory) {
+    owned = inventory.wealth;
+  }
   return {
     name: party.name,
     img: party.img,
@@ -48,8 +67,10 @@ function partyView(party, index, role, negotiating, t) {
     wealth: DENOMINATIONS.map((denomination) => ({
       denomination,
       label: t(`SODLTRADE.Wealth.${denomination}`),
-      value: party.offer.wealth[denomination]
+      value: party.offer.wealth[denomination],
+      owned: owned[denomination]
     })),
+    wealthText: describeWealth(party.offer.wealth, t),
     summary: describeOffer(party.offer, t)
   };
 }
@@ -66,8 +87,9 @@ export function tradeView(trade, role, inventory, t) {
     status: trade.status,
     statusLabel: t(`SODLTRADE.Status.${trade.status}`),
     isGM: role === GM_ROLE,
-    parties: trade.parties.map((party, index) => partyView(party, index, role, negotiating, t)),
-    inventory: availableItems(inventory, mine?.offer ?? { items: [] }),
+    parties: trade.parties.map((party, index) => partyView(party, index, role, negotiating, inventory, t)),
+    inventoryGroups: inventoryGroups(availableItems(inventory, mine?.offer ?? { items: [] }), t),
+    showInventory: isParty && negotiating,
     canAccept: isParty && negotiating && !mine.accepted,
     canWithdraw: isParty && mine.accepted,
     canApprove: role === GM_ROLE && trade.status === STATUS.AWAITING_APPROVAL,

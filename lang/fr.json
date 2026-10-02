@@ -9,9 +9,6 @@
       "NoTrade": "Aucun échange en cours.",
       "Open": "Ouvrir",
       "New": "Proposer un échange",
-      "MyCharacter": "Mon personnage",
-      "Partner": "Avec",
-      "Propose": "Proposer",
       "NoCharacter": "Vous ne possédez aucun personnage.",
       "NoPartner": "Aucun autre personnage joueur.",
       "Tabs": {
@@ -20,7 +17,9 @@
         "shop": "Achats"
       },
       "Acting": "Personnage",
-      "ClosedTab": "Fermé par le MJ"
+      "ClosedTab": "Fermé par le MJ",
+      "ProposeTo": "Proposer un échange à {name}",
+      "ProposeHint": "Cliquez sur un personnage pour lui proposer un échange."
     },
     "Loot": {
       "Title": "Récompenses",
@@ -69,23 +68,32 @@
       "DoneEditing": "Terminer",
       "ToggleCategory": "Replier ou déplier",
       "Count": "{count} objet(s)",
-      "CategoryEmpty": "Aucun objet dans cette catégorie."
+      "CategoryEmpty": "Aucun objet dans cette catégorie.",
+      "Stock": "Stock : {count}",
+      "OutOfStock": "Épuisé",
+      "Unlimited": "Illimité",
+      "StockHint": "Stock en lots ; laissez vide pour un stock illimité"
     },
     "Window": {
       "Offer": "Offre",
       "Accepted": "Validé",
       "Pending": "En réflexion",
-      "AddItem": "Ajouter",
       "Remove": "Retirer",
       "Quantity": "Qté",
       "Wealth": "Argent",
-      "UpdateWealth": "Mettre à jour l'argent",
       "Accept": "Valider l'échange",
       "Withdraw": "Retirer ma validation",
       "Cancel": "Annuler l'échange",
       "Approve": "Approuver",
       "Reject": "Refuser",
-      "EditHint": "Toute modification annule les validations des deux joueurs."
+      "EditHint": "Toute modification annule les validations des deux joueurs.",
+      "Combat": "Combat",
+      "Gear": "Inventaire",
+      "NoMoney": "Aucun argent",
+      "MyInventory": "Mon inventaire",
+      "InventoryEmpty": "Rien à échanger ici.",
+      "DropHint": "Glissez ici des objets de votre inventaire ou de votre fiche.",
+      "InventoryHint": "Glissez un objet dans votre offre, ou cliquez dessus pour l'ajouter."
     },
     "Status": {
       "negotiating": "Négociation en cours",
@@ -145,7 +153,9 @@
       "InvalidAvailability": "Disponibilité inconnue.",
       "NoPrice": "« {name} » n'a pas encore de prix.",
       "FolderNotFound": "Aucun dossier d'objets avec cet identifiant.",
-      "LootClosed": "Les récompenses ne sont pas encore ouvertes."
+      "LootClosed": "Les récompenses ne sont pas encore ouvertes.",
+      "OutOfStock": "« {name} » est épuisé.",
+      "NotEnoughStock": "Il ne reste que {stock} « {name} » en stock."
     },
     "Notify": {
       "Invited": "{name} vous propose un échange.",

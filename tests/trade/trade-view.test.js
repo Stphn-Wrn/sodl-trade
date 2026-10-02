@@ -22,14 +22,34 @@ test("une offre se résume en une ligne lisible pour le chat", () => {
   assert.equal(describeOffer({ items: [], wealth: { gc: 0, ss: 0, cp: 0, bits: 0 } }, t), "Rien");
 });
 
-test("le joueur voit sa colonne modifiable et le reste de son inventaire disponible", () => {
-  const inventory = { wealth: { gc: 0, ss: 0, cp: 0, bits: 0 }, items: [{ id: "torch", name: "Torche", img: "t.webp", quantity: 3 }, { id: "rope", name: "Corde", img: "r.webp", quantity: 1 }] };
+test("le joueur voit sa colonne modifiable et le reste de son inventaire, rangé comme sur sa fiche", () => {
+  const inventory = {
+    wealth: { gc: 0, ss: 0, cp: 0, bits: 0 },
+    items: [
+      { id: "torch", name: "Torche", img: "t.webp", type: "item", quantity: 3 },
+      { id: "sword", name: "Épée", img: "s.webp", type: "weapon", quantity: 1 },
+      { id: "rope", name: "Corde", img: "r.webp", type: "item", quantity: 1 }
+    ]
+  };
 
   const view = tradeView(trade({}), 0, inventory, t);
 
   assert.deepEqual(view.parties.map((party) => [party.name, party.isMine, party.editable]), [["Bartoras", true, true], ["Ilsa", false, false]]);
-  assert.deepEqual(view.inventory, [{ id: "torch", name: "Torche", available: 1 }, { id: "rope", name: "Corde", available: 1 }]);
+  assert.deepEqual(view.inventoryGroups, [
+    { id: "combat", label: "Combat", items: [{ id: "sword", name: "Épée", img: "s.webp", available: 1 }] },
+    { id: "gear", label: "Inventaire", items: [{ id: "torch", name: "Torche", img: "t.webp", available: 1 }, { id: "rope", name: "Corde", img: "r.webp", available: 1 }] }
+  ]);
   assert.deepEqual([view.canAccept, view.canWithdraw, view.canApprove, view.canCancel], [false, true, false, true]);
+});
+
+test("l'argent du joueur indique ce qu'il possède, celui de l'autre se résume en une ligne", () => {
+  const inventory = { wealth: { gc: 2, ss: 12, cp: 0, bits: 5 }, items: [] };
+
+  const view = tradeView(trade({}), 0, inventory, t);
+
+  assert.deepEqual(view.parties[0].wealth.map((coin) => [coin.denomination, coin.value, coin.owned]), [["gc", 0, 2], ["ss", 0, 12], ["cp", 0, 0], ["bits", 0, 5]]);
+  assert.equal(view.parties[1].wealthText, "1 CO, 3 SC");
+  assert.equal(view.parties[0].wealthText, "Aucun argent");
 });
 
 test("le MJ peut approuver uniquement quand les deux joueurs ont validé", () => {

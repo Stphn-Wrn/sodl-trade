@@ -1,68 +1,74 @@
-# L'Ombre du Seigneur Démon - Échanges
+# Shadow of the Demon Lord - Trades
 
-Module Foundry VTT pour le système **Shadow of the Demon Lord** (`demonlord`) : les joueurs négocient des échanges d'objets et d'argent entre leurs personnages, et le MJ les approuve.
+[Version française](README.fr.md)
 
-La fenêtre s'ouvre avec le bouton **⇄ Échanges** de la barre d'outils de gauche. Elle a trois onglets : **Échanges** (entre joueurs), **Récompenses** (le butin commun) et **Achats** (les boutiques). Un joueur qui possède plusieurs personnages choisit sous les onglets celui avec lequel il agit ; sa bourse est affichée à côté.
+Foundry VTT module for **Shadow of the Demon Lord**: trades negotiated between players and approved by the GM, a shared loot pool revealed as the game goes, and shops with prices, availability and stock.
 
-## Échanges
+**Compatibility:** Foundry VTT v13+ (tested on v14) | `demonlord` system v6.1.0+
 
-1. Un joueur ouvre l'onglet **Échanges**, choisit le personnage d'un autre joueur, puis clique **Proposer**.
-2. La fenêtre d'échange s'ouvre chez les deux joueurs. Chacun dépose des objets de son inventaire (armes, armures, munitions, reliques, équipement) et de l'argent (CO, CA, SC, éclats).
-3. Chacun clique **Valider l'échange**. Toute modification d'une offre annule les deux validations.
-4. Le MJ reçoit un message dans le chat, ouvre l'échange et clique **Approuver** ou **Refuser**.
-5. À l'approbation, les objets et l'argent changent de main. Un objet reçu arrive déséquipé.
+**Languages:** English and French, following the language set in Foundry (*Settings → Configure Settings → Core Settings → Language*).
 
-Chaque étape (proposition, validation, approbation, refus, annulation) est notée dans le chat, en message privé au MJ et aux deux joueurs. Le MJ voit tous les échanges en cours depuis la fenêtre **Échanges**.
+## Features
 
-## Récompenses
+Everything goes through the **Trades** window, opened by the double-arrow button in the left toolbar. It has three tabs: **Trades**, **Rewards** and **Shop**. Below the tabs, a banner shows the player's character (portrait, name, purse). A player who owns several characters picks the one they act with there.
 
-L'onglet **Récompenses** est le butin commun du groupe.
+### Trades between players
+- **Propose** — In the Trades tab, the player clicks another character's portrait. The negotiation window opens for both players.
+- **Negotiate** — Each player sees their inventory on the right, sorted like on their sheet (**Combat** and **Inventory**). They drag items into their column, or click one to add it. Items can also be dragged from the character sheet. The quantity is set in the offer, and money is entered coin by coin, with what the character owns shown next to it.
+- **Accept** — Each player clicks **Accept the trade**. Any change to an offer clears both acceptances.
+- **GM approval** — The GM gets a chat message, opens the trade, then approves or rejects it. On approval, items and money change hands. A received item arrives unequipped.
+- **Tracking** — Every step is logged in the chat, whispered to the GM and both players. The GM sees every ongoing trade in the Trades tab.
 
-- Les récompenses sont **fermées par défaut** : l'onglet est grisé pour les joueurs. Le MJ prépare le butin tranquillement, puis clique **Ouvrir aux joueurs** ; un message dans le chat les prévient. **Fermer aux joueurs** le referme à tout moment.
-- **Tout ce que le MJ dépose est caché** (œil barré). Il prépare le butin à l'avance, puis dévoile chaque trésor d'un clic sur l'œil, l'argent à part, ou tout d'un coup avec **Tout dévoiler**. Chaque dévoilement est annoncé dans le chat (« Trésor dévoilé : Épée longue »), sauf tant que les récompenses sont fermées.
-- Le MJ voit l'onglet en **vue de jeu** (trésors avec leur œil, argent, partage). Le bouton **Préparer** passe en édition pour déposer des objets, régler les quantités et saisir l'argent ; **Terminer** en sort.
-- **En préparation**, le MJ y glisse ce que le groupe a trouvé (objets de la barre latérale, d'un compendium ou de la fiche d'un PNJ) et y inscrit l'argent. L'objet déposé est une copie : l'original reste où il était.
-- **Les joueurs** prennent directement ce qu'ils veulent, à l'unité, pour leur personnage, ainsi que l'argent. Ils reçoivent une notification quand de nouvelles récompenses arrivent.
-- **Partager l'argent** : le MJ sélectionne les personnages concernés (tous par défaut) et partage l'argent à parts égales. La monnaie est faite automatiquement (1 CO = 10 CA = 100 SC = 1000 éclats), et ce qui ne se divise pas reste dans le butin.
+### Rewards (shared loot)
+- **Closed by default** — The tab is greyed out for players. The GM prepares the loot, then clicks **Open to players**. **Close to players** closes it again at any time.
+- **Prepare** — The **Prepare** button switches to editing: the GM drops what the group found (sidebar, compendium, NPC sheet), sets quantities and enters money. **Done** goes back to the play view. A dropped item is a copy: the original stays where it was.
+- **Reveal as you go** — Everything the GM drops starts hidden. In the play view, the GM reveals each treasure by clicking its eye, the money separately, or everything at once with **Reveal all**. Players only see, and can only take, what is revealed.
+- **Help themselves** — Players take what they want directly, one by one, as well as the money.
+- **Split the money** — The GM selects the characters involved (everyone by default) and splits the money evenly. Change is made automatically (1 GC = 10 SS = 100 CP = 1000 bits), and what cannot be divided stays in the loot.
 
-Chaque prise et chaque partage est annoncé publiquement dans le chat.
+### Shop
+- **Categories** — Shops are sorted into categories (Blacksmith, Alchemist…), collapsed or expanded by clicking their header.
+- **Fill** — The **Edit shops** button switches to editing. The GM fills a category by pasting the ID or UUID of an item folder then clicking **Import**, by dropping a whole folder on the category, or by dropping items one by one. Subfolders are included, and compendium folders work too.
+- **Price and availability** — Each item keeps its name, price and availability (common, uncommon, rare, exotic), which the GM can change. A price is written like "1 GC 5 SS". A plain number, such as "5" or "0.5", is counted in the unit chosen in the settings (GC by default, like the system), and decimals are converted to coins: 0.5 GC becomes 5 SS. An item without a readable price shows "Price to set" and cannot be bought.
+- **Stock** — Unlimited by default. The GM enters the number of bundles available (empty field = unlimited) and restocks whenever they want. Each purchase removes the bundles bought; at 0 the item is "Sold out".
+- **Buy** — The price is taken from the player's purse, and the merchant makes change. An item sold in a bundle (20 arrows, for example) is delivered whole for the bundle price.
 
-## Achats
+## Installation
 
-L'onglet **Achats** regroupe des boutiques en catégories (Forgeron, Alchimiste…).
+See the [installation guide](INSTALLATION.md). In short, in the **Add-on Modules** tab of the Foundry setup screen, **Install Module**, then paste:
 
-- Le MJ voit les boutiques comme les joueurs ; le bouton **Modifier les boutiques** passe en mode édition, **Terminer** en sort. Chaque catégorie se replie d'un clic sur son en-tête.
-- **En mode édition**, le MJ crée une catégorie, puis la remplit : en collant l'ID (ou l'UUID) d'un dossier d'objets et en cliquant **Importer**, en glissant un dossier entier sur la catégorie, ou en y glissant des objets un par un. Les sous-dossiers sont inclus, et les dossiers de compendium fonctionnent aussi.
-- Chaque objet reprend son **nom**, son **prix** et sa **disponibilité** (commun, inhabituel, rare, exotique). Le MJ peut modifier le prix (par exemple « 1 CO 5 CA ») et la disponibilité de chaque objet.
-- Un prix qui n'est qu'un nombre, comme « 5 » ou « 0.5 », est compté dans l'unité choisie dans les paramètres du module (CO par défaut, comme le système). Les décimales sont converties en pièces : 0.5 CO devient 5 CA. Un objet sans prix lisible affiche « Prix à fixer » et ne peut pas être acheté.
-- **Les joueurs** achètent directement : le prix est débité de leur bourse, et le marchand rend la monnaie. Un objet vendu en lot (20 flèches, par exemple) est livré en entier pour le prix du lot.
-- La boutique garde une référence vers l'objet d'origine : s'il est supprimé, il ne peut plus être acheté.
+```
+https://raw.githubusercontent.com/Stphn-Wrn/sodl-trade/main/module.json
+```
 
-Chaque achat est annoncé publiquement dans le chat.
+## Settings
 
-## Paramètres du module
+In *Game Settings → Configure Settings → L'Ombre du Seigneur Démon - Échanges*:
 
-Dans *Paramètres → Configurer les paramètres → L'Ombre du Seigneur Démon - Échanges* :
+| Setting | Default |
+|---|---|
+| Announce rewards in the chat (opening, revealed treasures, items taken, splits) | on |
+| Announce purchases in the chat | on |
+| Unit of unitless prices | GC |
 
-- **Annoncer les récompenses dans le chat** (activé par défaut) : ouverture des récompenses, trésors dévoilés, prises et partages d'argent.
-- **Annoncer les achats dans le chat** (activé par défaut).
-- **Unité des prix sans unité** (CO par défaut).
+Trade messages between players are always sent, whispered to the GM and both players.
 
-Les messages d'échange entre joueurs sont toujours envoyés, en privé au MJ et aux deux joueurs.
+## Good to know
 
-## Prérequis
+- **A GM must be connected.** A player cannot change another player's character: the GM's client checks the actions and makes the transfers.
+- **Party characters** — Only characters assigned to a player or explicitly owned by a player count. An actor everyone owns by default (shared token, map marker) does not show up.
+- **Trades** — Money is traded coin by coin, without change: to give 1 SS, you need to own 1 SS. If an offered item is gone before approval, the trade goes back to negotiation and the chat gives the reason.
+- **Received items** — They do not merge with an identical item already owned.
+- **Shops** — A shop keeps a reference to the original item: if it is deleted, it can no longer be bought. The loot, on the other hand, keeps a copy.
 
-- Foundry VTT v13 ou v14, système `demonlord` 6.1.0 ou plus.
-- **Un MJ doit être connecté** : les joueurs ne peuvent pas modifier le personnage d'un autre joueur, c'est donc le client du MJ qui effectue le transfert.
-
-## Limites
-
-- L'argent s'échange pièce par pièce, sans rendu de monnaie : pour donner 1 CA, il faut posséder 1 CA.
-- Les objets reçus ne fusionnent pas avec un objet identique déjà possédé.
-- Si un objet offert a été consommé ou vendu avant l'approbation, l'échange revient en négociation et le chat en donne la raison.
-
-## Développement
+## Development
 
 ```bash
 npm test
 ```
+
+The tests cover the logic (negotiation, transfers, money, prices, loot, shop) and run with `node --test`, without Foundry.
+
+## License
+
+MIT

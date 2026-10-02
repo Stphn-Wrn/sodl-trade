@@ -9,9 +9,6 @@
       "NoTrade": "No ongoing trade.",
       "Open": "Open",
       "New": "Propose a trade",
-      "MyCharacter": "My character",
-      "Partner": "With",
-      "Propose": "Propose",
       "NoCharacter": "You don't own any character.",
       "NoPartner": "No other player character.",
       "Tabs": {
@@ -20,7 +17,9 @@
         "shop": "Shop"
       },
       "Acting": "Character",
-      "ClosedTab": "Closed by the GM"
+      "ClosedTab": "Closed by the GM",
+      "ProposeTo": "Offer a trade to {name}",
+      "ProposeHint": "Click a character to offer them a trade."
     },
     "Loot": {
       "Title": "Rewards",
@@ -69,23 +68,32 @@
       "DoneEditing": "Done",
       "ToggleCategory": "Collapse or expand",
       "Count": "{count} item(s)",
-      "CategoryEmpty": "No item in this category."
+      "CategoryEmpty": "No item in this category.",
+      "Stock": "Stock: {count}",
+      "OutOfStock": "Sold out",
+      "Unlimited": "Unlimited",
+      "StockHint": "Stock in bundles; leave empty for an unlimited stock"
     },
     "Window": {
       "Offer": "Offer",
       "Accepted": "Accepted",
       "Pending": "Thinking",
-      "AddItem": "Add",
       "Remove": "Remove",
       "Quantity": "Qty",
       "Wealth": "Money",
-      "UpdateWealth": "Update money",
       "Accept": "Accept the trade",
       "Withdraw": "Withdraw my acceptance",
       "Cancel": "Cancel the trade",
       "Approve": "Approve",
       "Reject": "Reject",
-      "EditHint": "Any change clears both players' acceptance."
+      "EditHint": "Any change clears both players' acceptance.",
+      "Combat": "Combat",
+      "Gear": "Inventory",
+      "NoMoney": "No money",
+      "MyInventory": "My inventory",
+      "InventoryEmpty": "Nothing to trade here.",
+      "DropHint": "Drop items here from your inventory or your sheet.",
+      "InventoryHint": "Drag an item into your offer, or click it to add it."
     },
     "Status": {
       "negotiating": "Negotiating",
@@ -145,7 +153,9 @@
       "InvalidAvailability": "Unknown availability.",
       "NoPrice": "\"{name}\" has no price yet.",
       "FolderNotFound": "No item folder with this identifier.",
-      "LootClosed": "The rewards are not open yet."
+      "LootClosed": "The rewards are not open yet.",
+      "OutOfStock": "\"{name}\" is sold out.",
+      "NotEnoughStock": "Only {stock} \"{name}\" left in stock."
     },
     "Notify": {
       "Invited": "{name} offers you a trade.",

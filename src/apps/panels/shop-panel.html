@@ -42,6 +42,7 @@
           <img src="{{this.img}}" alt="">
           <span class="sodl-trade-item-name">{{this.name}}{{#if this.isBundle}} <small>×{{this.bundle}}</small>{{/if}}</span>
           <input type="text" class="sodl-trade-price" value="{{this.priceText}}" placeholder="{{localize 'SODLTRADE.Shop.NoPrice'}}" data-shop-price="{{../id}}/{{this.id}}" title="{{localize 'SODLTRADE.Shop.PriceHint'}}">
+          <input type="number" min="0" class="sodl-trade-stock" value="{{this.stock}}" placeholder="{{localize 'SODLTRADE.Shop.Unlimited'}}" data-shop-stock="{{../id}}/{{this.id}}" title="{{localize 'SODLTRADE.Shop.StockHint'}}">
           <select data-shop-availability="{{../id}}/{{this.id}}" title="{{localize 'SODLTRADE.Shop.AvailabilityTitle'}}">
             {{#each this.availabilities}}<option value="{{this.code}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>{{/each}}
           </select>
@@ -56,15 +57,18 @@
 
     <ul class="sodl-trade-offer sodl-trade-catalog">
       {{#each this.items}}
-      <li>
+      <li class="{{#if this.outOfStock}}is-hidden{{/if}}">
         <img src="{{this.img}}" alt="">
         <span class="sodl-trade-item-name">{{this.name}}{{#if this.isBundle}} <small>{{localize "SODLTRADE.Shop.Lot" count=this.bundle}}</small>{{/if}}</span>
         {{#if this.availability}}<span class="sodl-trade-availability is-{{this.availability}}">{{this.availabilityLabel}}</span>{{/if}}
+        {{#if this.limited}}<span class="sodl-trade-stock-tag {{#if this.outOfStock}}is-out{{/if}}">{{this.stockLabel}}</span>{{/if}}
         {{#if this.hasPrice}}
         <span class="sodl-trade-price-tag">{{this.priceText}}</span>
         {{#if @root.acting}}
-        <input type="number" min="1" value="1" data-buy-quantity="{{../id}}/{{this.id}}" title="{{localize 'SODLTRADE.Window.Quantity'}}">
+        {{#unless this.outOfStock}}
+        <input type="number" min="1" {{#if this.limited}}max="{{this.stock}}"{{/if}} value="1" data-buy-quantity="{{../id}}/{{this.id}}" title="{{localize 'SODLTRADE.Window.Quantity'}}">
         <button type="button" class="sodl-trade-icon" data-action="shopBuy" data-category-id="{{../id}}" data-item-id="{{this.id}}" title="{{localize 'SODLTRADE.Shop.Buy'}}"><i class="fas fa-cart-shopping"></i></button>
+        {{/unless}}
         {{/if}}
         {{else}}
         <span class="sodl-trade-empty">{{localize "SODLTRADE.Shop.NoPrice"}}</span>

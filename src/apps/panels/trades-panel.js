@@ -10,7 +10,9 @@ function visibleTrades() {
     .map((trade) => ({
       id: trade.id,
       first: trade.parties[0].name,
+      firstImg: trade.parties[0].img,
       second: trade.parties[1].name,
+      secondImg: trade.parties[1].img,
       statusLabel: t(`SODLTRADE.Status.${trade.status}`),
       status: trade.status
     }));
@@ -23,7 +25,7 @@ export const tradesPanel = {
   prepare(app, base) {
     return {
       trades: visibleTrades(),
-      partners: base.characters.filter((actor) => !actor.isOwner).map((actor) => ({ id: actor.id, name: actor.name }))
+      partners: base.characters.filter((actor) => !actor.isOwner).map((actor) => ({ id: actor.id, name: actor.name, img: actor.img }))
     };
   },
 
@@ -31,12 +33,11 @@ export const tradesPanel = {
     open(event, target) {
       TradeWindow.open(target.dataset.tradeId);
     },
-    propose() {
-      const targetActorId = this.element.querySelector("[name=target]")?.value;
-      if (!this.actingId || !targetActorId) {
+    propose(event, target) {
+      if (!this.actingId) {
         return;
       }
-      sendRequest("create", { initiatorActorId: this.actingId, targetActorId });
+      sendRequest("create", { initiatorActorId: this.actingId, targetActorId: target.dataset.actorId });
     }
   }
 };

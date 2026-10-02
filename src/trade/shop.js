@@ -61,8 +61,21 @@ function toShopItem(entry, defaultUnit) {
     img: entry.img,
     bundle: sourceQuantity({ system: { quantity: entry.quantity } }),
     price: parsePrice(entry.value, defaultUnit),
-    availability: toAvailability(entry.availability)
+    availability: toAvailability(entry.availability),
+    stock: null
   };
+}
+
+// An empty stock means the merchant never runs out.
+function toStock(value) {
+  if (value === null || value === undefined || String(value).trim() === "") {
+    return null;
+  }
+  const stock = Math.trunc(Number(value));
+  if (!Number.isFinite(stock) || stock < 0) {
+    throw new LocalizedError("SODLTRADE.Errors.InvalidQuantity");
+  }
+  return stock;
 }
 
 function result(shop, purchase = null) {
@@ -114,6 +127,32 @@ function setAvailability(shop, { categoryId, itemId, availability }) {
   return result(updateItem(shop, categoryId, itemId, (item) => ({ ...item, availability })));
 }
 
+function setStock(shop, { categoryId, itemId, stock }) {
+  const value = toStock(stock);
+  return result(updateItem(shop, categoryId, itemId, (item) => ({ ...item, stock: value })));
+}
+
+function assertInStock(item, lots) {
+  const stock = item.stock ?? null;
+  if (stock === null) {
+    return;
+  }
+  if (stock === 0) {
+    throw new LocalizedError("SODLTRADE.Errors.OutOfStock", { name: item.name });
+  }
+  if (lots > stock) {
+    throw new LocalizedError("SODLTRADE.Errors.NotEnoughStock", { name: item.name, stock });
+  }
+}
+
+function withdrawStock(item, lots) {
+  const stock = item.stock ?? null;
+  if (stock === null) {
+    return item;
+  }
+  return { ...item, stock: stock - lots };
+}
+
 function buy(shop, { categoryId, itemId, actorId, quantity }) {
   const item = findItem(shop, categoryId, itemId);
   if (!item.price) {
@@ -123,7 +162,9 @@ function buy(shop, { categoryId, itemId, actorId, quantity }) {
   if (!Number.isFinite(lots) || lots < 1) {
     throw new LocalizedError("SODLTRADE.Errors.InvalidQuantity");
   }
-  return result(shop, { actorId, sourceUuid: item.sourceUuid, name: item.name, units: lots * item.bundle, cost: multiplyWealth(item.price, lots) });
+  assertInStock(item, lots);
+  const next = updateItem(shop, categoryId, itemId, (current) => withdrawStock(current, lots));
+  return result(next, { actorId, sourceUuid: item.sourceUuid, name: item.name, units: lots * item.bundle, cost: multiplyWealth(item.price, lots) });
 }
 
 const GM = "gm";
@@ -137,6 +178,7 @@ const ACTIONS = {
   removeItem: { role: GM, run: removeItem },
   setPrice: { role: GM, run: setPrice },
   setAvailability: { role: GM, run: setAvailability },
+  setStock: { role: GM, run: setStock },
   buy: { role: OWNER, run: buy }
 };
 

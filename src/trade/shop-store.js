@@ -31,9 +31,9 @@ async function completePurchase(purchase) {
 export async function handleShopRequest(user, { action }) {
   const context = { isGM: user.isGM, ownsActor: ownsActor(user), defaultUnit: game.settings.get(MODULE_ID, PRICE_UNIT_SETTING) };
   const { shop, purchase } = applyShopAction(readShop(), action, context);
+  // The stock only goes down once the buyer has paid and received the item.
   if (purchase) {
     await completePurchase(purchase);
-    return;
   }
   await game.settings.set(MODULE_ID, SHOP_SETTING, shop);
 }
