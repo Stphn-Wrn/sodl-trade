@@ -26,6 +26,6 @@ export async function handleLootRequest(user, { action }) {
   }
   await game.settings.set(MODULE_ID, LOOT_SETTING, loot);
   if (event) {
-    await postLootEvent(event, grants, revealed);
+    await postLootEvent(event, grants, revealed, loot.audience);
   }
 }

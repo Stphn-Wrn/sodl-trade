@@ -1,3 +1,4 @@
+import { pairInventoryShields } from "./shield-pairs.js";
 import { toWealth } from "./wealth.js";
 
 export const TRADABLE_TYPES = ["item", "weapon", "armor", "ammo", "relic"];
@@ -26,9 +27,9 @@ export function sourceQuantity(data) {
 export function toInventory(actor) {
   return {
     wealth: toWealth(actor.system.wealth),
-    items: actor.items
+    items: pairInventoryShields(actor.items
       .filter((item) => TRADABLE_TYPES.includes(item.type))
-      .map((item) => ({ id: item.id, name: item.name, img: item.img, type: item.type, quantity: toQuantity(item.system.quantity) }))
+      .map((item) => ({ id: item.id, name: item.name, img: item.img, type: item.type, isShield: item.system.isShield === true, quantity: toQuantity(item.system.quantity) })))
   };
 }
 

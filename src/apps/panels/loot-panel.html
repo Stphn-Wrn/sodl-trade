@@ -11,6 +11,16 @@
     {{/if}}
   </div>
 
+  <div class="sodl-trade-audience">
+    <span class="sodl-trade-label"><i class="fas fa-user-group"></i> {{localize "SODLTRADE.Loot.Audience"}}</span>
+    <div class="sodl-trade-chips">
+      <button type="button" class="sodl-trade-chip {{#if loot.audience.everyone}}is-active{{/if}}" data-action="lootAudienceEveryone">{{#if loot.audience.everyone}}<i class="fas fa-check"></i> {{/if}}{{localize "SODLTRADE.Loot.Everyone"}}</button>
+      {{#each loot.audience.characters}}
+      <button type="button" class="sodl-trade-chip {{#if this.included}}is-active{{/if}}" data-action="lootToggleAudience" data-actor-id="{{this.id}}">{{#if this.included}}<i class="fas fa-check"></i> {{/if}}{{this.name}}</button>
+      {{/each}}
+    </div>
+  </div>
+
   <div class="sodl-trade-shop-toolbar">
     {{#if loot.editing}}
     <button type="button" class="is-primary" data-action="lootToggleEdit"><i class="fas fa-check"></i> {{localize "SODLTRADE.Shop.DoneEditing"}}</button>

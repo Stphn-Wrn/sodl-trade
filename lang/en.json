@@ -40,7 +40,9 @@
       "RevealAll": "Reveal all",
       "Prepare": "Prepare",
       "Treasures": "Treasures",
-      "NoTreasure": "No treasure. Click Prepare to add some."
+      "NoTreasure": "No treasure. Click Prepare to add some.",
+      "Audience": "Access",
+      "Everyone": "Whole party"
     },
     "Shop": {
       "Title": "Shop",
@@ -72,7 +74,22 @@
       "Stock": "Stock: {count}",
       "OutOfStock": "Sold out",
       "Unlimited": "Unlimited",
-      "StockHint": "Stock in bundles; leave empty for an unlimited stock"
+      "StockHint": "Stock in bundles, and the level a restock brings back; leave empty for an unlimited stock",
+      "RestockAll": "Restock",
+      "RestockAllHint": "Brings every shop's stock back to the level entered for each item.",
+      "RestockCategory": "Restock this category",
+      "Orders": "Purchase requests",
+      "MyOrders": "My purchase requests",
+      "OrderBy": "{name} — purse: {purse}",
+      "Pending": "Waiting for the GM",
+      "CancelOrder": "Cancel the request",
+      "RequestPurchase": "Ask the GM to buy",
+      "OrderLotsHint": "Requested quantity (in bundles); the price follows in proportion",
+      "OrderCostHint": "Total price to pay, for example \"1 GC 5 SS\"; 0 to give it away",
+      "Open": "Open to players",
+      "Close": "Close to players",
+      "IsOpen": "Open",
+      "IsClosed": "Closed"
     },
     "Window": {
       "Offer": "Offer",
@@ -124,7 +141,15 @@
       "bought": "{name} buys {item} for {cost}.",
       "opened": "The rewards are open, help yourselves!",
       "OpenLoot": "See the rewards",
-      "revealed": "Treasure revealed: {treasure}"
+      "revealed": "Treasure revealed: {treasure}",
+      "OpenShop": "See the shop",
+      "order": {
+        "ordered": "{name} asks to buy {item} for {cost}.",
+        "approved": "The GM approved {name}'s purchase: {item} for {cost}.",
+        "rejected": "The GM rejected {name}'s purchase: {item}.",
+        "cancelled": "{name} cancelled their purchase request: {item}.",
+        "updated": "The GM changed {name}'s request: {item} for {cost}."
+      }
     },
     "Errors": {
       "NoGM": "A GM must be connected to handle trades.",
@@ -155,25 +180,43 @@
       "FolderNotFound": "No item folder with this identifier.",
       "LootClosed": "The rewards are not open yet.",
       "OutOfStock": "\"{name}\" is sold out.",
-      "NotEnoughStock": "Only {stock} \"{name}\" left in stock."
+      "NotEnoughStock": "Only {stock} \"{name}\" left in stock.",
+      "OrderGone": "This purchase request no longer exists.",
+      "ShopClosed": "This shop is closed."
     },
     "Notify": {
       "Invited": "{name} offers you a trade.",
       "LootAdded": "New rewards are available.",
-      "LootOpened": "The rewards are open!"
+      "LootOpened": "The rewards are open!",
+      "NewOrder": "New purchase request to approve.",
+      "ShopOpened": "The \"{name}\" shop is open."
     },
     "Settings": {
       "PriceUnit": {
         "Name": "Unit of unitless prices",
         "Hint": "Unit used when an item's price is a plain number, such as \"5\" or \"0.5\". The Shadow of the Demon Lord system stores its prices in gold crowns."
       },
-      "AnnounceLoot": {
-        "Name": "Announce rewards in the chat",
-        "Hint": "Posts a public message when the GM opens the rewards or reveals a treasure, when a player helps themselves, or when money is split."
+      "ShopApproval": {
+        "Name": "Purchases must be approved by the GM",
+        "Hint": "A purchase creates a request the GM approves or rejects. Nothing is paid before approval."
       },
-      "AnnounceShop": {
-        "Name": "Announce purchases in the chat",
-        "Hint": "Posts a public message for every purchase in a shop."
+      "ChatTrades": {
+        "Name": "Trade messages",
+        "Hint": "Proposal, acceptance, approval, rejection, cancellation and failure of trades between players."
+      },
+      "ChatLoot": {
+        "Name": "Reward messages",
+        "Hint": "Rewards opened, treasures revealed, items taken and money split. Rewards kept for some characters are never shown to the others."
+      },
+      "ChatShop": {
+        "Name": "Shop messages",
+        "Hint": "Purchase requests, changes, approval, rejection, cancellation and completed purchases."
+      },
+      "ChatMode": {
+        "off": "No message",
+        "gm": "GM only",
+        "involved": "People involved (GM and players concerned)",
+        "everyone": "Everyone"
       }
     }
   }

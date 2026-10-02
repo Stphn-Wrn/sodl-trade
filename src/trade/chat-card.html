@@ -10,6 +10,9 @@
   {{#if canOpen}}
   <button type="button" data-sodl-trade-open="{{tradeId}}"><i class="fas fa-up-right-from-square"></i> {{localize "SODLTRADE.Chat.Open"}}</button>
   {{/if}}
+  {{#if openShop}}
+  <button type="button" data-sodl-trade-shop><i class="fas fa-cart-shopping"></i> {{localize "SODLTRADE.Chat.OpenShop"}}</button>
+  {{/if}}
   {{#if openLoot}}
   <button type="button" data-sodl-trade-loot><i class="fas fa-gem"></i> {{localize "SODLTRADE.Chat.OpenLoot"}}</button>
   {{/if}}

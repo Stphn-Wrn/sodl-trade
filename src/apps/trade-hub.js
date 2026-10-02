@@ -1,4 +1,5 @@
 import { modulePath } from "../shared/constants.js";
+import { captureFocus, restoreFocus } from "./focus.js";
 import { isPlayerCharacter, openApps, t } from "../shared/foundry-adapter.js";
 import { describeOffer } from "../trade/trade-view.js";
 import { isEmptyWealth, toWealth } from "../trade/wealth.js";
@@ -18,11 +19,15 @@ function describePurse(wealth) {
 // Each tab is a panel with its own template, context, listeners and actions.
 const PANELS = [tradesPanel, lootPanel, shopPanel];
 
+export function hubBadgeTotal() {
+  return PANELS.reduce((total, panel) => total + (panel.badge?.() ?? 0), 0);
+}
+
 export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "sodl-trade-hub",
     classes: ["sodl-trade"],
-    window: { title: "SODLTRADE.Title", icon: "fas fa-right-left", resizable: true },
+    window: { title: "SODLTRADE.Title", resizable: true },
     position: { width: 520, height: 640 },
     // "tab" is reserved by ApplicationV2 for its own tab groups, hence "switchPanel".
     actions: Object.assign({ switchPanel: TradeHub.#onSwitchPanel }, ...PANELS.map((panel) => panel.actions))
@@ -85,7 +90,7 @@ export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     const context = {
       isGM: game.user.isGM,
-      tabs: PANELS.map((panel) => ({ id: panel.id, label: t(`SODLTRADE.Hub.Tabs.${panel.id}`), active: panel.id === this.tab, closed: closed.includes(panel.id) })),
+      tabs: PANELS.map((panel) => ({ id: panel.id, label: t(`SODLTRADE.Hub.Tabs.${panel.id}`), badge: panel.badge?.() ?? 0, active: panel.id === this.tab, closed: closed.includes(panel.id) })),
       mine: mine.map((actor) => ({ id: actor.id, name: actor.name, selected: actor.id === this.actingId })),
       noCharacter: !game.user.isGM && mine.length === 0,
       acting
@@ -96,8 +101,17 @@ export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
     return context;
   }
 
+  #focus = null;
+
+  async _preRender(context, options) {
+    await super._preRender(context, options);
+    this.#focus = captureFocus(this.element);
+  }
+
   _onRender(context, options) {
     super._onRender(context, options);
+    restoreFocus(this.element, this.#focus);
+    this.#focus = null;
     this.element.querySelector("[name=acting]")?.addEventListener("change", (event) => {
       this.actingId = event.target.value;
       this.render();

@@ -387,8 +387,25 @@
   cursor: pointer;
 }
 
-.sodl-trade-category-header .sodl-trade-category-toggle:only-of-type {
+/* Foundry centres button content; the category name reads better on the left. */
+.sodl-trade-category-header .sodl-trade-category-toggle {
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.sodl-trade-category-header .sodl-trade-category-toggle.is-grow {
   flex: 1;
+}
+
+.sodl-trade-shop-state {
+  font-size: 11px;
+  font-weight: normal;
+  color: var(--trade-waiting);
+}
+
+.sodl-trade-shop-state.is-open {
+  color: var(--trade-accepted);
 }
 
 .sodl-trade-category-count {
@@ -595,20 +612,23 @@
 
 .sodl-trade-partners {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 6px;
 }
 
+/* Foundry gives every button a fixed height; a partner card needs to grow with its portrait. */
 .sodl-trade-partner {
   display: flex;
-  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  gap: 4px;
-  padding: 8px 4px;
+  gap: 8px;
+  height: auto;
+  min-height: 0;
+  padding: 4px 8px 4px 4px;
   border: 1px solid var(--trade-border);
   border-radius: 6px;
   background: none;
-  cursor: pointer;
+  text-align: left;
 }
 
 .sodl-trade-partner:hover {
@@ -617,20 +637,98 @@
 }
 
 .sodl-trade-partner img {
-  width: 48px;
-  height: 48px;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
   border: none;
   border-radius: 4px;
   object-fit: cover;
 }
 
 .sodl-trade-partner span {
-  font-size: 12px;
-  text-align: center;
-  overflow-wrap: anywhere;
+  flex: 1;
+  overflow: hidden;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sodl-trade-partner i {
+  color: var(--trade-muted);
+}
+
+.sodl-trade-partner:hover i {
+  color: var(--trade-waiting);
 }
 
 .sodl-trade-box .sodl-trade-hint {
   margin: 6px 0 0;
   text-align: left;
+}
+
+.sodl-trade-audience {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.sodl-trade-audience .sodl-trade-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: auto;
+}
+
+.sodl-trade-badge-count {
+  display: inline-block;
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--trade-waiting);
+  color: #111;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 18px;
+  text-align: center;
+}
+
+.sodl-trade-orders {
+  border-color: var(--trade-waiting);
+}
+
+.sodl-trade-orders .sodl-trade-item-name {
+  display: flex;
+  flex-direction: column;
+}
+
+.sodl-trade-order-buyer {
+  color: var(--trade-muted);
+}
+
+.sodl-trade-approve {
+  color: var(--trade-accepted);
+}
+
+/* Counter on the toolbar button; the button draws its icon with ::before, so the counter uses ::after. */
+#scene-controls [data-control="sodlTrade"] {
+  position: relative;
+}
+
+#scene-controls [data-control="sodlTrade"][data-sodl-count]::after {
+  content: attr(data-sodl-count);
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: #c9932e;
+  color: #111;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 16px;
+  text-align: center;
+  pointer-events: none;
 }

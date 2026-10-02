@@ -1,7 +1,7 @@
-import { MODULE_ID, PRICE_UNIT_SETTING, SHOP_SETTING } from "../shared/constants.js";
+import { MODULE_ID, PRICE_UNIT_SETTING, SHOP_APPROVAL_SETTING, SHOP_SETTING } from "../shared/constants.js";
 import { isPlayerCharacter, ownsActor } from "../shared/foundry-adapter.js";
 import { LocalizedError } from "../shared/i18n.js";
-import { postPurchaseEvent } from "./chat-log.js";
+import { postOrderEvent, postPurchaseEvent } from "./chat-log.js";
 import { applyShopAction, emptyShop } from "./shop.js";
 import { executePurchase } from "./trade-executor.js";
 import { prepareReceivedItem } from "./transfer-plan.js";
@@ -20,20 +20,38 @@ async function completePurchase(purchase) {
   if (!source) {
     throw new LocalizedError("SODLTRADE.Errors.ItemGone", { name: purchase.name });
   }
+  const items = [prepareReceivedItem(source.toObject(), purchase.units)];
+  for (const uuid of purchase.linkedUuids ?? []) {
+    const linked = await fromUuid(uuid);
+    if (linked) {
+      items.push(prepareReceivedItem(linked.toObject(), purchase.lots));
+    }
+  }
   const wealth = payWithChange(toWealth(actor.system.wealth), purchase.cost);
   if (!wealth) {
     throw new LocalizedError("SODLTRADE.Errors.NotEnoughWealth");
   }
-  await executePurchase(actor, prepareReceivedItem(source.toObject(), purchase.units), wealth);
-  await postPurchaseEvent(actor, purchase);
+  await executePurchase(actor, items, wealth);
+  return actor;
 }
 
 export async function handleShopRequest(user, { action }) {
-  const context = { isGM: user.isGM, ownsActor: ownsActor(user), defaultUnit: game.settings.get(MODULE_ID, PRICE_UNIT_SETTING) };
-  const { shop, purchase } = applyShopAction(readShop(), action, context);
-  // The stock only goes down once the buyer has paid and received the item.
+  const context = {
+    isGM: user.isGM,
+    ownsActor: ownsActor(user),
+    defaultUnit: game.settings.get(MODULE_ID, PRICE_UNIT_SETTING),
+    requireApproval: game.settings.get(MODULE_ID, SHOP_APPROVAL_SETTING)
+  };
+  const { shop, purchase, event, order } = applyShopAction(readShop(), action, context);
+  // The stock only goes down, and an order only disappears, once the buyer has paid and received the item.
+  let buyer = null;
   if (purchase) {
-    await completePurchase(purchase);
+    buyer = await completePurchase(purchase);
   }
   await game.settings.set(MODULE_ID, SHOP_SETTING, shop);
+  if (order) {
+    await postOrderEvent(event, order);
+  } else if (buyer) {
+    await postPurchaseEvent(buyer, purchase);
+  }
 }

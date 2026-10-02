@@ -2,6 +2,7 @@ import { modulePath } from "../../shared/constants.js";
 import { t } from "../../shared/foundry-adapter.js";
 import { sendRequest } from "../../socket.js";
 import { readTrades, roleOf } from "../../trade/trade-store.js";
+import { STATUS } from "../../trade/trade.js";
 import { TradeWindow } from "../trade-window.js";
 
 function visibleTrades() {
@@ -21,6 +22,14 @@ function visibleTrades() {
 export const tradesPanel = {
   id: "trades",
   template: modulePath("src/apps/panels/trades-panel.html"),
+
+  badge() {
+    const trades = Object.values(readTrades());
+    if (game.user.isGM) {
+      return trades.filter((trade) => trade.status === STATUS.AWAITING_APPROVAL).length;
+    }
+    return trades.filter((trade) => roleOf(trade, game.user) !== null).length;
+  },
 
   prepare(app, base) {
     return {

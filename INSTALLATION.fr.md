@@ -44,7 +44,8 @@ Une fois le monde rechargé, la barre d'outils de gauche contient l'icône **à 
 ## Avant la première séance
 
 - **Attribuez à chaque joueur son personnage** (*Configuration de l'utilisateur → Personnage*), ou donnez-lui la permission **Propriétaire** dessus. Seuls ces personnages apparaissent dans les échanges, les partages et les achats.
-- **Préparez les boutiques** dans l'onglet **Achats** (bouton **Modifier les boutiques**) : créez des catégories et remplissez-les à partir de dossiers d'objets.
+- **Préparez les boutiques** dans l'onglet **Achats** (bouton **Modifier les boutiques**) : créez des catégories et remplissez-les à partir de dossiers d'objets. Une boutique est fermée tant que vous ne l'ouvrez pas avec le cadenas de son en-tête.
+- **Choisissez qui reçoit les messages du chat** (échanges, récompenses, achats) dans les paramètres du module.
 - **Vérifiez l'unité des prix sans unité** dans les paramètres : le système `demonlord` stocke ses prix en couronnes d'or.
 
 ## Paramètres
@@ -53,8 +54,10 @@ Dans **Paramètres → Configurer les paramètres → L'Ombre du Seigneur Démon
 
 | Paramètre | Par défaut | Qui |
 |---|---|---|
-| Annoncer les récompenses dans le chat | activé | MJ |
-| Annoncer les achats dans le chat | activé | MJ |
+| Messages des échanges | Personnes concernées | MJ |
+| Messages des récompenses | Tout le monde | MJ |
+| Messages des achats | Personnes concernées | MJ |
+| Les achats doivent être validés par le MJ | activé | MJ |
 | Unité des prix sans unité | CO | MJ |
 
 La langue du module suit celle de Foundry (**Paramètres principaux → Langue**) : français ou anglais.
@@ -87,6 +90,10 @@ Les données sont conservées dans le monde d'une mise à jour à l'autre : éch
 
 **Un personnage manque dans la liste, ou un personnage inattendu apparaît**
 - Un personnage compte s'il est attribué à un joueur, ou si un joueur a nommément la permission **Propriétaire** dessus. Une permission donnée à tout le monde par défaut ne compte pas.
+
+**Un joueur voit l'onglet Récompenses ou Achats grisé, avec un cadenas**
+- Récompenses : elles sont fermées, ou réservées à d'autres personnages (ligne **Accès**).
+- Achats : aucune boutique n'est ouverte, ou les boutiques ouvertes sont vides.
 
 **Un prix de boutique semble faux**
 - Si le prix de l'objet est un simple nombre (« 5 », « 0.5 »), vérifiez le paramètre **Unité des prix sans unité**. Les prix sont lus à l'import : après avoir changé le paramètre, retirez les objets et réimportez-les, ou corrigez le prix à la main dans **Modifier les boutiques**.

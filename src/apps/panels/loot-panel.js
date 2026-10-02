@@ -1,8 +1,9 @@
 import { modulePath } from "../../shared/constants.js";
-import { isPlayerCharacter, t } from "../../shared/foundry-adapter.js";
+import { isPlayerCharacter, ownedCharacterIds, t } from "../../shared/foundry-adapter.js";
 import { sendRequest } from "../../socket.js";
 import { readLoot } from "../../trade/loot-store.js";
-import { splitWealth, visibleWealth } from "../../trade/loot.js";
+import { createShieldResolver, nearbyItemsOf } from "../../trade/shield-resolver.js";
+import { canAccessLoot, splitWealth, visibleWealth } from "../../trade/loot.js";
 import { describeOffer } from "../../trade/trade-view.js";
 import { isEmptyWealth } from "../../trade/wealth.js";
 import { readWealthInputs, wealthRows } from "./panel-helpers.js";
@@ -35,10 +36,18 @@ function splitView(app, characters, wealth) {
   };
 }
 
+function audienceView(characters, audience) {
+  return {
+    everyone: audience.length === 0,
+    characters: characters.map((actor) => ({ id: actor.id, name: actor.name, included: audience.includes(actor.id) }))
+  };
+}
+
 function gmView(app, base, loot) {
   return {
     editing: app.lootEditing,
     open: loot.open === true,
+    audience: audienceView(base.characters, loot.audience ?? []),
     items: loot.items.map(({ id, name, img, quantity, revealed }) => ({ id, name, img, quantity, revealed: revealed === true })),
     itemCount: loot.items.length,
     wealth: wealthRows(loot.wealth),
@@ -67,7 +76,19 @@ export const lootPanel = {
   template: modulePath("src/apps/panels/loot-panel.html"),
 
   isOpen() {
-    return readLoot().open === true;
+    return canAccessLoot(readLoot(), ownedCharacterIds());
+  },
+
+  badge() {
+    const loot = readLoot();
+    if (game.user.isGM || !canAccessLoot(loot, ownedCharacterIds())) {
+      return 0;
+    }
+    let count = loot.items.filter((item) => item.revealed).length;
+    if (!isEmptyWealth(visibleWealth(loot))) {
+      count += 1;
+    }
+    return count;
   },
 
   prepare(app, base) {
@@ -105,8 +126,14 @@ export const lootPanel = {
     if (!item) {
       return;
     }
-    const itemData = game.items.fromCompendium(item, { clearFolder: true, clearSort: true, clearOwnership: true });
-    sendLoot({ type: "add", id: foundry.utils.randomID(), sourceUuid: item.uuid, data: itemData });
+    const copy = (document) => game.items.fromCompendium(document, { clearFolder: true, clearSort: true, clearOwnership: true });
+    const partnerOf = await createShieldResolver(nearbyItemsOf(item));
+    const partner = await partnerOf(item);
+    const linked = [];
+    if (partner) {
+      linked.push(copy(partner));
+    }
+    sendLoot({ type: "add", id: foundry.utils.randomID(), sourceUuid: item.uuid, data: copy(item), linked });
   },
 
   actions: {
@@ -131,6 +158,18 @@ export const lootPanel = {
     },
     lootRevealAll() {
       sendLoot({ type: "revealAll" });
+    },
+    lootAudienceEveryone() {
+      sendLoot({ type: "setAudience", actorIds: [] });
+    },
+    lootToggleAudience(event, target) {
+      const audience = readLoot().audience ?? [];
+      const actorId = target.dataset.actorId;
+      let next = [...audience, actorId];
+      if (audience.includes(actorId)) {
+        next = audience.filter((id) => id !== actorId);
+      }
+      sendLoot({ type: "setAudience", actorIds: next });
     },
     lootToggleOpen() {
       sendLoot({ type: "setOpen", open: !readLoot().open });

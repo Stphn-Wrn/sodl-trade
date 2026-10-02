@@ -28,6 +28,10 @@ export function isPlayerCharacter(actor) {
   return isPartyCharacter(actor, players.map((user) => user.id), assignedIds);
 }
 
+export function ownedCharacterIds(user = game.user) {
+  return game.actors.filter(isPlayerCharacter).filter((actor) => actor.testUserPermission(user, "OWNER")).map((actor) => actor.id);
+}
+
 export function openApps(AppClass) {
   return [...foundry.applications.instances.values()].filter((app) => app instanceof AppClass);
 }

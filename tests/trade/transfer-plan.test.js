@@ -37,6 +37,19 @@ test("le plan retire les objets donnés, ajoute les objets reçus et règle les 
   ]);
 });
 
+test("donner un bouclier transfère aussi sa version arme", () => {
+  const trade = { status: "approved", parties: [party("a", [{ itemId: "shield", quantity: 1 }], {}), party("b", [], {})] };
+  const inventories = [
+    { wealth: { gc: 0, ss: 0, cp: 0, bits: 0 }, items: [{ id: "shield", name: "Petit Bouclier", quantity: 1, linked: [{ id: "bash", quantity: 1 }] }] },
+    { wealth: { gc: 0, ss: 0, cp: 0, bits: 0 }, items: [] }
+  ];
+
+  const [giver, receiver] = planTransfer(trade, inventories);
+
+  assert.deepEqual(giver.deleteItemIds, ["shield", "bash"]);
+  assert.deepEqual(receiver.receiveItems, [{ sourceActorId: "a", itemId: "shield", quantity: 1 }, { sourceActorId: "a", itemId: "bash", quantity: 1 }]);
+});
+
 test("le plan échoue si un objet offert a été vendu ou consommé depuis la négociation", () => {
   const trade = { status: "approved", parties: [party("a", [{ itemId: "torch", quantity: 2 }], {}), party("b", [], {})] };
   const inventories = [

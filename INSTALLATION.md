@@ -44,7 +44,8 @@ Once the world reloads, the left toolbar holds the **double-arrow** icon that op
 ## Before the first session
 
 - **Assign each player their character** (*User Configuration → Character*), or give them the **Owner** permission on it. Only those characters show up in trades, splits and purchases.
-- **Prepare the shops** in the **Shop** tab (**Edit shops** button): create categories and fill them from item folders.
+- **Prepare the shops** in the **Shop** tab (**Edit shops** button): create categories and fill them from item folders. A shop stays closed until you open it with the padlock in its header.
+- **Choose who gets the chat messages** (trades, rewards, shop) in the module settings.
 - **Check the unit of unitless prices** in the settings: the `demonlord` system stores its prices in gold crowns.
 
 ## Settings
@@ -53,8 +54,10 @@ In **Game Settings → Configure Settings → L'Ombre du Seigneur Démon - Écha
 
 | Setting | Default | Who |
 |---|---|---|
-| Announce rewards in the chat | on | GM |
-| Announce purchases in the chat | on | GM |
+| Trade messages | People involved | GM |
+| Reward messages | Everyone | GM |
+| Shop messages | People involved | GM |
+| Purchases must be approved by the GM | on | GM |
 | Unit of unitless prices | GC | GM |
 
 The module's language follows Foundry's (**Core Settings → Language**): English or French.
@@ -87,6 +90,10 @@ Data is kept in the world across updates: ongoing trades, rewards and shops.
 
 **A character is missing from the list, or an unexpected one shows up**
 - A character counts when it is assigned to a player or when a player has the **Owner** permission on it by name. A permission given to everyone by default does not count.
+
+**A player sees the Rewards or Shop tab greyed out, with a padlock**
+- Rewards: they are closed, or kept for other characters (**Access** row).
+- Shop: no shop is open, or the open shops are empty.
 
 **A shop price looks wrong**
 - If the item's price is a plain number ("5", "0.5"), check the **Unit of unitless prices** setting. Prices are read at import: after changing the setting, remove the items and import them again, or fix the price by hand in **Edit shops**.

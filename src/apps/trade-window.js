@@ -1,4 +1,5 @@
 import { modulePath } from "../shared/constants.js";
+import { captureFocus, restoreFocus } from "./focus.js";
 import { openApps, t } from "../shared/foundry-adapter.js";
 import { sendAction } from "../socket.js";
 import { toInventory } from "../trade/inventory.js";
@@ -25,7 +26,7 @@ function ownActor(trade, role) {
 export class TradeWindow extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     classes: ["sodl-trade"],
-    window: { icon: "fas fa-right-left", resizable: true },
+    window: { resizable: true },
     position: { width: PARTY_WIDTH, height: "auto" },
     actions: {
       addOne: TradeWindow.#onAddOne,
@@ -102,8 +103,17 @@ export class TradeWindow extends HandlebarsApplicationMixin(ApplicationV2) {
     return view;
   }
 
+  #focus = null;
+
+  async _preRender(context, options) {
+    await super._preRender(context, options);
+    this.#focus = captureFocus(this.element);
+  }
+
   _onRender(context, options) {
     super._onRender(context, options);
+    restoreFocus(this.element, this.#focus);
+    this.#focus = null;
     const trade = getTrade(this.tradeId);
     if (!trade) {
       return;
@@ -165,7 +175,12 @@ export class TradeWindow extends HandlebarsApplicationMixin(ApplicationV2) {
       ui.notifications.warn(t("SODLTRADE.Errors.ItemNotOwned"));
       return;
     }
-    this.#addOne(item.id);
+    const shown = toInventory(actor).items.find((entry) => entry.id === item.id || entry.linked.some((link) => link.id === item.id));
+    if (!shown) {
+      ui.notifications.warn(t("SODLTRADE.Errors.ItemNotOwned"));
+      return;
+    }
+    this.#addOne(shown.id);
   }
 
   static #onAddOne(event, target) {

@@ -17,11 +17,23 @@ test("l'inventaire échangeable ne garde que l'équipement, pas les sorts, talen
   assert.deepEqual(toInventory(actor), {
     wealth: { gc: 1, ss: 2, cp: 3, bits: 4 },
     items: [
-      { id: "i1", name: "Épée", img: "s.webp", type: "weapon", quantity: 1 },
-      { id: "i2", name: "Flèches", img: "f.webp", type: "ammo", quantity: 20 },
-      { id: "i4", name: "Corde", img: "c.webp", type: "item", quantity: 1 }
+      { id: "i1", name: "Épée", img: "s.webp", type: "weapon", isShield: false, quantity: 1, linked: [] },
+      { id: "i2", name: "Flèches", img: "f.webp", type: "ammo", isShield: false, quantity: 20, linked: [] },
+      { id: "i4", name: "Corde", img: "c.webp", type: "item", isShield: false, quantity: 1, linked: [] }
     ]
   });
+});
+
+test("l'inventaire montre chaque bouclier une seule fois, sa version arme étant liée à sa version armure", () => {
+  const actor = {
+    system: { wealth: {} },
+    items: [
+      { id: "w", name: "Petit bouclier", img: "w.webp", type: "weapon", system: { quantity: 1 } },
+      { id: "a", name: "Petit Bouclier", img: "a.webp", type: "armor", system: { quantity: 1, isShield: true } }
+    ]
+  };
+
+  assert.deepEqual(toInventory(actor).items, [{ id: "a", name: "Petit Bouclier", img: "a.webp", type: "armor", isShield: true, quantity: 1, linked: [{ id: "w", quantity: 1 }] }]);
 });
 
 test("le rôle d'un utilisateur dans l'échange dépend de l'acteur qu'il possède", () => {

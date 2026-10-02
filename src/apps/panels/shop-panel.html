@@ -6,8 +6,47 @@
     <button type="button" data-action="shopAddCategory"><i class="fas fa-plus"></i> {{localize "SODLTRADE.Shop.AddCategory"}}</button>
     <button type="button" class="is-primary" data-action="shopToggleEdit"><i class="fas fa-check"></i> {{localize "SODLTRADE.Shop.DoneEditing"}}</button>
     {{else}}
+    <button type="button" data-action="shopRestock" {{#unless shop.canRestock}}disabled{{/unless}} title="{{localize 'SODLTRADE.Shop.RestockAllHint'}}"><i class="fas fa-boxes-stacked"></i> {{localize "SODLTRADE.Shop.RestockAll"}}</button>
     <button type="button" data-action="shopToggleEdit"><i class="fas fa-pen"></i> {{localize "SODLTRADE.Shop.Edit"}}</button>
     {{/if}}
+  </div>
+  {{/if}}
+
+  {{#if shop.orders.length}}
+  <div class="sodl-trade-box sodl-trade-orders">
+    <header class="sodl-trade-box-header">
+      {{#if isGM}}
+      <span><i class="fas fa-clipboard-list"></i> {{localize "SODLTRADE.Shop.Orders"}}</span>
+      {{else}}
+      <span><i class="fas fa-clipboard-list"></i> {{localize "SODLTRADE.Shop.MyOrders"}}</span>
+      {{/if}}
+      <span class="sodl-trade-category-count">{{shop.orders.length}}</span>
+    </header>
+    <ul class="sodl-trade-offer sodl-trade-catalog">
+      {{#each shop.orders}}
+      <li>
+        {{#if @root.isGM}}<img src="{{this.buyerImg}}" alt="" title="{{this.buyer}} ({{this.purse}})">{{/if}}
+        <img src="{{this.img}}" alt="">
+        <span class="sodl-trade-item-name">
+          {{this.name}}{{#if this.units}} <small>×{{this.units}}</small>{{/if}}
+          {{#if @root.isGM}}<small class="sodl-trade-order-buyer">{{localize "SODLTRADE.Shop.OrderBy" name=this.buyer purse=this.purse}}</small>{{/if}}
+        </span>
+        {{#if @root.isGM}}
+        <input type="number" min="1" value="{{this.lots}}" data-order-lots="{{this.id}}" title="{{localize 'SODLTRADE.Shop.OrderLotsHint'}}">
+        <input type="text" class="sodl-trade-price" value="{{this.costInput}}" data-order-cost="{{this.id}}" title="{{localize 'SODLTRADE.Shop.OrderCostHint'}}">
+        {{else}}
+        <span class="sodl-trade-price-tag">{{this.cost}}</span>
+        {{/if}}
+        {{#if @root.isGM}}
+        <button type="button" class="sodl-trade-icon sodl-trade-approve" data-action="shopApproveOrder" data-order-id="{{this.id}}" title="{{localize 'SODLTRADE.Window.Approve'}}"><i class="fas fa-check"></i></button>
+        <button type="button" class="sodl-trade-icon" data-action="shopRejectOrder" data-order-id="{{this.id}}" title="{{localize 'SODLTRADE.Window.Reject'}}"><i class="fas fa-ban"></i></button>
+        {{else}}
+        <span class="sodl-trade-status-chip is-awaitingApproval">{{localize "SODLTRADE.Shop.Pending"}}</span>
+        <button type="button" class="sodl-trade-icon" data-action="shopCancelOrder" data-order-id="{{this.id}}" title="{{localize 'SODLTRADE.Shop.CancelOrder'}}"><i class="fas fa-xmark"></i></button>
+        {{/if}}
+      </li>
+      {{/each}}
+    </ul>
   </div>
   {{/if}}
 
@@ -18,15 +57,26 @@
   {{#each shop.categories}}
   <article class="sodl-trade-category {{#if this.collapsed}}is-collapsed{{/if}}">
     <header class="sodl-trade-category-header">
-      <button type="button" class="sodl-trade-category-toggle" data-action="shopToggleCategory" data-category-id="{{this.id}}" title="{{localize 'SODLTRADE.Shop.ToggleCategory'}}">
+      <button type="button" class="sodl-trade-category-toggle {{#unless @root.shop.editing}}is-grow{{/unless}}" data-action="shopToggleCategory" data-category-id="{{this.id}}" title="{{localize 'SODLTRADE.Shop.ToggleCategory'}}">
         <i class="fas {{#if this.collapsed}}fa-chevron-right{{else}}fa-chevron-down{{/if}}"></i>
         {{#unless @root.shop.editing}}<span class="sodl-trade-category-name">{{this.name}}</span>{{/unless}}
       </button>
       {{#if @root.shop.editing}}
       <input type="text" value="{{this.name}}" data-category-name="{{this.id}}">
-      <button type="button" class="sodl-trade-icon" data-action="shopRemoveCategory" data-category-id="{{this.id}}" title="{{localize 'SODLTRADE.Shop.RemoveCategory'}}"><i class="fas fa-trash"></i></button>
+      {{/if}}
+      {{#if @root.isGM}}
+      <span class="sodl-trade-shop-state {{#if this.open}}is-open{{/if}}">{{#if this.open}}{{localize "SODLTRADE.Shop.IsOpen"}}{{else}}{{localize "SODLTRADE.Shop.IsClosed"}}{{/if}}</span>
       {{/if}}
       <span class="sodl-trade-category-count">{{localize "SODLTRADE.Shop.Count" count=this.items.length}}</span>
+      {{#if @root.isGM}}
+      <button type="button" class="sodl-trade-icon" data-action="shopToggleCategoryOpen" data-category-id="{{this.id}}" data-open="{{this.open}}" title="{{#if this.open}}{{localize 'SODLTRADE.Shop.Close'}}{{else}}{{localize 'SODLTRADE.Shop.Open'}}{{/if}}"><i class="fas {{#if this.open}}fa-lock-open{{else}}fa-lock{{/if}}"></i></button>
+      {{#if this.canRestock}}
+      <button type="button" class="sodl-trade-icon" data-action="shopRestock" data-category-id="{{this.id}}" title="{{localize 'SODLTRADE.Shop.RestockCategory'}}"><i class="fas fa-boxes-stacked"></i></button>
+      {{/if}}
+      {{/if}}
+      {{#if @root.shop.editing}}
+      <button type="button" class="sodl-trade-icon" data-action="shopRemoveCategory" data-category-id="{{this.id}}" title="{{localize 'SODLTRADE.Shop.RemoveCategory'}}"><i class="fas fa-trash"></i></button>
+      {{/if}}
     </header>
 
     {{#unless this.collapsed}}
@@ -67,7 +117,7 @@
         {{#if @root.acting}}
         {{#unless this.outOfStock}}
         <input type="number" min="1" {{#if this.limited}}max="{{this.stock}}"{{/if}} value="1" data-buy-quantity="{{../id}}/{{this.id}}" title="{{localize 'SODLTRADE.Window.Quantity'}}">
-        <button type="button" class="sodl-trade-icon" data-action="shopBuy" data-category-id="{{../id}}" data-item-id="{{this.id}}" title="{{localize 'SODLTRADE.Shop.Buy'}}"><i class="fas fa-cart-shopping"></i></button>
+        <button type="button" class="sodl-trade-icon" data-action="shopBuy" data-category-id="{{../id}}" data-item-id="{{this.id}}" title="{{#if @root.shop.requireApproval}}{{localize 'SODLTRADE.Shop.RequestPurchase'}}{{else}}{{localize 'SODLTRADE.Shop.Buy'}}{{/if}}"><i class="fas fa-cart-shopping"></i></button>
         {{/unless}}
         {{/if}}
         {{else}}

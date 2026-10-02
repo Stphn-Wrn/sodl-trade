@@ -44,7 +44,7 @@ export async function executeGrant(actor, grant) {
   }
 }
 
-export async function executePurchase(actor, itemData, wealth) {
-  await actor.createEmbeddedDocuments("Item", [itemData]);
+export async function executePurchase(actor, items, wealth) {
+  await actor.createEmbeddedDocuments("Item", items);
   await actor.update(wealthUpdate(wealth));
 }

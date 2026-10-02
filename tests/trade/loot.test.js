@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applyLootAction, emptyLoot, splitWealth } from "../../src/trade/loot.js";
+import { applyLootAction, canAccessLoot, emptyLoot, splitWealth } from "../../src/trade/loot.js";
 
 function sword(quantity) {
   return { name: "Épée", img: "s.webp", type: "weapon", system: { quantity, wear: true } };
@@ -21,7 +21,7 @@ function player(loot, action) {
 test("le MJ dépose un objet trouvé, caché aux joueurs, à la quantité de l'objet d'origine", () => {
   const { loot } = gm(emptyLoot(), { type: "add", id: "l1", sourceUuid: "Actor.orc.Item.s", data: sword(2) });
 
-  assert.deepEqual(loot.items, [{ id: "l1", sourceUuid: "Actor.orc.Item.s", name: "Épée", img: "s.webp", quantity: 2, revealed: false, data: sword(2) }]);
+  assert.deepEqual(loot.items, [{ id: "l1", sourceUuid: "Actor.orc.Item.s", name: "Épée", img: "s.webp", quantity: 2, revealed: false, data: sword(2), linked: [] }]);
 });
 
 test("déposer deux fois le même objet augmente sa quantité au lieu de créer une seconde ligne", () => {
@@ -159,4 +159,41 @@ test("dévoiler un trésor pendant que les récompenses sont fermées ne l'annon
 
   assert.equal(result.loot.items[0].revealed, true);
   assert.equal(result.event, null);
+});
+
+test("prendre un bouclier dans le butin donne aussi sa version arme, à la même quantité", () => {
+  const armor = { name: "Petit Bouclier", img: "a.webp", type: "armor", system: { quantity: 1, isShield: true } };
+  const weapon = { name: "Petit bouclier", img: "w.webp", type: "weapon", system: { quantity: 1 } };
+  let loot = { ...gm(emptyLoot(), { type: "add", id: "l1", sourceUuid: "A.shield", data: armor, linked: [weapon] }).loot, open: true };
+  loot = gm(loot, { type: "setRevealed", id: "l1", revealed: true }).loot;
+
+  const result = player(loot, { type: "take", actorId: "a", id: "l1", quantity: 1 });
+
+  assert.deepEqual(result.grants[0].items, [{ data: armor, quantity: 1 }, { data: weapon, quantity: 1 }]);
+});
+
+test("par défaut les récompenses s'adressent à tout le groupe, et le MJ peut les réserver à certains personnages", () => {
+  assert.deepEqual(emptyLoot().audience, []);
+
+  const restricted = gm(emptyLoot(), { type: "setAudience", actorIds: ["a", "a", "c"] }).loot;
+  assert.deepEqual(restricted.audience, ["a", "c"]);
+
+  assert.deepEqual(gm(restricted, { type: "setAudience", actorIds: [] }).loot.audience, []);
+  assert.throws(() => player(emptyLoot(), { type: "setAudience", actorIds: ["a"] }), { message: "SODLTRADE.Errors.NotAllowed" });
+});
+
+test("un personnage hors de la sélection ne peut rien prendre", () => {
+  const loot = { ...lootWith([{ id: "l1", sourceUuid: "x", name: "Épée", img: "s.webp", quantity: 2, data: sword(2) }], { gc: 2 }), audience: ["c"] };
+  const owner = (loot, action) => applyLootAction(loot, action, { isGM: false, ownsActor: () => true });
+
+  assert.throws(() => owner(loot, { type: "take", actorId: "a", id: "l1", quantity: 1 }), { message: "SODLTRADE.Errors.LootClosed" });
+  assert.throws(() => owner(loot, { type: "takeWealth", actorId: "a", wealth: { gc: 1 } }), { message: "SODLTRADE.Errors.LootClosed" });
+  assert.equal(owner(loot, { type: "take", actorId: "c", id: "l1", quantity: 1 }).loot.items[0].quantity, 1);
+});
+
+test("un personnage a accès aux récompenses si elles sont ouvertes et qu'il fait partie de la sélection, ou qu'il n'y en a pas", () => {
+  assert.equal(canAccessLoot({ open: false, audience: [] }, ["a"]), false);
+  assert.equal(canAccessLoot({ open: true, audience: [] }, ["a"]), true);
+  assert.equal(canAccessLoot({ open: true, audience: ["c"] }, ["a", "b"]), false);
+  assert.equal(canAccessLoot({ open: true, audience: ["c"] }, ["a", "c"]), true);
 });

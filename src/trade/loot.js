@@ -3,7 +3,7 @@ import { TRADABLE_TYPES, sourceQuantity } from "./inventory.js";
 import { coversWealth, emptyWealth, fromBits, isEmptyWealth, settleWealth, toBits, toWealth } from "./wealth.js";
 
 export function emptyLoot() {
-  return { items: [], wealth: emptyWealth(), wealthRevealed: false, open: false };
+  return { items: [], wealth: emptyWealth(), wealthRevealed: false, open: false, audience: [] };
 }
 
 export function splitWealth(wealth, count) {
@@ -64,7 +64,7 @@ function grant(actorId, items, wealth) {
   return { actorId, items, wealth };
 }
 
-function add(loot, { id, sourceUuid, data }) {
+function add(loot, { id, sourceUuid, data, linked = [] }) {
   if (!TRADABLE_TYPES.includes(data.type)) {
     throw new LocalizedError("SODLTRADE.Errors.NotLootable", { name: data.name });
   }
@@ -72,7 +72,7 @@ function add(loot, { id, sourceUuid, data }) {
   if (existing) {
     return result(withItemQuantity(loot, existing.id, existing.quantity + sourceQuantity(data)));
   }
-  const item = { id, sourceUuid, name: data.name, img: data.img, quantity: sourceQuantity(data), revealed: false, data };
+  const item = { id, sourceUuid, name: data.name, img: data.img, quantity: sourceQuantity(data), revealed: false, data, linked };
   return result({ ...loot, items: [...loot.items, item] });
 }
 
@@ -84,14 +84,27 @@ function setWealth(loot, { wealth }) {
   return result({ ...loot, wealth: toWealth(wealth) });
 }
 
-function assertOpen(loot) {
+// An empty audience means the whole party; otherwise only the listed characters see the rewards.
+export function canAccessLoot(loot, actorIds) {
   if (!loot.open) {
+    return false;
+  }
+  const audience = loot.audience ?? [];
+  return audience.length === 0 || actorIds.some((actorId) => audience.includes(actorId));
+}
+
+function assertOpen(loot, actorId) {
+  if (!canAccessLoot(loot, [actorId])) {
     throw new LocalizedError("SODLTRADE.Errors.LootClosed");
   }
 }
 
+function setAudience(loot, { actorIds }) {
+  return result({ ...loot, audience: [...new Set(actorIds ?? [])] });
+}
+
 function take(loot, { actorId, id, quantity }) {
-  assertOpen(loot);
+  assertOpen(loot, actorId);
   const item = findVisibleItem(loot, id);
   const wanted = toQuantity(quantity);
   if (wanted === 0) {
@@ -100,12 +113,13 @@ function take(loot, { actorId, id, quantity }) {
   if (wanted > item.quantity) {
     throw new LocalizedError("SODLTRADE.Errors.NotEnoughItems", { name: item.name });
   }
-  const taken = grant(actorId, [{ data: item.data, quantity: wanted }], emptyWealth());
+  const linked = (item.linked ?? []).map((data) => ({ data, quantity: wanted }));
+  const taken = grant(actorId, [{ data: item.data, quantity: wanted }, ...linked], emptyWealth());
   return result(withItemQuantity(loot, id, item.quantity - wanted), [taken], "taken");
 }
 
 function takeWealth(loot, { actorId, wealth }) {
-  assertOpen(loot);
+  assertOpen(loot, actorId);
   const wanted = toWealth(wealth);
   if (isEmptyWealth(wanted)) {
     throw new LocalizedError("SODLTRADE.Errors.InvalidQuantity");
@@ -181,6 +195,7 @@ const ACTIONS = {
   setWealth: { role: GM, run: setWealth },
   split: { role: GM, run: split },
   setOpen: { role: GM, run: setOpen },
+  setAudience: { role: GM, run: setAudience },
   setRevealed: { role: GM, run: setRevealed },
   setWealthRevealed: { role: GM, run: setWealthRevealed },
   revealAll: { role: GM, run: revealAll },

@@ -14,7 +14,7 @@
       "Tabs": {
         "trades": "Échanges",
         "loot": "Récompenses",
-        "shop": "Achats"
+        "shop": "Boutiques"
       },
       "Acting": "Personnage",
       "ClosedTab": "Fermé par le MJ",
@@ -40,10 +40,12 @@
       "RevealAll": "Tout dévoiler",
       "Prepare": "Préparer",
       "Treasures": "Trésors",
-      "NoTreasure": "Aucun trésor. Cliquez sur Préparer pour en ajouter."
+      "NoTreasure": "Aucun trésor. Cliquez sur Préparer pour en ajouter.",
+      "Audience": "Accès",
+      "Everyone": "Tout le groupe"
     },
     "Shop": {
-      "Title": "Achats",
+      "Title": "Boutiques",
       "Empty": "Aucune boutique pour le moment.",
       "CategoryPlaceholder": "Nouvelle catégorie (ex. Forgeron)",
       "AddCategory": "Ajouter",
@@ -72,7 +74,22 @@
       "Stock": "Stock : {count}",
       "OutOfStock": "Épuisé",
       "Unlimited": "Illimité",
-      "StockHint": "Stock en lots ; laissez vide pour un stock illimité"
+      "StockHint": "Stock en lots, et niveau rétabli par Réapprovisionner ; laissez vide pour un stock illimité",
+      "RestockAll": "Réapprovisionner",
+      "RestockAllHint": "Remet le stock de toutes les boutiques au niveau saisi pour chaque objet.",
+      "RestockCategory": "Réapprovisionner cette catégorie",
+      "Orders": "Demandes d'achat",
+      "MyOrders": "Mes demandes d'achat",
+      "OrderBy": "{name} — bourse : {purse}",
+      "Pending": "En attente du MJ",
+      "CancelOrder": "Annuler la demande",
+      "RequestPurchase": "Demander l'achat au MJ",
+      "OrderLotsHint": "Quantité demandée (en lots) ; le prix suit en proportion",
+      "OrderCostHint": "Prix total à payer, par exemple « 1 CO 5 CA » ; 0 pour l'offrir",
+      "Open": "Ouvrir aux joueurs",
+      "Close": "Fermer aux joueurs",
+      "IsOpen": "Ouverte",
+      "IsClosed": "Fermée"
     },
     "Window": {
       "Offer": "Offre",
@@ -124,7 +141,15 @@
       "bought": "{name} achète {item} pour {cost}.",
       "opened": "Les récompenses sont ouvertes, servez-vous !",
       "OpenLoot": "Voir les récompenses",
-      "revealed": "Trésor dévoilé : {treasure}"
+      "revealed": "Trésor dévoilé : {treasure}",
+      "OpenShop": "Voir les achats",
+      "order": {
+        "ordered": "{name} demande à acheter {item} pour {cost}.",
+        "approved": "Le MJ a validé l'achat de {name} : {item} pour {cost}.",
+        "rejected": "Le MJ a refusé l'achat de {name} : {item}.",
+        "cancelled": "{name} a annulé sa demande d'achat : {item}.",
+        "updated": "Le MJ a modifié la demande de {name} : {item} pour {cost}."
+      }
     },
     "Errors": {
       "NoGM": "Un MJ doit être connecté pour gérer les échanges.",
@@ -155,25 +180,43 @@
       "FolderNotFound": "Aucun dossier d'objets avec cet identifiant.",
       "LootClosed": "Les récompenses ne sont pas encore ouvertes.",
       "OutOfStock": "« {name} » est épuisé.",
-      "NotEnoughStock": "Il ne reste que {stock} « {name} » en stock."
+      "NotEnoughStock": "Il ne reste que {stock} « {name} » en stock.",
+      "OrderGone": "Cette demande d'achat n'existe plus.",
+      "ShopClosed": "Cette boutique est fermée."
     },
     "Notify": {
       "Invited": "{name} vous propose un échange.",
       "LootAdded": "De nouvelles récompenses sont disponibles.",
-      "LootOpened": "Les récompenses sont ouvertes !"
+      "LootOpened": "Les récompenses sont ouvertes !",
+      "NewOrder": "Nouvelle demande d'achat à valider.",
+      "ShopOpened": "La boutique « {name} » est ouverte."
     },
     "Settings": {
       "PriceUnit": {
         "Name": "Unité des prix sans unité",
         "Hint": "Unité utilisée quand le prix d'un objet est un simple nombre, comme « 5 » ou « 0.5 ». Le système Shadow of the Demon Lord stocke ses prix en couronnes d'or."
       },
-      "AnnounceLoot": {
-        "Name": "Annoncer les récompenses dans le chat",
-        "Hint": "Poste un message public quand le MJ ouvre les récompenses, dévoile un trésor, ou quand un joueur se sert ou que l'argent est partagé."
+      "ShopApproval": {
+        "Name": "Les achats doivent être validés par le MJ",
+        "Hint": "Un achat crée une demande que le MJ valide ou refuse. Rien n'est débité avant la validation."
       },
-      "AnnounceShop": {
-        "Name": "Annoncer les achats dans le chat",
-        "Hint": "Poste un message public à chaque achat dans une boutique."
+      "ChatTrades": {
+        "Name": "Messages des échanges",
+        "Hint": "Proposition, validation, approbation, refus, annulation et échec des échanges entre joueurs."
+      },
+      "ChatLoot": {
+        "Name": "Messages des récompenses",
+        "Hint": "Ouverture des récompenses, trésors dévoilés, prises et partages d'argent. Des récompenses réservées à certains personnages ne sont jamais montrées aux autres."
+      },
+      "ChatShop": {
+        "Name": "Messages des achats",
+        "Hint": "Demandes d'achat, modifications, validation, refus, annulation et achats effectués."
+      },
+      "ChatMode": {
+        "off": "Aucun message",
+        "gm": "MJ seulement",
+        "involved": "Personnes concernées (MJ et joueurs impliqués)",
+        "everyone": "Tout le monde"
       }
     }
   }

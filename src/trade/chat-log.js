@@ -1,6 +1,8 @@
-import { ANNOUNCE_LOOT_SETTING, ANNOUNCE_SHOP_SETTING, MODULE_ID, modulePath } from "../shared/constants.js";
-import { renderTemplate, t } from "../shared/foundry-adapter.js";
+import { CHAT_LOOT_SETTING, CHAT_SHOP_SETTING, CHAT_TRADES_SETTING, MODULE_ID, modulePath } from "../shared/constants.js";
+import { isPlayerCharacter, renderTemplate, t } from "../shared/foundry-adapter.js";
+import { chatDelivery } from "./chat-audience.js";
 import { describeOffer } from "./trade-view.js";
+import { emptyWealth } from "./wealth.js";
 
 const OPENABLE_EVENTS = ["created", "awaitingApproval", "failed"];
 const EVENTS_WITHOUT_OFFERS = ["created", "cancelled"];
@@ -11,21 +13,27 @@ function ownersOf(actorIds) {
     .map((user) => user.id);
 }
 
-async function postCard(card, actorIds) {
+// Every message goes through the GM's setting for its kind: trades, rewards or shop.
+async function post(setting, card, { actorIds, alias, restricted = false }) {
+  const people = { gmIds: game.users.filter((user) => user.isGM).map((user) => user.id), involvedIds: ownersOf(actorIds), restricted };
+  const delivery = chatDelivery(game.settings.get(MODULE_ID, setting), people);
+  if (!delivery) {
+    return;
+  }
   const content = await renderTemplate(modulePath("src/trade/chat-card.html"), card);
-  await ChatMessage.create({ content, whisper: ownersOf(actorIds), speaker: { alias: t("SODLTRADE.Title") } });
+  await ChatMessage.create({ content, speaker: { alias }, ...delivery });
 }
 
 export function postTradeEvent(event, trade, data = {}) {
   const [first, second] = trade.parties;
-  return postCard({
+  return post(CHAT_TRADES_SETTING, {
     event,
     text: t(`SODLTRADE.Chat.${event}`, { first: first.name, second: second.name, ...data }),
     showOffers: !EVENTS_WITHOUT_OFFERS.includes(event),
     offers: trade.parties.map((party) => ({ label: t("SODLTRADE.Chat.Gives", { name: party.name }), summary: describeOffer(party.offer, t) })),
     canOpen: OPENABLE_EVENTS.includes(event),
     tradeId: trade.id
-  }, trade.parties.map((party) => party.actorId));
+  }, { actorIds: trade.parties.map((party) => party.actorId), alias: t("SODLTRADE.Title") });
 }
 
 function grantSummary(grant) {
@@ -54,23 +62,36 @@ const LOOT_MESSAGES = {
   })
 };
 
-// Loot is shared by the whole group, so its messages are public.
-export async function postLootEvent(event, grants, revealed) {
+// Rewards kept for some characters are never shown to the others, whatever the setting.
+export async function postLootEvent(event, grants, revealed, audience) {
   const buildMessage = LOOT_MESSAGES[event];
-  if (!buildMessage || !game.settings.get(MODULE_ID, ANNOUNCE_LOOT_SETTING)) {
+  if (!buildMessage) {
     return;
+  }
+  const restricted = (audience ?? []).length > 0;
+  let actorIds = game.actors.filter(isPlayerCharacter).map((actor) => actor.id);
+  if (restricted) {
+    actorIds = audience;
   }
   const names = grants.map((grant) => game.actors.get(grant.actorId).name);
-  const content = await renderTemplate(modulePath("src/trade/chat-card.html"), { event, showOffers: true, canOpen: false, ...buildMessage(grants, names, revealed) });
-  await ChatMessage.create({ content, speaker: { alias: t("SODLTRADE.Loot.Title") } });
+  await post(CHAT_LOOT_SETTING, { event, showOffers: true, canOpen: false, ...buildMessage(grants, names, revealed) }, { actorIds, alias: t("SODLTRADE.Loot.Title"), restricted });
 }
 
-export async function postPurchaseEvent(actor, purchase) {
-  if (!game.settings.get(MODULE_ID, ANNOUNCE_SHOP_SETTING)) {
-    return;
-  }
-  const item = describeOffer({ items: [{ name: purchase.name, quantity: purchase.units }], wealth: { gc: 0, ss: 0, cp: 0, bits: 0 } }, t);
-  const text = t("SODLTRADE.Chat.bought", { name: actor.name, item, cost: describeOffer({ items: [], wealth: purchase.cost }, t) });
-  const content = await renderTemplate(modulePath("src/trade/chat-card.html"), { event: "bought", text, showOffers: false, canOpen: false });
-  await ChatMessage.create({ content, speaker: { alias: t("SODLTRADE.Shop.Title") } });
+function describeUnits(name, units) {
+  return describeOffer({ items: [{ name, quantity: units }], wealth: emptyWealth() }, t);
+}
+
+function describeCost(cost) {
+  return describeOffer({ items: [], wealth: cost }, t);
+}
+
+export function postOrderEvent(event, order) {
+  const actor = game.actors.get(order.actorId);
+  const text = t(`SODLTRADE.Chat.order.${event}`, { name: actor?.name ?? "", item: describeUnits(order.name, order.units), cost: describeCost(order.cost) });
+  return post(CHAT_SHOP_SETTING, { event: `order-${event}`, text, showOffers: false, canOpen: false, openShop: event === "ordered" }, { actorIds: [order.actorId], alias: t("SODLTRADE.Shop.Title") });
+}
+
+export function postPurchaseEvent(actor, purchase) {
+  const text = t("SODLTRADE.Chat.bought", { name: actor.name, item: describeUnits(purchase.name, purchase.units), cost: describeCost(purchase.cost) });
+  return post(CHAT_SHOP_SETTING, { event: "bought", text, showOffers: false, canOpen: false }, { actorIds: [actor.id], alias: t("SODLTRADE.Shop.Title") });
 }

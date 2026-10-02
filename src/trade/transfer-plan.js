@@ -16,16 +16,26 @@ function assertOfferAvailable(offer, inventory) {
   }
 }
 
-function planParty(party, other, inventory) {
+// Each offered item moves with the items linked to it, such as the weapon half of a shield.
+function movedItems(offer, inventory) {
+  return offer.items.flatMap((offered) => {
+    const owned = inventory.items.find((item) => item.id === offered.itemId);
+    const linked = (owned.linked ?? [])
+      .map((link) => ({ id: link.id, owned: link.quantity, moved: Math.min(offered.quantity, link.quantity) }))
+      .filter((link) => link.moved > 0);
+    return [{ id: owned.id, owned: owned.quantity, moved: offered.quantity }, ...linked];
+  });
+}
+
+function planParty(party, ownMoves, otherMoves, other, inventory) {
   const deleteItemIds = [];
   const updateItems = [];
-  for (const offered of party.offer.items) {
-    const owned = inventory.items.find((item) => item.id === offered.itemId);
-    const remaining = owned.quantity - offered.quantity;
+  for (const move of ownMoves) {
+    const remaining = move.owned - move.moved;
     if (remaining === 0) {
-      deleteItemIds.push(offered.itemId);
+      deleteItemIds.push(move.id);
     } else {
-      updateItems.push({ _id: offered.itemId, "system.quantity": remaining });
+      updateItems.push({ _id: move.id, "system.quantity": remaining });
     }
   }
   return {
@@ -33,14 +43,16 @@ function planParty(party, other, inventory) {
     wealth: settleWealth(inventory.wealth, party.offer.wealth, other.offer.wealth),
     deleteItemIds,
     updateItems,
-    receiveItems: other.offer.items.map((item) => ({ sourceActorId: other.actorId, itemId: item.itemId, quantity: item.quantity }))
+    receiveItems: otherMoves.map((move) => ({ sourceActorId: other.actorId, itemId: move.id, quantity: move.moved }))
   };
 }
 
 export function planTransfer(trade, inventories) {
   trade.parties.forEach((party, index) => assertOfferAvailable(party.offer, inventories[index]));
   const [first, second] = trade.parties;
-  return [planParty(first, second, inventories[0]), planParty(second, first, inventories[1])];
+  const firstMoves = movedItems(first.offer, inventories[0]);
+  const secondMoves = movedItems(second.offer, inventories[1]);
+  return [planParty(first, firstMoves, secondMoves, second, inventories[0]), planParty(second, secondMoves, firstMoves, first, inventories[1])];
 }
 
 export function prepareReceivedItem(source, quantity) {
