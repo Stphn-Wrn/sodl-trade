@@ -2,7 +2,7 @@
   "id": "sodl-trade",
   "title": "L'Ombre du Seigneur Démon - Échanges",
   "description": "Échanges négociés d'objets et d'argent entre personnages joueurs, approuvés par le MJ.",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "compatibility": {
     "minimum": "13",
     "verified": "14"
@@ -26,7 +26,7 @@
   ],
   "url": "https://github.com/Stphn-Wrn/sodl-trade",
   "manifest": "https://raw.githubusercontent.com/Stphn-Wrn/sodl-trade/main/module.json",
-  "download": "https://github.com/Stphn-Wrn/sodl-trade/releases/download/v1.0.4/sodl-trade.zip",
+  "download": "https://github.com/Stphn-Wrn/sodl-trade/releases/download/v1.0.5/sodl-trade.zip",
   "license": "MIT",
   "socket": true,
   "esmodules": [
