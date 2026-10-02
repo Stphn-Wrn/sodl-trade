@@ -152,6 +152,15 @@ Hooks.once("init", () => {
       default: fallback
     });
   }
+  game.settings.register(MODULE_ID, SHOP_APPROVAL_SETTING, {
+    name: "SODLTRADE.Settings.ShopApproval.Name",
+    hint: "SODLTRADE.Settings.ShopApproval.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: () => TradeHub.refreshAll()
+  });
 });
 
 Hooks.once("ready", () => {
