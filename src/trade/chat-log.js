@@ -1,4 +1,4 @@
-import { modulePath } from "../shared/constants.js";
+import { ANNOUNCE_LOOT_SETTING, ANNOUNCE_SHOP_SETTING, MODULE_ID, modulePath } from "../shared/constants.js";
 import { renderTemplate, t } from "../shared/foundry-adapter.js";
 import { describeOffer } from "./trade-view.js";
 
@@ -34,6 +34,16 @@ function grantSummary(grant) {
 }
 
 const LOOT_MESSAGES = {
+  opened: () => ({
+    text: t("SODLTRADE.Chat.opened"),
+    showOffers: false,
+    openLoot: true
+  }),
+  revealed: (grants, names, revealed) => ({
+    text: t("SODLTRADE.Chat.revealed", { treasure: describeOffer(revealed, t) }),
+    showOffers: false,
+    openLoot: true
+  }),
   taken: (grants, names) => ({
     text: t("SODLTRADE.Chat.taken", { name: names[0] }),
     offers: [{ label: t("SODLTRADE.Chat.Receives", { name: names[0] }), summary: grantSummary(grants[0]) }]
@@ -45,14 +55,20 @@ const LOOT_MESSAGES = {
 };
 
 // Loot is shared by the whole group, so its messages are public.
-export async function postLootEvent(event, grants) {
+export async function postLootEvent(event, grants, revealed) {
+  const buildMessage = LOOT_MESSAGES[event];
+  if (!buildMessage || !game.settings.get(MODULE_ID, ANNOUNCE_LOOT_SETTING)) {
+    return;
+  }
   const names = grants.map((grant) => game.actors.get(grant.actorId).name);
-  const message = LOOT_MESSAGES[event](grants, names);
-  const content = await renderTemplate(modulePath("src/trade/chat-card.html"), { event, ...message, showOffers: true, canOpen: false });
+  const content = await renderTemplate(modulePath("src/trade/chat-card.html"), { event, showOffers: true, canOpen: false, ...buildMessage(grants, names, revealed) });
   await ChatMessage.create({ content, speaker: { alias: t("SODLTRADE.Loot.Title") } });
 }
 
 export async function postPurchaseEvent(actor, purchase) {
+  if (!game.settings.get(MODULE_ID, ANNOUNCE_SHOP_SETTING)) {
+    return;
+  }
   const item = describeOffer({ items: [{ name: purchase.name, quantity: purchase.units }], wealth: { gc: 0, ss: 0, cp: 0, bits: 0 } }, t);
   const text = t("SODLTRADE.Chat.bought", { name: actor.name, item, cost: describeOffer({ items: [], wealth: purchase.cost }, t) });
   const content = await renderTemplate(modulePath("src/trade/chat-card.html"), { event: "bought", text, showOffers: false, canOpen: false });

@@ -19,13 +19,13 @@ function recipient(actorId) {
 
 // Characters are served before the pool is saved: if Foundry fails midway, the group keeps the loot rather than losing it.
 export async function handleLootRequest(user, { action }) {
-  const { loot, grants, event } = applyLootAction(readLoot(), action, { isGM: user.isGM, ownsActor: ownsActor(user) });
+  const { loot, grants, event, revealed } = applyLootAction(readLoot(), action, { isGM: user.isGM, ownsActor: ownsActor(user) });
   const actors = grants.map((grant) => recipient(grant.actorId));
   for (const [index, grant] of grants.entries()) {
     await executeGrant(actors[index], grant);
   }
   await game.settings.set(MODULE_ID, LOOT_SETTING, loot);
   if (event) {
-    await postLootEvent(event, grants);
+    await postLootEvent(event, grants, revealed);
   }
 }

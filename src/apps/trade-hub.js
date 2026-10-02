@@ -17,7 +17,8 @@ export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
     classes: ["sodl-trade"],
     window: { title: "SODLTRADE.Title", icon: "fas fa-right-left", resizable: true },
     position: { width: 520, height: "auto" },
-    actions: Object.assign({ tab: TradeHub.#onTab }, ...PANELS.map((panel) => panel.actions))
+    // "tab" is reserved by ApplicationV2 for its own tab groups, hence "switchPanel".
+    actions: Object.assign({ switchPanel: TradeHub.#onSwitchPanel }, ...PANELS.map((panel) => panel.actions))
   };
 
   static PARTS = {
@@ -67,9 +68,13 @@ export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
       acting = { id: actingActor.id, purse: describeOffer({ items: [], wealth: toWealth(actingActor.system.wealth) }, t) };
     }
     const base = { isGM: game.user.isGM, characters };
+    const closed = PANELS.filter((panel) => !game.user.isGM && panel.isOpen && !panel.isOpen()).map((panel) => panel.id);
+    if (closed.includes(this.tab)) {
+      this.tab = "trades";
+    }
     const context = {
       isGM: game.user.isGM,
-      tabs: PANELS.map((panel) => ({ id: panel.id, label: t(`SODLTRADE.Hub.Tabs.${panel.id}`), active: panel.id === this.tab })),
+      tabs: PANELS.map((panel) => ({ id: panel.id, label: t(`SODLTRADE.Hub.Tabs.${panel.id}`), active: panel.id === this.tab, closed: closed.includes(panel.id) })),
       mine: mine.map((actor) => ({ id: actor.id, name: actor.name, selected: actor.id === this.actingId })),
       noCharacter: !game.user.isGM && mine.length === 0,
       acting
@@ -91,8 +96,8 @@ export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
-  static #onTab(event, target) {
-    this.tab = target.dataset.tab;
+  static #onSwitchPanel(event, target) {
+    this.tab = target.dataset.panelId;
     this.render();
   }
 }

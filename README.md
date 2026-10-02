@@ -18,6 +18,8 @@ Chaque étape (proposition, validation, approbation, refus, annulation) est not�
 
 L'onglet **Récompenses** est le butin commun du groupe.
 
+- Les récompenses sont **fermées par défaut** : l'onglet est grisé pour les joueurs. Le MJ prépare le butin tranquillement, puis clique **Ouvrir aux joueurs** ; un message dans le chat les prévient. **Fermer aux joueurs** le referme à tout moment.
+- **Tout ce que le MJ dépose est caché** (œil barré). Il prépare le butin à l'avance, puis dévoile chaque trésor d'un clic sur l'œil, l'argent à part, ou tout d'un coup avec **Tout dévoiler**. Chaque dévoilement est annoncé dans le chat (« Trésor dévoilé : Épée longue »), sauf tant que les récompenses sont fermées.
 - **Le MJ** y glisse ce que le groupe a trouvé (objets de la barre latérale, d'un compendium ou de la fiche d'un PNJ) et y inscrit l'argent. L'objet déposé est une copie : l'original reste où il était.
 - **Les joueurs** prennent directement ce qu'ils veulent, à l'unité, pour leur personnage, ainsi que l'argent. Ils reçoivent une notification quand de nouvelles récompenses arrivent.
 - **Partager l'argent** : le MJ coche les personnages concernés et partage l'argent à parts égales. La monnaie est faite automatiquement (1 CO = 10 CA = 100 SC = 1000 éclats), et ce qui ne se divise pas reste dans le butin.
@@ -35,6 +37,16 @@ L'onglet **Achats** regroupe des boutiques en catégories (Forgeron, Alchimiste�
 - La boutique garde une référence vers l'objet d'origine : s'il est supprimé, il ne peut plus être acheté.
 
 Chaque achat est annoncé publiquement dans le chat.
+
+## Paramètres du module
+
+Dans *Paramètres → Configurer les paramètres → L'Ombre du Seigneur Démon - Échanges* :
+
+- **Annoncer les récompenses dans le chat** (activé par défaut) : ouverture des récompenses, trésors dévoilés, prises et partages d'argent.
+- **Annoncer les achats dans le chat** (activé par défaut).
+- **Unité des prix sans unité** (CA par défaut).
+
+Les messages d'échange entre joueurs sont toujours envoyés, en privé au MJ et aux deux joueurs.
 
 ## Prérequis
 

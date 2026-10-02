@@ -1,6 +1,6 @@
 import { TradeHub } from "./apps/trade-hub.js";
 import { TradeWindow } from "./apps/trade-window.js";
-import { LOOT_SETTING, MODULE_ID, PRICE_UNIT_SETTING, SHOP_SETTING, TRADES_SETTING } from "./shared/constants.js";
+import { ANNOUNCE_LOOT_SETTING, ANNOUNCE_SHOP_SETTING, LOOT_SETTING, MODULE_ID, PRICE_UNIT_SETTING, SHOP_SETTING, TRADES_SETTING } from "./shared/constants.js";
 import { backToTokenControls, isPlayerCharacter, t } from "./shared/foundry-adapter.js";
 import { registerSocket } from "./socket.js";
 import { readLoot } from "./trade/loot-store.js";
@@ -9,7 +9,9 @@ import { emptyShop } from "./trade/shop.js";
 import { readTrades, roleOf } from "./trade/trade-store.js";
 
 let knownTradeIds = new Set();
+// Ids of the treasures players can already see.
 let knownLootIds = new Set();
+let knownLootOpen = false;
 
 // The world setting is the shared state: the GM writes it, every client re-renders when it changes.
 function onTradesChanged(trades) {
@@ -30,12 +32,27 @@ function onTradesChanged(trades) {
   TradeHub.refreshAll();
 }
 
-function onLootChanged(loot) {
-  const added = loot.items.some((item) => !knownLootIds.has(item.id));
-  if (added && !game.user.isGM) {
+function revealedIds(loot) {
+  return loot.items.filter((item) => item.revealed).map((item) => item.id);
+}
+
+function notifyLoot(loot) {
+  if (game.user.isGM || !loot.open) {
+    return;
+  }
+  if (!knownLootOpen) {
+    ui.notifications.info(t("SODLTRADE.Notify.LootOpened"));
+    return;
+  }
+  if (revealedIds(loot).some((id) => !knownLootIds.has(id))) {
     ui.notifications.info(t("SODLTRADE.Notify.LootAdded"));
   }
-  knownLootIds = new Set(loot.items.map((item) => item.id));
+}
+
+function onLootChanged(loot) {
+  notifyLoot(loot);
+  knownLootIds = new Set(revealedIds(loot));
+  knownLootOpen = loot.open === true;
   TradeHub.refreshAll();
 }
 
@@ -70,12 +87,30 @@ Hooks.once("init", () => {
     choices: { gc: "SODLTRADE.Wealth.gc", ss: "SODLTRADE.Wealth.ss", cp: "SODLTRADE.Wealth.cp", bits: "SODLTRADE.Wealth.bits" },
     default: "ss"
   });
+  game.settings.register(MODULE_ID, ANNOUNCE_LOOT_SETTING, {
+    name: "SODLTRADE.Settings.AnnounceLoot.Name",
+    hint: "SODLTRADE.Settings.AnnounceLoot.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+  game.settings.register(MODULE_ID, ANNOUNCE_SHOP_SETTING, {
+    name: "SODLTRADE.Settings.AnnounceShop.Name",
+    hint: "SODLTRADE.Settings.AnnounceShop.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
 });
 
 Hooks.once("ready", () => {
   registerSocket();
   knownTradeIds = new Set(Object.keys(readTrades()));
-  knownLootIds = new Set(readLoot().items.map((item) => item.id));
+  const loot = readLoot();
+  knownLootIds = new Set(revealedIds(loot));
+  knownLootOpen = loot.open === true;
 });
 
 Hooks.on("getSceneControlButtons", (controls) => {
@@ -112,5 +147,8 @@ Hooks.on("updateActor", (actor) => {
 Hooks.on("renderChatMessageHTML", (message, html) => {
   for (const button of html.querySelectorAll("[data-sodl-trade-open]")) {
     button.addEventListener("click", () => TradeWindow.open(button.dataset.sodlTradeOpen));
+  }
+  for (const button of html.querySelectorAll("[data-sodl-trade-loot]")) {
+    button.addEventListener("click", () => TradeHub.open("loot"));
   }
 });

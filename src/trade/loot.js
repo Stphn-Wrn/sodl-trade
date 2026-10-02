@@ -3,7 +3,7 @@ import { TRADABLE_TYPES, sourceQuantity } from "./inventory.js";
 import { coversWealth, emptyWealth, fromBits, isEmptyWealth, settleWealth, toBits, toWealth } from "./wealth.js";
 
 export function emptyLoot() {
-  return { items: [], wealth: emptyWealth() };
+  return { items: [], wealth: emptyWealth(), wealthRevealed: false, open: false };
 }
 
 export function splitWealth(wealth, count) {
@@ -20,7 +20,6 @@ function toQuantity(value) {
   return quantity;
 }
 
-
 function withItemQuantity(loot, id, quantity) {
   if (quantity === 0) {
     return { ...loot, items: loot.items.filter((item) => item.id !== id) };
@@ -33,8 +32,32 @@ function withItemQuantity(loot, id, quantity) {
   }) };
 }
 
-function result(loot, grants = [], event = null) {
-  return { loot, grants, event };
+function result(loot, grants = [], event = null, revealed = null) {
+  return { loot, grants, event, revealed };
+}
+
+// What players can see: only revealed items, and the money once the GM revealed it.
+export function visibleWealth(loot) {
+  if (loot.wealthRevealed) {
+    return loot.wealth;
+  }
+  return emptyWealth();
+}
+
+function findVisibleItem(loot, id) {
+  const item = loot.items.find((entry) => entry.id === id && entry.revealed);
+  if (!item) {
+    throw new LocalizedError("SODLTRADE.Errors.LootGone");
+  }
+  return item;
+}
+
+// A reveal is announced only while players can see the rewards; opening them announces the rest.
+function announce(loot, next, items, wealth) {
+  if (!loot.open || (items.length === 0 && isEmptyWealth(wealth))) {
+    return result(next);
+  }
+  return result(next, [], "revealed", { items: items.map(({ name, quantity }) => ({ name, quantity })), wealth });
 }
 
 function grant(actorId, items, wealth) {
@@ -49,7 +72,7 @@ function add(loot, { id, sourceUuid, data }) {
   if (existing) {
     return result(withItemQuantity(loot, existing.id, existing.quantity + sourceQuantity(data)));
   }
-  const item = { id, sourceUuid, name: data.name, img: data.img, quantity: sourceQuantity(data), data };
+  const item = { id, sourceUuid, name: data.name, img: data.img, quantity: sourceQuantity(data), revealed: false, data };
   return result({ ...loot, items: [...loot.items, item] });
 }
 
@@ -61,11 +84,15 @@ function setWealth(loot, { wealth }) {
   return result({ ...loot, wealth: toWealth(wealth) });
 }
 
-function take(loot, { actorId, id, quantity }) {
-  const item = loot.items.find((entry) => entry.id === id);
-  if (!item) {
-    throw new LocalizedError("SODLTRADE.Errors.LootGone");
+function assertOpen(loot) {
+  if (!loot.open) {
+    throw new LocalizedError("SODLTRADE.Errors.LootClosed");
   }
+}
+
+function take(loot, { actorId, id, quantity }) {
+  assertOpen(loot);
+  const item = findVisibleItem(loot, id);
   const wanted = toQuantity(quantity);
   if (wanted === 0) {
     throw new LocalizedError("SODLTRADE.Errors.InvalidQuantity");
@@ -78,11 +105,12 @@ function take(loot, { actorId, id, quantity }) {
 }
 
 function takeWealth(loot, { actorId, wealth }) {
+  assertOpen(loot);
   const wanted = toWealth(wealth);
   if (isEmptyWealth(wanted)) {
     throw new LocalizedError("SODLTRADE.Errors.InvalidQuantity");
   }
-  if (!coversWealth(loot.wealth, wanted)) {
+  if (!coversWealth(visibleWealth(loot), wanted)) {
     throw new LocalizedError("SODLTRADE.Errors.NotEnoughWealth");
   }
   const remaining = settleWealth(loot.wealth, wanted, emptyWealth());
@@ -100,6 +128,50 @@ function split(loot, { actorIds }) {
   return result({ ...loot, wealth: remainder }, actorIds.map((actorId) => grant(actorId, [], share)), "split");
 }
 
+function setOpen(loot, { open }) {
+  const isOpen = open === true;
+  let event = "closed";
+  if (isOpen) {
+    event = "opened";
+  }
+  return result({ ...loot, open: isOpen }, [], event);
+}
+
+function setRevealed(loot, { id, revealed }) {
+  const item = loot.items.find((entry) => entry.id === id);
+  if (!item) {
+    throw new LocalizedError("SODLTRADE.Errors.LootGone");
+  }
+  const next = { ...loot, items: loot.items.map((entry) => {
+    if (entry.id === id) {
+      return { ...entry, revealed: revealed === true };
+    }
+    return entry;
+  }) };
+  if (revealed !== true || item.revealed) {
+    return result(next);
+  }
+  return announce(loot, next, [item], emptyWealth());
+}
+
+function setWealthRevealed(loot, { revealed }) {
+  const next = { ...loot, wealthRevealed: revealed === true };
+  if (revealed !== true || loot.wealthRevealed) {
+    return result(next);
+  }
+  return announce(loot, next, [], loot.wealth);
+}
+
+function revealAll(loot) {
+  const hidden = loot.items.filter((item) => !item.revealed);
+  let wealth = emptyWealth();
+  if (!loot.wealthRevealed) {
+    wealth = loot.wealth;
+  }
+  const next = { ...loot, items: loot.items.map((item) => ({ ...item, revealed: true })), wealthRevealed: true };
+  return announce(loot, next, hidden, wealth);
+}
+
 const GM = "gm";
 const OWNER = "owner";
 
@@ -108,6 +180,10 @@ const ACTIONS = {
   setQuantity: { role: GM, run: setQuantity },
   setWealth: { role: GM, run: setWealth },
   split: { role: GM, run: split },
+  setOpen: { role: GM, run: setOpen },
+  setRevealed: { role: GM, run: setRevealed },
+  setWealthRevealed: { role: GM, run: setWealthRevealed },
+  revealAll: { role: GM, run: revealAll },
   take: { role: OWNER, run: take },
   takeWealth: { role: OWNER, run: takeWealth }
 };

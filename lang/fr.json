@@ -19,7 +19,8 @@
         "loot": "Récompenses",
         "shop": "Achats"
       },
-      "Acting": "Personnage"
+      "Acting": "Personnage",
+      "ClosedTab": "Fermé par le MJ"
     },
     "Loot": {
       "Title": "Récompenses",
@@ -30,7 +31,15 @@
       "TakeWealth": "Prendre l'argent",
       "SplitBetween": "Partager l'argent entre",
       "SharePreview": "{count} parts de : {share}",
-      "Split": "Partager l'argent"
+      "Split": "Partager l'argent",
+      "Open": "Ouvrir aux joueurs",
+      "Close": "Fermer aux joueurs",
+      "StatusOpen": "Ouvert : les joueurs peuvent se servir.",
+      "StatusClosed": "Fermé : les joueurs ne voient pas encore les récompenses.",
+      "Reveal": "Dévoiler aux joueurs",
+      "Hide": "Cacher aux joueurs",
+      "RevealAll": "Tout dévoiler",
+      "RevealHint": "Ce que vous déposez reste caché (œil barré) jusqu'à ce que vous le dévoiliez."
     },
     "Shop": {
       "Title": "Achats",
@@ -97,7 +106,10 @@
       "taken": "{name} se sert dans les récompenses.",
       "split": "Le MJ partage l'argent des récompenses entre {names}.",
       "Share": "Chacun reçoit",
-      "bought": "{name} achète {item} pour {cost}."
+      "bought": "{name} achète {item} pour {cost}.",
+      "opened": "Les récompenses sont ouvertes, servez-vous !",
+      "OpenLoot": "Voir les récompenses",
+      "revealed": "Trésor dévoilé : {treasure}"
     },
     "Errors": {
       "NoGM": "Un MJ doit être connecté pour gérer les échanges.",
@@ -125,16 +137,26 @@
       "InvalidPrice": "Prix illisible : écrivez par exemple « 1 CO 5 CA ».",
       "InvalidAvailability": "Disponibilité inconnue.",
       "NoPrice": "« {name} » n'a pas encore de prix.",
-      "FolderNotFound": "Aucun dossier d'objets avec cet identifiant."
+      "FolderNotFound": "Aucun dossier d'objets avec cet identifiant.",
+      "LootClosed": "Les récompenses ne sont pas encore ouvertes."
     },
     "Notify": {
       "Invited": "{name} vous propose un échange.",
-      "LootAdded": "De nouvelles récompenses sont disponibles."
+      "LootAdded": "De nouvelles récompenses sont disponibles.",
+      "LootOpened": "Les récompenses sont ouvertes !"
     },
     "Settings": {
       "PriceUnit": {
         "Name": "Unité des prix sans unité",
         "Hint": "Unité utilisée quand le prix d'un objet est un simple nombre, comme « 5 »."
+      },
+      "AnnounceLoot": {
+        "Name": "Annoncer les récompenses dans le chat",
+        "Hint": "Poste un message public quand le MJ ouvre les récompenses, dévoile un trésor, ou quand un joueur se sert ou que l'argent est partagé."
+      },
+      "AnnounceShop": {
+        "Name": "Annoncer les achats dans le chat",
+        "Hint": "Poste un message public à chaque achat dans une boutique."
       }
     }
   }

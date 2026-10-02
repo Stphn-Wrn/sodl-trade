@@ -186,13 +186,25 @@
 
 .sodl-trade-tabs button {
   flex: 1;
-  border-radius: 4px 4px 0 0;
-  opacity: 0.6;
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.sodl-trade-tabs button:hover {
+  background: var(--trade-surface);
+}
+
+.sodl-trade-tabs button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .sodl-trade-tabs button.is-active {
-  opacity: 1;
   font-weight: bold;
+  border-bottom-color: var(--trade-waiting);
 }
 
 .sodl-trade-split,
@@ -312,4 +324,51 @@
 .sodl-trade-availability.is-R,
 .sodl-trade-availability.is-E {
   color: var(--trade-waiting);
+}
+
+.sodl-trade-loot-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: var(--trade-surface);
+  color: var(--trade-muted);
+}
+
+.sodl-trade-loot-status span {
+  flex: 1;
+}
+
+.sodl-trade-loot-status.is-open {
+  color: var(--trade-accepted);
+}
+
+.sodl-trade-reveal-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.sodl-trade-reveal-bar .sodl-trade-hint {
+  flex: 1;
+  margin: 0;
+  text-align: left;
+}
+
+.sodl-trade-offer li.is-hidden,
+.sodl-trade-wealth.is-hidden {
+  opacity: 0.55;
+  font-style: italic;
+}
+
+.sodl-trade-eye {
+  color: var(--trade-accepted);
+}
+
+.is-hidden .sodl-trade-eye,
+.sodl-trade-wealth.is-hidden .sodl-trade-eye {
+  color: var(--trade-muted);
 }

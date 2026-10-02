@@ -1,9 +1,25 @@
 <section class="sodl-trade-panel" data-panel="loot" {{#unless loot.visible}}hidden{{/unless}}>
   {{#if isGM}}
+  <div class="sodl-trade-loot-status {{#if loot.open}}is-open{{/if}}">
+    {{#if loot.open}}
+    <span><i class="fas fa-lock-open"></i> {{localize "SODLTRADE.Loot.StatusOpen"}}</span>
+    <button type="button" data-action="lootToggleOpen"><i class="fas fa-lock"></i> {{localize "SODLTRADE.Loot.Close"}}</button>
+    {{else}}
+    <span><i class="fas fa-lock"></i> {{localize "SODLTRADE.Loot.StatusClosed"}}</span>
+    <button type="button" class="is-primary" data-action="lootToggleOpen"><i class="fas fa-lock-open"></i> {{localize "SODLTRADE.Loot.Open"}}</button>
+    {{/if}}
+  </div>
+
+  <div class="sodl-trade-reveal-bar">
+    <span class="sodl-trade-hint">{{localize "SODLTRADE.Loot.RevealHint"}}</span>
+    <button type="button" data-action="lootRevealAll" {{#unless loot.hasHidden}}disabled{{/unless}}><i class="fas fa-eye"></i> {{localize "SODLTRADE.Loot.RevealAll"}}</button>
+  </div>
+
   <div class="sodl-trade-dropzone">
     <ul class="sodl-trade-offer">
       {{#each loot.items}}
-      <li>
+      <li class="{{#unless this.revealed}}is-hidden{{/unless}}">
+        <button type="button" class="sodl-trade-icon sodl-trade-eye" data-action="lootToggleReveal" data-id="{{this.id}}" data-revealed="{{this.revealed}}" title="{{#if this.revealed}}{{localize 'SODLTRADE.Loot.Hide'}}{{else}}{{localize 'SODLTRADE.Loot.Reveal'}}{{/if}}"><i class="fas {{#if this.revealed}}fa-eye{{else}}fa-eye-slash{{/if}}"></i></button>
         <img src="{{this.img}}" alt="">
         <span class="sodl-trade-item-name">{{this.name}}</span>
         <input type="number" min="0" value="{{this.quantity}}" data-loot-quantity="{{this.id}}" title="{{localize 'SODLTRADE.Window.Quantity'}}">
@@ -14,8 +30,9 @@
     <p class="sodl-trade-dropzone-hint"><i class="fas fa-hand-pointer"></i> {{localize "SODLTRADE.Loot.DropHint"}}</p>
   </div>
 
-  <div class="sodl-trade-wealth">
+  <div class="sodl-trade-wealth {{#unless loot.wealthRevealed}}is-hidden{{/unless}}">
     <span class="sodl-trade-label">{{localize "SODLTRADE.Window.Wealth"}}</span>
+    <button type="button" class="sodl-trade-icon sodl-trade-eye" data-action="lootToggleWealthReveal" title="{{#if loot.wealthRevealed}}{{localize 'SODLTRADE.Loot.Hide'}}{{else}}{{localize 'SODLTRADE.Loot.Reveal'}}{{/if}}"><i class="fas {{#if loot.wealthRevealed}}fa-eye{{else}}fa-eye-slash{{/if}}"></i></button>
     {{#each loot.wealth}}
     <label><input type="number" min="0" value="{{this.value}}" data-loot-wealth="{{this.denomination}}"> {{this.label}}</label>
     {{/each}}

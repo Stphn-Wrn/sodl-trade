@@ -2,7 +2,7 @@ import { modulePath } from "../../shared/constants.js";
 import { isPlayerCharacter, t } from "../../shared/foundry-adapter.js";
 import { sendRequest } from "../../socket.js";
 import { readLoot } from "../../trade/loot-store.js";
-import { splitWealth } from "../../trade/loot.js";
+import { splitWealth, visibleWealth } from "../../trade/loot.js";
 import { describeOffer } from "../../trade/trade-view.js";
 import { isEmptyWealth } from "../../trade/wealth.js";
 import { readWealthInputs, wealthRows } from "./panel-helpers.js";
@@ -19,6 +19,10 @@ export const lootPanel = {
   id: "loot",
   template: modulePath("src/apps/panels/loot-panel.html"),
 
+  isOpen() {
+    return readLoot().open === true;
+  },
+
   prepare(app, base) {
     const loot = readLoot();
     const ids = splitIds(app, base);
@@ -26,11 +30,20 @@ export const lootPanel = {
     if (ids.length > 0 && !isEmptyWealth(loot.wealth)) {
       sharePreview = describeOffer({ items: [], wealth: splitWealth(loot.wealth, ids.length).share }, t);
     }
+    let items = loot.items;
+    let wealth = loot.wealth;
+    if (!base.isGM) {
+      items = items.filter((item) => item.revealed);
+      wealth = visibleWealth(loot);
+    }
     return {
-      items: loot.items.map(({ id, name, img, quantity }) => ({ id, name, img, quantity })),
-      wealth: wealthRows(loot.wealth),
-      hasWealth: !isEmptyWealth(loot.wealth),
-      isEmpty: loot.items.length === 0 && isEmptyWealth(loot.wealth),
+      items: items.map(({ id, name, img, quantity, revealed }) => ({ id, name, img, quantity, revealed: revealed === true })),
+      wealth: wealthRows(wealth),
+      hasWealth: !isEmptyWealth(wealth),
+      wealthRevealed: loot.wealthRevealed === true,
+      hasHidden: loot.items.some((item) => !item.revealed) || (!loot.wealthRevealed && !isEmptyWealth(loot.wealth)),
+      isEmpty: items.length === 0 && isEmptyWealth(wealth),
+      open: loot.open === true,
       split: {
         characters: base.characters.map((actor) => ({ id: actor.id, name: actor.name, checked: !app.excludedFromSplit.has(actor.id) })),
         count: ids.length,
@@ -81,6 +94,18 @@ export const lootPanel = {
   },
 
   actions: {
+    lootToggleReveal(event, target) {
+      sendLoot({ type: "setRevealed", id: target.dataset.id, revealed: target.dataset.revealed !== "true" });
+    },
+    lootToggleWealthReveal() {
+      sendLoot({ type: "setWealthRevealed", revealed: !readLoot().wealthRevealed });
+    },
+    lootRevealAll() {
+      sendLoot({ type: "revealAll" });
+    },
+    lootToggleOpen() {
+      sendLoot({ type: "setOpen", open: !readLoot().open });
+    },
     lootRemove(event, target) {
       sendLoot({ type: "setQuantity", id: target.dataset.id, quantity: 0 });
     },

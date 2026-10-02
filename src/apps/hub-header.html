@@ -1,7 +1,7 @@
 <header class="sodl-trade-hub-header">
   <nav class="sodl-trade-tabs">
     {{#each tabs}}
-    <button type="button" class="{{#if this.active}}is-active{{/if}}" data-action="tab" data-tab="{{this.id}}">{{this.label}}</button>
+    <button type="button" class="{{#if this.active}}is-active{{/if}}" data-action="switchPanel" data-panel-id="{{this.id}}" {{#if this.closed}}disabled title="{{localize 'SODLTRADE.Hub.ClosedTab'}}"{{/if}}>{{#if this.closed}}<i class="fas fa-lock"></i> {{/if}}{{this.label}}</button>
     {{/each}}
   </nav>
 
