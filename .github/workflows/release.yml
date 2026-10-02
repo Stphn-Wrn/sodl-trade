@@ -1,0 +1,88 @@
+name: Release SODL Trade
+
+on:
+  workflow_dispatch:
+    inputs:
+      increment:
+        description: "Version increment type"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run tests
+        run: npm test
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Get current version
+        id: get_version
+        run: |
+          CURRENT_VERSION=$(jq -r '.version' module.json)
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Calculate new version
+        id: bump_version
+        run: |
+          VERSION=${{ steps.get_version.outputs.current_version }}
+          INCREMENT=${{ github.event.inputs.increment }}
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+          if [ "$INCREMENT" = "major" ]; then
+            MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0
+          elif [ "$INCREMENT" = "minor" ]; then
+            MINOR=$((MINOR + 1)); PATCH=0
+          else
+            PATCH=$((PATCH + 1))
+          fi
+
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update module.json
+        run: |
+          NEW_VERSION=${{ steps.bump_version.outputs.new_version }}
+          REPO=${{ github.repository }}
+          ZIP_URL="https://github.com/${REPO}/releases/download/v${NEW_VERSION}/sodl-trade.zip"
+          jq ".version = \"${NEW_VERSION}\" | .download = \"${ZIP_URL}\"" module.json > tmp.json && mv tmp.json module.json
+
+      - name: Commit and push version update
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: bump version to ${{ steps.bump_version.outputs.new_version }}"
+          file_pattern: module.json
+
+      - name: Create ZIP archive
+        run: |
+          zip -r sodl-trade.zip . -x "*.git*" ".github/workflows/*" "node_modules/*" "tests/*" "package.json" ".gitignore" ".DS_Store"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.bump_version.outputs.new_version }}
+          name: Release v${{ steps.bump_version.outputs.new_version }}
+          files: sodl-trade.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

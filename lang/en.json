@@ -1,0 +1,78 @@
+{
+  "SODLTRADE": {
+    "Title": "Trades",
+    "OpenTool": "Open trades",
+    "WindowTitle": "Trade: {first} ⇄ {second}",
+    "Nothing": "Nothing",
+    "Hub": {
+      "Active": "Ongoing trades",
+      "NoTrade": "No ongoing trade.",
+      "Open": "Open",
+      "New": "Propose a trade",
+      "MyCharacter": "My character",
+      "Partner": "With",
+      "Propose": "Propose",
+      "NoCharacter": "You don't own any character.",
+      "NoPartner": "No other player character."
+    },
+    "Window": {
+      "Offer": "Offer",
+      "Accepted": "Accepted",
+      "Pending": "Thinking",
+      "AddItem": "Add",
+      "Remove": "Remove",
+      "Quantity": "Qty",
+      "Wealth": "Money",
+      "UpdateWealth": "Update money",
+      "Accept": "Accept the trade",
+      "Withdraw": "Withdraw my acceptance",
+      "Cancel": "Cancel the trade",
+      "Approve": "Approve",
+      "Reject": "Reject",
+      "EditHint": "Any change clears both players' acceptance."
+    },
+    "Status": {
+      "negotiating": "Negotiating",
+      "awaitingApproval": "Awaiting GM approval",
+      "approved": "Approved",
+      "rejected": "Rejected by the GM",
+      "cancelled": "Cancelled"
+    },
+    "Wealth": {
+      "gc": "GC",
+      "ss": "SS",
+      "cp": "CP",
+      "bits": "Bits"
+    },
+    "Chat": {
+      "created": "{first} offers a trade to {second}.",
+      "awaitingApproval": "{first} and {second} accepted their trade. The GM must approve it.",
+      "completed": "Trade completed between {first} and {second}.",
+      "failed": "The trade between {first} and {second} could not be completed: {reason}",
+      "rejected": "The GM rejected the trade between {first} and {second}.",
+      "cancelled": "The trade between {first} and {second} was cancelled by {user}.",
+      "Gives": "{name} gives",
+      "Open": "Open the trade"
+    },
+    "Errors": {
+      "NoGM": "A GM must be connected to handle trades.",
+      "TradeNotFound": "This trade no longer exists.",
+      "ActorMissing": "One of the trading characters no longer exists.",
+      "NotYourCharacter": "You can only propose a trade with your own character.",
+      "InvalidPartner": "This character cannot take part in a trade.",
+      "AlreadyTrading": "A trade is already ongoing between these two characters.",
+      "ItemNotOwned": "This item is not in your inventory.",
+      "ItemGone": "{name} is no longer in the inventory.",
+      "InvalidQuantity": "Invalid quantity.",
+      "NotEnoughItems": "Not enough \"{name}\".",
+      "NotEnoughWealth": "Not enough money.",
+      "EmptyTrade": "Nobody gives anything in this trade.",
+      "NotAllowed": "You cannot do that in this trade.",
+      "WrongStatus": "This action is not possible at this stage of the trade.",
+      "UnknownAction": "Unknown action."
+    },
+    "Notify": {
+      "Invited": "{name} offers you a trade."
+    }
+  }
+}

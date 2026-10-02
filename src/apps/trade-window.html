@@ -1,0 +1,83 @@
+<section class="sodl-trade-window">
+  <header class="sodl-trade-status is-{{status}}">{{statusLabel}}</header>
+
+  <div class="sodl-trade-columns">
+    {{#each parties}}
+    <article class="sodl-trade-party {{#if this.accepted}}is-accepted{{/if}} {{#if this.isMine}}is-mine{{/if}}">
+      <header class="sodl-trade-party-header">
+        <img src="{{this.img}}" alt="">
+        <span class="sodl-trade-party-name">{{this.name}}</span>
+        {{#if this.accepted}}
+        <span class="sodl-trade-badge is-accepted"><i class="fas fa-check"></i> {{localize "SODLTRADE.Window.Accepted"}}</span>
+        {{else}}
+        <span class="sodl-trade-badge">{{localize "SODLTRADE.Window.Pending"}}</span>
+        {{/if}}
+      </header>
+
+      <ul class="sodl-trade-offer">
+        {{#each this.items}}
+        <li>
+          <img src="{{this.img}}" alt="">
+          <span class="sodl-trade-item-name">{{this.name}}</span>
+          <span class="sodl-trade-qty">×{{this.quantity}}</span>
+          {{#if ../editable}}
+          <button type="button" class="sodl-trade-icon" data-action="removeItem" data-item-id="{{this.itemId}}" title="{{localize 'SODLTRADE.Window.Remove'}}"><i class="fas fa-xmark"></i></button>
+          {{/if}}
+        </li>
+        {{else}}
+        <li class="sodl-trade-empty">{{localize "SODLTRADE.Nothing"}}</li>
+        {{/each}}
+      </ul>
+
+      {{#if this.editable}}
+      {{#if @root.inventory.length}}
+      <div class="sodl-trade-picker">
+        <select name="itemId">
+          {{#each @root.inventory}}
+          <option value="{{this.id}}">{{this.name}} ({{this.available}})</option>
+          {{/each}}
+        </select>
+        <input type="number" name="quantity" value="1" min="1" title="{{localize 'SODLTRADE.Window.Quantity'}}">
+        <button type="button" data-action="addItem"><i class="fas fa-plus"></i> {{localize "SODLTRADE.Window.AddItem"}}</button>
+      </div>
+      {{/if}}
+      {{/if}}
+
+      <div class="sodl-trade-wealth">
+        <span class="sodl-trade-label">{{localize "SODLTRADE.Window.Wealth"}}</span>
+        {{#each this.wealth}}
+        <label>
+          {{#if ../editable}}
+          <input type="number" name="wealth.{{this.denomination}}" value="{{this.value}}" min="0">
+          {{else}}
+          <strong>{{this.value}}</strong>
+          {{/if}}
+          {{this.label}}
+        </label>
+        {{/each}}
+        {{#if this.editable}}
+        <button type="button" class="sodl-trade-icon" data-action="setWealth" title="{{localize 'SODLTRADE.Window.UpdateWealth'}}"><i class="fas fa-coins"></i></button>
+        {{/if}}
+      </div>
+    </article>
+    {{/each}}
+  </div>
+
+  {{#if canAccept}}<p class="sodl-trade-hint">{{localize "SODLTRADE.Window.EditHint"}}</p>{{/if}}
+
+  <footer class="sodl-trade-actions">
+    {{#if canAccept}}
+    <button type="button" class="is-primary" data-action="accept"><i class="fas fa-handshake"></i> {{localize "SODLTRADE.Window.Accept"}}</button>
+    {{/if}}
+    {{#if canWithdraw}}
+    <button type="button" data-action="withdraw"><i class="fas fa-rotate-left"></i> {{localize "SODLTRADE.Window.Withdraw"}}</button>
+    {{/if}}
+    {{#if canApprove}}
+    <button type="button" class="is-primary" data-action="approve"><i class="fas fa-gavel"></i> {{localize "SODLTRADE.Window.Approve"}}</button>
+    <button type="button" data-action="reject"><i class="fas fa-ban"></i> {{localize "SODLTRADE.Window.Reject"}}</button>
+    {{/if}}
+    {{#if canCancel}}
+    <button type="button" data-action="cancel"><i class="fas fa-xmark"></i> {{localize "SODLTRADE.Window.Cancel"}}</button>
+    {{/if}}
+  </footer>
+</section>

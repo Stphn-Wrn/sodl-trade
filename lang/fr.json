@@ -1,0 +1,78 @@
+{
+  "SODLTRADE": {
+    "Title": "Échanges",
+    "OpenTool": "Ouvrir les échanges",
+    "WindowTitle": "Échange : {first} ⇄ {second}",
+    "Nothing": "Rien",
+    "Hub": {
+      "Active": "Échanges en cours",
+      "NoTrade": "Aucun échange en cours.",
+      "Open": "Ouvrir",
+      "New": "Proposer un échange",
+      "MyCharacter": "Mon personnage",
+      "Partner": "Avec",
+      "Propose": "Proposer",
+      "NoCharacter": "Vous ne possédez aucun personnage.",
+      "NoPartner": "Aucun autre personnage joueur."
+    },
+    "Window": {
+      "Offer": "Offre",
+      "Accepted": "Validé",
+      "Pending": "En réflexion",
+      "AddItem": "Ajouter",
+      "Remove": "Retirer",
+      "Quantity": "Qté",
+      "Wealth": "Argent",
+      "UpdateWealth": "Mettre à jour l'argent",
+      "Accept": "Valider l'échange",
+      "Withdraw": "Retirer ma validation",
+      "Cancel": "Annuler l'échange",
+      "Approve": "Approuver",
+      "Reject": "Refuser",
+      "EditHint": "Toute modification annule les validations des deux joueurs."
+    },
+    "Status": {
+      "negotiating": "Négociation en cours",
+      "awaitingApproval": "En attente de l'approbation du MJ",
+      "approved": "Approuvé",
+      "rejected": "Refusé par le MJ",
+      "cancelled": "Annulé"
+    },
+    "Wealth": {
+      "gc": "CO",
+      "ss": "CA",
+      "cp": "SC",
+      "bits": "Écl."
+    },
+    "Chat": {
+      "created": "{first} propose un échange à {second}.",
+      "awaitingApproval": "{first} et {second} ont validé leur échange. Le MJ doit l'approuver.",
+      "completed": "Échange effectué entre {first} et {second}.",
+      "failed": "L'échange entre {first} et {second} n'a pas pu être effectué : {reason}",
+      "rejected": "Le MJ a refusé l'échange entre {first} et {second}.",
+      "cancelled": "L'échange entre {first} et {second} a été annulé par {user}.",
+      "Gives": "{name} donne",
+      "Open": "Ouvrir l'échange"
+    },
+    "Errors": {
+      "NoGM": "Un MJ doit être connecté pour gérer les échanges.",
+      "TradeNotFound": "Cet échange n'existe plus.",
+      "ActorMissing": "Un des personnages de l'échange n'existe plus.",
+      "NotYourCharacter": "Vous ne pouvez proposer un échange qu'avec votre propre personnage.",
+      "InvalidPartner": "Ce personnage ne peut pas participer à un échange.",
+      "AlreadyTrading": "Un échange est déjà en cours entre ces deux personnages.",
+      "ItemNotOwned": "Cet objet n'est pas dans votre inventaire.",
+      "ItemGone": "{name} n'est plus dans l'inventaire.",
+      "InvalidQuantity": "Quantité invalide.",
+      "NotEnoughItems": "Pas assez de « {name} ».",
+      "NotEnoughWealth": "Pas assez d'argent.",
+      "EmptyTrade": "Personne ne donne rien dans cet échange.",
+      "NotAllowed": "Vous ne pouvez pas faire cela dans cet échange.",
+      "WrongStatus": "Cette action n'est pas possible à cette étape de l'échange.",
+      "UnknownAction": "Action inconnue."
+    },
+    "Notify": {
+      "Invited": "{name} vous propose un échange."
+    }
+  }
+}

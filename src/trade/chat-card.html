@@ -1,0 +1,13 @@
+<div class="sodl-trade-card sodl-trade-card-{{event}}">
+  <p class="sodl-trade-card-text"><i class="fas fa-right-left"></i> {{text}}</p>
+  {{#if showOffers}}
+  <ul class="sodl-trade-card-offers">
+    {{#each offers}}
+    <li><strong>{{this.label}} :</strong> {{this.summary}}</li>
+    {{/each}}
+  </ul>
+  {{/if}}
+  {{#if canOpen}}
+  <button type="button" data-sodl-trade-open="{{tradeId}}"><i class="fas fa-up-right-from-square"></i> {{localize "SODLTRADE.Chat.Open"}}</button>
+  {{/if}}
+</div>

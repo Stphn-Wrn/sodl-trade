@@ -1,0 +1,32 @@
+import { toWealth } from "./wealth.js";
+
+export const TRADABLE_TYPES = ["item", "weapon", "armor", "ammo", "relic"];
+export const GM_ROLE = "gm";
+
+function toQuantity(value) {
+  const number = Math.trunc(Number(value));
+  if (value === null || value === undefined || !Number.isFinite(number)) {
+    return 1;
+  }
+  return Math.max(0, number);
+}
+
+export function toInventory(actor) {
+  return {
+    wealth: toWealth(actor.system.wealth),
+    items: actor.items
+      .filter((item) => TRADABLE_TYPES.includes(item.type))
+      .map((item) => ({ id: item.id, name: item.name, img: item.img, quantity: toQuantity(item.system.quantity) }))
+  };
+}
+
+export function resolveRole(trade, user, ownsActor) {
+  if (user.isGM) {
+    return GM_ROLE;
+  }
+  const index = trade.parties.findIndex((party) => ownsActor(party.actorId));
+  if (index < 0) {
+    return null;
+  }
+  return index;
+}

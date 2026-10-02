@@ -1,0 +1,178 @@
+.sodl-trade {
+  --trade-border: rgba(128, 128, 128, 0.35);
+  --trade-surface: rgba(128, 128, 128, 0.08);
+  --trade-muted: rgba(128, 128, 128, 0.9);
+  --trade-accepted: #4f9a5b;
+  --trade-waiting: #c9932e;
+}
+
+.sodl-trade .window-content {
+  padding: 10px;
+}
+
+.sodl-trade button {
+  width: auto;
+  flex: 0 0 auto;
+}
+
+.sodl-trade-status {
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-align: center;
+  background: var(--trade-surface);
+}
+
+.sodl-trade-status.is-awaitingApproval {
+  color: var(--trade-waiting);
+}
+
+.sodl-trade-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.sodl-trade-party {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--trade-border);
+  border-radius: 6px;
+}
+
+.sodl-trade-party.is-accepted {
+  border-color: var(--trade-accepted);
+}
+
+.sodl-trade-party-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sodl-trade-party-header img {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.sodl-trade-party-name {
+  flex: 1;
+  font-weight: bold;
+}
+
+.sodl-trade-badge {
+  font-size: 11px;
+  color: var(--trade-muted);
+}
+
+.sodl-trade-badge.is-accepted {
+  color: var(--trade-accepted);
+}
+
+.sodl-trade-offer,
+.sodl-trade-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sodl-trade-offer li,
+.sodl-trade-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--trade-border);
+}
+
+.sodl-trade-offer img {
+  width: 22px;
+  height: 22px;
+  border: none;
+}
+
+.sodl-trade-item-name,
+.sodl-trade-list-names {
+  flex: 1;
+}
+
+.sodl-trade-empty {
+  color: var(--trade-muted);
+  font-style: italic;
+}
+
+.sodl-trade-picker,
+.sodl-trade-wealth,
+.sodl-trade-propose {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.sodl-trade-picker select {
+  flex: 1;
+  min-width: 0;
+}
+
+.sodl-trade-picker input,
+.sodl-trade-wealth input {
+  width: 48px;
+}
+
+.sodl-trade-wealth label {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.sodl-trade-label {
+  width: 100%;
+  font-size: 11px;
+  color: var(--trade-muted);
+}
+
+.sodl-trade-hint {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--trade-muted);
+  text-align: center;
+}
+
+.sodl-trade-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.sodl-trade-status-chip {
+  font-size: 11px;
+  color: var(--trade-muted);
+}
+
+.sodl-trade-status-chip.is-awaitingApproval {
+  color: var(--trade-waiting);
+}
+
+.sodl-trade-propose label {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.sodl-trade-hub h3 {
+  margin: 8px 0 4px;
+}
+
+.sodl-trade-card-offers {
+  margin: 4px 0;
+  padding-left: 16px;
+}
