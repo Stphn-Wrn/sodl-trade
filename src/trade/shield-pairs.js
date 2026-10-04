@@ -58,3 +58,29 @@ export function pairInventoryShields(items) {
   });
   return paired.filter((item) => !linkedWeaponIds.has(item.id));
 }
+
+function isHalf(item, wantsArmor) {
+  if (wantsArmor) {
+    return isShieldArmor(item);
+  }
+  return item.type === "weapon";
+}
+
+function hasHalf(items, name, wantsArmor) {
+  return items.some((item) => shieldKey(item.name) === shieldKey(name) && isHalf(item, wantsArmor));
+}
+
+// Received items that may be one half of a shield whose other half neither arrives with them nor is already owned:
+// a weapon (that might be a shield's weapon half) or a shield armor. Whether a weapon really is a shield is then
+// decided by looking up its other half.
+export function unpairedShieldHalves(received, owned) {
+  return received.filter((item) => {
+    if (isShieldArmor(item)) {
+      return !hasHalf(received, item.name, false) && !hasHalf(owned, item.name, false);
+    }
+    if (item.type === "weapon") {
+      return !hasHalf(received, item.name, true) && !hasHalf(owned, item.name, true);
+    }
+    return false;
+  });
+}

@@ -64,7 +64,7 @@ For each kind of chat message, the GM chooses who gets it: **No message**, **GM 
 - **A GM must be connected.** A player cannot change another player's character: the GM's client checks the actions and makes the transfers.
 - **Party characters** — Only characters assigned to a player or explicitly owned by a player count. An actor everyone owns by default (shared token, map marker) does not show up.
 - **Trades** — Money is traded coin by coin, without change: to give 1 SS, you need to own 1 SS. If an offered item is gone before approval, the trade goes back to negotiation and the chat gives the reason.
-- **Shields** — The system defines each shield twice: a weapon (to bash with) and an armor (for the Defense bonus), sharing the same name. The module treats them as one item: only the armor is shown, and trading, taking or buying the shield moves both.
+- **Shields** — The system defines each shield twice: a weapon (to bash with) and an armor (for the Defense bonus), sharing the same name. The module treats them as one item: only the armor is shown, and trading, taking or buying the shield moves both. If a character only has one half (only the weapon, for instance), whoever receives it in a trade also gets the other half, looked up in the world's items then in the compendiums, unless they already own it.
 - **Received items** — They do not merge with an identical item already owned.
 - **Shops** — A shop keeps a reference to the original item: if it is deleted, it can no longer be bought. The loot, on the other hand, keeps a copy.
 

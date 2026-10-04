@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildShieldIndex, pairInventoryShields, shieldPartner } from "../../src/trade/shield-pairs.js";
+import { buildShieldIndex, pairInventoryShields, shieldPartner, unpairedShieldHalves } from "../../src/trade/shield-pairs.js";
 
 test("l'arme et l'armure d'un bouclier sont reconnues par leur nom, sans tenir compte des majuscules ni des accents", () => {
   const index = buildShieldIndex([
@@ -51,4 +51,21 @@ test("un bouclier sans sa version arme reste seul dans l'inventaire", () => {
   const items = [{ id: "a", name: "Petit Bouclier", img: "a.webp", type: "armor", isShield: true, quantity: 1 }];
 
   assert.deepEqual(pairInventoryShields(items), [{ ...items[0], linked: [] }]);
+});
+
+test("un bouclier reçu sans son autre moitié est signalé, sauf si le destinataire l'a déjà", () => {
+  const received = [
+    { name: "Small Shield", type: "weapon", isShield: false, quantity: 1 },
+    { name: "Large Shield", type: "armor", isShield: true, quantity: 1 },
+    { name: "Large Shield", type: "weapon", isShield: false, quantity: 1 },
+    { name: "Tower Shield", type: "armor", isShield: true, quantity: 1 },
+    { name: "Rope", type: "item", isShield: false, quantity: 1 }
+  ];
+  const owned = [{ name: "Tower Shield", type: "weapon", isShield: false }];
+
+  assert.deepEqual(unpairedShieldHalves(received, owned).map((entry) => [entry.name, entry.type]), [["Small Shield", "weapon"]]);
+});
+
+test("une armure ordinaire n'a pas d'autre moitié à chercher", () => {
+  assert.deepEqual(unpairedShieldHalves([{ name: "Mail", type: "armor", isShield: false, quantity: 1 }], []), []);
 });

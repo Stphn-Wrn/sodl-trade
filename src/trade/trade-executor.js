@@ -1,11 +1,44 @@
+import { createShieldResolver } from "./shield-resolver.js";
+import { unpairedShieldHalves } from "./shield-pairs.js";
 import { prepareReceivedItem } from "./transfer-plan.js";
 import { DENOMINATIONS, emptyWealth, isEmptyWealth, settleWealth, toWealth } from "./wealth.js";
 
-function receivedItems(change) {
-  return change.receiveItems.map((entry) => {
-    const source = game.actors.get(entry.sourceActorId).items.get(entry.itemId);
-    return prepareReceivedItem(source.toObject(), entry.quantity);
-  });
+function shieldView(item) {
+  return { name: item.name, type: item.type, isShield: item.system?.isShield === true };
+}
+
+// A shield half that arrives without its other half (a character who only had the weapon half, for instance)
+// brings it along from the world or the compendiums, so the new owner gets both the Defense and the bash.
+async function shieldPartners(actor, sources, resolver) {
+  const received = sources.map(({ source, quantity }) => ({ ...shieldView(source), quantity, source }));
+  const missing = unpairedShieldHalves(received, actor.items.map(shieldView));
+  const partners = [];
+  for (const entry of missing) {
+    const partnerOf = await resolver();
+    const partner = await partnerOf(entry.source);
+    if (partner) {
+      partners.push(prepareReceivedItem(partner.toObject(), entry.quantity));
+    }
+  }
+  return partners;
+}
+
+async function receivedItems(change, resolver) {
+  const sources = change.receiveItems.map((entry) => ({ source: game.actors.get(entry.sourceActorId).items.get(entry.itemId), quantity: entry.quantity }));
+  const items = sources.map(({ source, quantity }) => prepareReceivedItem(source.toObject(), quantity));
+  const partners = await shieldPartners(game.actors.get(change.actorId), sources, resolver);
+  return [...items, ...partners];
+}
+
+// The shield lookup reads the compendium indexes, so it is only built when a trade needs it.
+function lazyShieldResolver() {
+  let resolver = null;
+  return async () => {
+    if (!resolver) {
+      resolver = await createShieldResolver();
+    }
+    return resolver;
+  };
 }
 
 export function wealthUpdate(wealth) {
@@ -13,7 +46,11 @@ export function wealthUpdate(wealth) {
 }
 
 export async function executePlan(plan) {
-  const received = plan.map(receivedItems);
+  const resolver = lazyShieldResolver();
+  const received = [];
+  for (const change of plan) {
+    received.push(await receivedItems(change, resolver));
+  }
 
   for (const [index, change] of plan.entries()) {
     if (received[index].length > 0) {

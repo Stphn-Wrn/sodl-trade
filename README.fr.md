@@ -64,7 +64,7 @@ Pour chaque famille de messages du chat, le MJ choisit qui les reçoit : **Aucun
 - **Un MJ doit être connecté.** Un joueur ne peut pas modifier le personnage d'un autre joueur : c'est le client du MJ qui valide les actions et fait les transferts.
 - **Personnages du groupe** — Seuls comptent les personnages attribués à un joueur ou possédés nommément par un joueur. Un acteur que tout le monde possède par défaut (jeton partagé, marqueur de carte) n'apparaît pas.
 - **Échanges** — L'argent s'échange pièce par pièce, sans rendu de monnaie : pour donner 1 CA, il faut posséder 1 CA. Si un objet offert a disparu avant l'approbation, l'échange revient en négociation et le chat en donne la raison.
-- **Boucliers** — Le système définit chaque bouclier deux fois : une arme (pour frapper) et une armure (pour la Défense), portant le même nom. Le module les traite comme un seul objet : seule la version armure est affichée, et échanger, prendre ou acheter le bouclier fait passer les deux.
+- **Boucliers** — Le système définit chaque bouclier deux fois : une arme (pour frapper) et une armure (pour la Défense), portant le même nom. Le module les traite comme un seul objet : seule la version armure est affichée, et échanger, prendre ou acheter le bouclier fait passer les deux. Si un personnage n'a qu'une des deux moitiés (seulement l'arme, par exemple), celui qui la reçoit dans un échange reçoit aussi l'autre, cherchée dans les objets du monde puis dans les compendiums, sauf s'il la possède déjà.
 - **Objets reçus** — Ils ne fusionnent pas avec un objet identique déjà possédé.
 - **Boutiques** — Une boutique garde une référence vers l'objet d'origine : s'il est supprimé, il ne peut plus être acheté. Le butin, lui, garde une copie.
 
