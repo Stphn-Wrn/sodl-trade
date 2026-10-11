@@ -14,7 +14,9 @@
       "Tabs": {
         "trades": "Échanges",
         "loot": "Récompenses",
-        "shop": "Boutiques"
+        "shop": "Boutiques",
+        "crafting": "Artisanat",
+        "harvest": "Récolte"
       },
       "Acting": "Personnage",
       "ClosedTab": "Fermé par le MJ",
@@ -149,7 +151,18 @@
         "rejected": "Le MJ a refusé l'achat de {name} : {item}.",
         "cancelled": "{name} a annulé sa demande d'achat : {item}.",
         "updated": "Le MJ a modifié la demande de {name} : {item} pour {cost}."
-      }
+      },
+      "crafted": "{name} fabrique {item}.",
+      "craftFailed": "{name} rate la fabrication de {item} : les ingrédients sont perdus.",
+      "OpenCrafting": "Voir l'artisanat",
+      "craftOrder": {
+        "ordered": "{name} demande à fabriquer {item}.",
+        "rejected": "Le MJ a refusé la fabrication de {name} : {item}.",
+        "cancelled": "{name} a annulé sa demande de fabrication : {item}."
+      },
+      "harvested": "{name} fouille les environs ({place}) et trouve {items}.",
+      "harvestEmpty": "{name} fouille les environs ({place}) mais ne trouve rien : la terre est morte.",
+      "harvestFailed": "{name} fouille les environs ({place}) sans rien trouver."
     },
     "Errors": {
       "NoGM": "Un MJ doit être connecté pour gérer les échanges.",
@@ -182,14 +195,42 @@
       "OutOfStock": "« {name} » est épuisé.",
       "NotEnoughStock": "Il ne reste que {stock} « {name} » en stock.",
       "OrderGone": "Cette demande d'achat n'existe plus.",
-      "ShopClosed": "Cette boutique est fermée."
+      "ShopClosed": "Cette boutique est fermée.",
+      "NotCraftable": "« {name} » ne peut pas être fabriqué : seul l'équipement peut l'être.",
+      "RecipeGone": "Cette recette n'existe plus.",
+      "IngredientGone": "Cet ingrédient n'est plus dans la recette.",
+      "InvalidAttribute": "Attribut inconnu.",
+      "RecipeUnknown": "Ce personnage ne connaît pas la recette « {name} ».",
+      "NoResult": "La recette « {name} » ne produit encore rien.",
+      "MissingTool": "Il faut « {name} » pour fabriquer cet objet.",
+      "ResourcesFailed": "Impossible de créer les ressources : voir la console (F12).",
+      "HarvestClosed": "La récolte n'est pas ouverte.",
+      "AlreadyHarvested": "Ce personnage a déjà récolté ici.",
+      "FeatureDisabled": "Le MJ a désactivé cette partie du module.",
+      "RealmNotEmpty": "Ce monde contient encore des biomes : déplacez-les ou supprimez-les d'abord.",
+      "BiomeGone": "Ce biome n'existe plus.",
+      "EntryGone": "Cette ligne n'existe plus.",
+      "InvalidChance": "Chance invalide : écrivez un pourcentage entre 0 et 100.",
+      "InvalidDice": "Quantité invalide : écrivez par exemple 1d3, 2d4 ou 2.",
+      "ChanceOver100": "Le total des chances de « {name} » dépasserait 100 %.",
+      "RecipesFailed": "Impossible d'ajouter les recettes : voir la console (F12).",
+      "MissingRequirement": "Il faut être : {names} (l'un d'eux suffit)."
     },
     "Notify": {
       "Invited": "{name} vous propose un échange.",
       "LootAdded": "De nouvelles récompenses sont disponibles.",
       "LootOpened": "Les récompenses sont ouvertes !",
       "NewOrder": "Nouvelle demande d'achat à valider.",
-      "ShopOpened": "La boutique « {name} » est ouverte."
+      "ShopOpened": "La boutique « {name} » est ouverte.",
+      "RecipeLearned": "{name} apprend la recette « {recipe} ».",
+      "NewCraftOrder": "Nouvelle demande de fabrication à valider.",
+      "ResourcesCreated": "{count} ressource(s) créée(s) dans le dossier « Ressources d'artisanat » des objets.",
+      "ResourcesUpToDate": "Toutes les ressources de base existent déjà.",
+      "HarvestOpened": "La récolte est ouverte !",
+      "HarvestRenewed": "Vous pouvez de nouveau récolter.",
+      "RecipesImported": "{count} recette(s) ajoutée(s). Apprenez-les aux personnages dans « Modifier les recettes ».",
+      "RecipesUpToDate": "Toutes les recettes par défaut sont déjà là.",
+      "RecipesSkipped": "Recettes ignorées, faute de trouver leurs objets dans le monde ou les compendiums : {names}."
     },
     "Settings": {
       "PriceUnit": {
@@ -217,7 +258,154 @@
         "gm": "MJ seulement",
         "involved": "Personnes concernées (MJ et joueurs impliqués)",
         "everyone": "Tout le monde"
+      },
+      "ChatCraft": {
+        "Name": "Messages de l'artisanat et de la récolte",
+        "Hint": "Fabrications réussies ou ratées, demandes, refus, annulations et récoltes."
+      },
+      "CraftApproval": {
+        "Name": "Les fabrications doivent être validées par le MJ",
+        "Hint": "Fabriquer crée une demande que le MJ valide ou refuse. Rien n'est consommé avant la validation."
+      },
+      "HarvestScarcity": {
+        "Name": "État du monde",
+        "Hint": "Multiplie toutes les chances de trouver quelque chose, même avec un bon jet.",
+        "preserved": "Préservé : chances inchangées",
+        "dying": "Mourant : chances divisées par deux",
+        "devastated": "Dévasté : chances divisées par quatre"
+      },
+      "Features": {
+        "trades": {
+          "Name": "Activer les échanges",
+          "Hint": "Échanges négociés entre joueurs, approuvés par le MJ."
+        },
+        "loot": {
+          "Name": "Activer les récompenses",
+          "Hint": "Butin commun que le MJ prépare et dévoile, et partage de l'argent."
+        },
+        "shop": {
+          "Name": "Activer les boutiques",
+          "Hint": "Boutiques avec prix, disponibilité, stock et demandes d'achat."
+        },
+        "crafting": {
+          "Name": "Activer l'artisanat",
+          "Hint": "Recettes apprises par les personnages, qui fabriquent à partir de leurs ingrédients."
+        },
+        "harvest": {
+          "Name": "Activer la récolte",
+          "Hint": "Le MJ ouvre un biome où le groupe se trouve, et chaque personnage y fouille avec un jet."
+        }
       }
+    },
+    "Crafting": {
+      "Title": "Artisanat",
+      "Edit": "Modifier les recettes",
+      "RecipePlaceholder": "Nom de la recette",
+      "AddRecipe": "Ajouter une recette",
+      "RemoveRecipe": "Supprimer la recette",
+      "Unnamed": "Recette sans nom",
+      "Empty": "Aucune recette. Passez en mode modification pour en créer une.",
+      "NoKnownRecipe": "Ce personnage ne connaît encore aucune recette.",
+      "Orders": "Fabrications à valider",
+      "MyOrders": "Mes demandes de fabrication",
+      "OrderBy": "demandé par {name}",
+      "Make": "Fabriquer",
+      "Request": "Demander",
+      "Result": "Résultat",
+      "ResultQuantityHint": "Quantité fabriquée",
+      "ResultDropHint": "Déposez ici l'objet fabriqué (potion, poison, munitions…).",
+      "Ingredients": "Ingrédients",
+      "IngredientDropHint": "Déposez ici les objets consommés par la fabrication.",
+      "Cost": "Matériaux",
+      "Free": "Gratuit",
+      "CostHint": "Argent dépensé en matériaux à chaque fabrication. Rempli automatiquement au quart du prix de l'objet fabriqué (Compagnon du Seigneur Démon), modifiable.",
+      "Time": "Temps",
+      "TimePlaceholder": "1 minute, 1 heure…",
+      "Roll": "Jet",
+      "BoonsLabel": "Faveurs",
+      "BoonsHint": "Faveurs accordées au jet, ou pénalités si le nombre est négatif.",
+      "KnownBy": "Connue par",
+      "KnownByNobody": "Personne ne la connaît",
+      "NoResult": "Cette recette ne produit encore rien.",
+      "NoCheck": "Aucun jet",
+      "Check": "Jet de {attribute}",
+      "Boons": "{count} faveur(s)",
+      "Banes": "{count} pénalité(s)",
+      "Tools": "Outils requis",
+      "ToolDropHint": "Déposez ici les outils nécessaires mais non consommés (trousse d'alchimiste, outils de forgeron…).",
+      "ToolHint": "Outil requis, non consommé",
+      "ToolOwned": "possédé",
+      "ToolMissing": "manquant",
+      "Help": {
+        "Title": "Comment ça marche ?",
+        "Gm": {
+          "Resources": "Cliquez sur « Créer les ressources » pour ajouter aux objets du monde un dossier « Ressources d'artisanat » (herbes, minerais, parties de créatures, fioles…), avec prix et disponibilité. Vous pouvez les modifier, en ajouter, les mettre en boutique ou dans les récompenses.",
+          "Defaults": "Ou cliquez sur « Recettes par défaut » pour partir de recettes prêtes : potions et poison du livre de base, torches, bougies, flèches, lingots… Les objets du livre sont cherchés dans vos compendiums ; une recette dont l'objet manque est ignorée.",
+          "Create": "Cliquez sur « Modifier les recettes », tapez un nom et cliquez sur « Ajouter une recette ».",
+          "Result": "Glissez dans la zone « Résultat » l'objet fabriqué, depuis la barre latérale ou un compendium, puis réglez la quantité produite. Le champ « Matériaux » se remplit au quart de son prix (règle du Compagnon) : changez-le ou videz-le si besoin.",
+          "Ingredients": "Glissez dans « Ingrédients » les objets consommés, et réglez combien il en faut. Facultatif : les matériaux en argent suffisent souvent.",
+          "Tools": "Glissez dans « Outils requis » ce que le personnage doit posséder sans le consommer, comme une trousse d'alchimiste.",
+          "Requirements": "Facultatif : ajoutez des prérequis (métier, voie, talent, ascendance). Glissez-en un ou tapez un mot comme « forgeron » ; un seul suffit pour fabriquer.",
+          "Roll": "Choisissez un jet (Intellect pour un objet simple, selon le Compagnon) et ses faveurs ou pénalités, ou « Aucun jet ». Le temps est seulement affiché aux joueurs. En cas d'échec, les ingrédients et les matériaux sont perdus.",
+          "Teach": "Cliquez sur le nom des personnages qui connaissent la recette, par exemple ceux qui ont la profession appropriée. Ils sont prévenus.",
+          "Done": "Cliquez sur « Terminer ». Les joueurs fabriquent depuis cet onglet. Pour valider chaque fabrication vous-même, activez-le dans les paramètres du module.",
+          "Example": "Exemple, la Fabrication de poison de l'Assassin : résultat Poison, matériaux 1 sc, outil Trousse d'alchimiste, temps 1 minute, aucun jet."
+        },
+        "Player": {
+          "Character": "Si vous avez plusieurs personnages, choisissez dans le bandeau celui qui fabrique.",
+          "Read": "Chaque recette indique ce qu'elle produit, les ingrédients (ce que vous avez / ce qu'il faut), les outils à posséder, le coût des matériaux et le jet éventuel. Ce qui manque est signalé en orange.",
+          "Craft": "Quand rien ne manque, cliquez sur « Fabriquer ». Le jet est lancé avec les bonus de votre personnage et réussit sur 10 ou plus. En cas d'échec, les ingrédients et les matériaux sont perdus.",
+          "Immediate": "L'objet arrive directement dans votre inventaire, et les ingrédients et l'argent sont retirés.",
+          "Approval": "Votre demande part au MJ, qui la valide ou la refuse. Rien n'est consommé avant sa validation, et vous pouvez l'annuler tant qu'elle attend."
+        }
+      },
+      "ImportResources": "Créer les ressources",
+      "ImportResourcesHint": "Ajoute aux objets du monde un dossier « Ressources d'artisanat » : plantes, minéraux, parties de créatures, composants alchimiques et matériaux d'artisan. Les ressources déjà créées ne sont pas dupliquées.",
+      "ResourcesFolder": "Ressources d'artisanat",
+      "ImportRecipes": "Recettes par défaut",
+      "ImportRecipesHint": "Ajoute des recettes prêtes à l'emploi : potions et poison du livre de base (règles du Compagnon), torches, bougies, flèches, lingots, cuir… Les ressources manquantes sont créées. Les recettes restent à apprendre aux personnages.",
+      "Requirements": "Prérequis (l'un d'eux suffit)",
+      "RequirementPlaceholder": "forgeron, alchimiste…",
+      "AddRequirement": "Ajouter",
+      "RequirementDropHint": "Glissez une profession, une voie, un talent ou une ascendance, ou tapez un mot : il suffit que le nom d'un élément du personnage le contienne (« forgeron » reconnaît « Artisan (forgeron) »).",
+      "RequiresOneOf": "Requiert :"
+    },
+    "Harvest": {
+      "Title": "Récolte",
+      "Open": "Ouverte",
+      "Setup": "Ouvrir la récolte",
+      "Biome": "Biome",
+      "OpenButton": "Ouvrir aux joueurs",
+      "Renew": "Renouveler",
+      "Close": "Fermer",
+      "Table": "Ce qu'on peut y trouver",
+      "Gather": "Récolter",
+      "GmHint": "Chaque personnage récolte une fois. « Renouveler » leur permet de recommencer, par exemple après une journée de recherche.",
+      "PlayerHint": "Un jet réussi permet une fouille, un 20 ou plus en permet deux. Le monde est mourant : on revient souvent bredouille.",
+      "AlreadyDone": "Vous avez déjà récolté ici. Attendez que le MJ renouvelle la récolte.",
+      "Edit": "Modifier les biomes",
+      "RealmPlaceholder": "Nom du monde",
+      "AddRealm": "Ajouter un monde",
+      "Reset": "Réinitialiser depuis le catalogue",
+      "ResetHint": "Remplace tous les mondes et biomes par ceux livrés avec le module.",
+      "ResetConfirm": "Tous vos mondes, biomes et pourcentages seront remplacés par ceux du catalogue livré avec le module, et la récolte en cours sera fermée. Continuer ?",
+      "EditHint": "Chaque ligne a une chance en % et une quantité en dés (1d3, 2d4 ou un nombre). Le reste jusqu'à 100 % ne donne rien. Les chances sont celles d'un monde préservé : l'état du monde les réduit ensuite. Glissez n'importe quel objet dans un biome pour l'ajouter.",
+      "RemoveRealm": "Supprimer le monde",
+      "BiomeName": "Nom du biome",
+      "Realm": "Monde",
+      "Description": "Description (montrée aux joueurs)",
+      "ChanceHint": "Chance de trouver cet objet à chaque fouille réussie, dans un monde préservé",
+      "DiceHint": "Quantité trouvée : 1d3, 2d4 ou un nombre",
+      "DropHint": "Déposez ici des objets (ressources, barre latérale, compendium).",
+      "Totals": "Total : {total} · Rien : {nothing}",
+      "RemoveBiome": "Supprimer le biome",
+      "BiomePlaceholder": "Nom du biome",
+      "AddBiome": "Ajouter un biome",
+      "NoBiome": "Aucun biome. Cliquez sur « Modifier les biomes » pour en créer.",
+      "ChanceColumns": "Chance → selon l'état du monde",
+      "Nothing": "Rien trouvé",
+      "NewRealm": "Nouveau monde",
+      "NewBiome": "Nouveau biome"
     }
   }
 }

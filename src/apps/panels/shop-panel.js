@@ -1,5 +1,5 @@
 import { MODULE_ID, SHOP_APPROVAL_SETTING, modulePath } from "../../shared/constants.js";
-import { errorMessage, ownedCharacterIds, t } from "../../shared/foundry-adapter.js";
+import { errorMessage, isFeatureEnabled, ownedCharacterIds, t } from "../../shared/foundry-adapter.js";
 import { LocalizedError } from "../../shared/i18n.js";
 import { sendRequest } from "../../socket.js";
 import { AVAILABILITIES, openCategories } from "../../trade/shop.js";
@@ -172,6 +172,10 @@ async function dropOnCategory(event, categoryId) {
 export const shopPanel = {
   id: "shop",
   template: modulePath("src/apps/panels/shop-panel.html"),
+
+  enabled() {
+    return isFeatureEnabled("shop");
+  },
 
   isOpen() {
     return openCategories(readShop()).length > 0;

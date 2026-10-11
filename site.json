@@ -5,21 +5,23 @@
   "order": 30,
   "text": {
     "fr": {
-      "title": "Échanges",
-      "summary": "Échanges entre joueurs approuvés par le MJ, butin commun et boutiques.",
+      "title": "Échanges et artisanat",
+      "summary": "Échanges entre joueurs approuvés par le MJ, butin commun, boutiques et artisanat.",
       "features": [
         "Négociation d'objets et d'argent entre personnages",
         "Butin commun dévoilé au fil de la partie, argent partagé",
-        "Boutiques avec prix, disponibilité et stock"
+        "Boutiques avec prix, disponibilité et stock",
+        "Recettes apprises par personnage : potions, poisons, munitions"
       ]
     },
     "en": {
-      "title": "Trade",
-      "summary": "GM-approved trades between players, shared loot and shops.",
+      "title": "Trades and Crafting",
+      "summary": "GM-approved trades between players, shared loot, shops and crafting.",
       "features": [
         "Item and money negotiation between characters",
         "Shared loot revealed as you play, money split evenly",
-        "Shops with prices, availability and stock"
+        "Shops with prices, availability and stock",
+        "Recipes learned per character: potions, poisons, ammunition"
       ]
     }
   }

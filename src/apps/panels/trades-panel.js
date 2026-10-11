@@ -1,5 +1,5 @@
 import { modulePath } from "../../shared/constants.js";
-import { t } from "../../shared/foundry-adapter.js";
+import { isFeatureEnabled, t } from "../../shared/foundry-adapter.js";
 import { sendRequest } from "../../socket.js";
 import { readTrades, roleOf } from "../../trade/trade-store.js";
 import { STATUS } from "../../trade/trade.js";
@@ -22,6 +22,10 @@ function visibleTrades() {
 export const tradesPanel = {
   id: "trades",
   template: modulePath("src/apps/panels/trades-panel.html"),
+
+  enabled() {
+    return isFeatureEnabled("trades");
+  },
 
   badge() {
     const trades = Object.values(readTrades());

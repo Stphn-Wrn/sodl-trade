@@ -1,7 +1,10 @@
 import { MODULE_ID, TRADES_SETTING } from "../shared/constants.js";
-import { errorMessage, isPlayerCharacter, ownsActor } from "../shared/foundry-adapter.js";
+import { errorMessage, isFeatureEnabled, isPlayerCharacter, ownsActor } from "../shared/foundry-adapter.js";
+import { featureOfRequest } from "../shared/features.js";
 import { LocalizedError } from "../shared/i18n.js";
 import { postTradeEvent } from "./chat-log.js";
+import { handleCraftingRequest } from "./crafting-store.js";
+import { handleHarvestRequest } from "./harvest-store.js";
 import { handleLootRequest } from "./loot-store.js";
 import { handleShopRequest } from "./shop-store.js";
 import { resolveRole, toInventory } from "./inventory.js";
@@ -97,7 +100,7 @@ async function act(user, { tradeId, action }, trades) {
   }
 }
 
-const REQUESTS = { create, act, loot: handleLootRequest, shop: handleShopRequest };
+const REQUESTS = { create, act, loot: handleLootRequest, shop: handleShopRequest, crafting: handleCraftingRequest, harvest: handleHarvestRequest };
 
 let queue = Promise.resolve();
 
@@ -106,6 +109,10 @@ async function run(userId, request, onError) {
     const handler = REQUESTS[request.type];
     if (!handler) {
       throw new LocalizedError("SODLTRADE.Errors.UnknownAction");
+    }
+    // A player's window may still show a part the GM has just turned off.
+    if (!isFeatureEnabled(featureOfRequest(request.type))) {
+      throw new LocalizedError("SODLTRADE.Errors.FeatureDisabled");
     }
     await handler(game.users.get(userId), request.data, readTrades());
   } catch (err) {

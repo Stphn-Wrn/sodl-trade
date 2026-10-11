@@ -85,3 +85,19 @@ export async function executePurchase(actor, items, wealth) {
   await actor.createEmbeddedDocuments("Item", items);
   await actor.update(wealthUpdate(wealth));
 }
+
+// Ingredients and money are spent even when the roll fails; the crafted item only comes on a success.
+export async function executeCraft(actor, plan, crafted) {
+  if (plan.updateItems.length > 0) {
+    await actor.updateEmbeddedDocuments("Item", plan.updateItems);
+  }
+  if (plan.deleteItemIds.length > 0) {
+    await actor.deleteEmbeddedDocuments("Item", plan.deleteItemIds);
+  }
+  if (plan.wealth) {
+    await actor.update(wealthUpdate(plan.wealth));
+  }
+  if (crafted.length > 0) {
+    await actor.createEmbeddedDocuments("Item", crafted);
+  }
+}

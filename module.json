@@ -1,7 +1,7 @@
 {
   "id": "sodl-trade",
-  "title": "L'Ombre du Seigneur Démon - Échanges",
-  "description": "Échanges négociés d'objets et d'argent entre personnages joueurs, approuvés par le MJ.",
+  "title": "L'Ombre du Seigneur Démon - Échanges et artisanat",
+  "description": "Échanges négociés d'objets et d'argent entre personnages joueurs, approuvés par le MJ, butin commun, boutiques et artisanat à partir de recettes (potions, poisons…).",
   "version": "1.1.1",
   "compatibility": {
     "minimum": "13",

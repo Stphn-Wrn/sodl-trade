@@ -33,6 +33,26 @@ export function toInventory(actor) {
   };
 }
 
+// Where an owned item was copied from, so an ingredient renamed by its owner is still recognised.
+function sourceUuidsOf(item) {
+  return [item._stats?.compendiumSource, item._stats?.duplicateSource, item.flags?.core?.sourceId].filter(Boolean);
+}
+
+// Item types that describe the character rather than their belongings, checked by recipe requirements.
+const TRAIT_TYPES = ["profession", "path", "talent", "ancestry"];
+
+export function toCraftingInventory(actor) {
+  return {
+    wealth: toWealth(actor.system.wealth),
+    traits: actor.items
+      .filter((item) => TRAIT_TYPES.includes(item.type))
+      .map((item) => ({ name: item.name, sourceUuids: sourceUuidsOf(item) })),
+    items: actor.items
+      .filter((item) => TRADABLE_TYPES.includes(item.type))
+      .map((item) => ({ id: item.id, name: item.name, sourceUuids: sourceUuidsOf(item), quantity: toQuantity(item.system.quantity) }))
+  };
+}
+
 export function resolveRole(trade, user, ownsActor) {
   if (user.isGM) {
     return GM_ROLE;

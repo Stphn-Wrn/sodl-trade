@@ -1,5 +1,5 @@
 import { modulePath } from "../../shared/constants.js";
-import { isPlayerCharacter, ownedCharacterIds, t } from "../../shared/foundry-adapter.js";
+import { isFeatureEnabled, isPlayerCharacter, ownedCharacterIds, t } from "../../shared/foundry-adapter.js";
 import { sendRequest } from "../../socket.js";
 import { readLoot } from "../../trade/loot-store.js";
 import { createShieldResolver, nearbyItemsOf } from "../../trade/shield-resolver.js";
@@ -74,6 +74,10 @@ function playerView(loot) {
 export const lootPanel = {
   id: "loot",
   template: modulePath("src/apps/panels/loot-panel.html"),
+
+  enabled() {
+    return isFeatureEnabled("loot");
+  },
 
   isOpen() {
     return canAccessLoot(readLoot(), ownedCharacterIds());

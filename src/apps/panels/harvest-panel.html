@@ -1,0 +1,170 @@
+<section class="sodl-trade-panel" data-panel="harvest" {{#unless harvest.visible}}hidden{{/unless}}>
+  {{#if isGM}}
+  <div class="sodl-trade-shop-toolbar">
+    {{#if harvest.editing}}
+    <input type="text" name="newRealm" placeholder="{{localize 'SODLTRADE.Harvest.RealmPlaceholder'}}">
+    <button type="button" data-action="harvestAddRealm"><i class="fas fa-plus"></i> {{localize "SODLTRADE.Harvest.AddRealm"}}</button>
+    <button type="button" data-action="harvestReset" title="{{localize 'SODLTRADE.Harvest.ResetHint'}}"><i class="fas fa-rotate-left"></i> {{localize "SODLTRADE.Harvest.Reset"}}</button>
+    <button type="button" class="is-primary" data-action="harvestToggleEdit"><i class="fas fa-check"></i> {{localize "SODLTRADE.Shop.DoneEditing"}}</button>
+    {{else}}
+    <button type="button" data-action="harvestToggleEdit"><i class="fas fa-pen"></i> {{localize "SODLTRADE.Harvest.Edit"}}</button>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  {{#if harvest.editing}}
+
+  <p class="sodl-trade-hint sodl-trade-harvest-intro">{{localize "SODLTRADE.Harvest.EditHint"}}</p>
+  {{#each harvest.edit}}
+  <article class="sodl-trade-category">
+    <header class="sodl-trade-category-header">
+      <i class="fas fa-globe"></i>
+      <input type="text" value="{{this.name}}" data-realm-name="{{this.id}}">
+      <button type="button" class="sodl-trade-icon" data-action="harvestRemoveRealm" data-realm-id="{{this.id}}" {{#unless this.isEmpty}}disabled{{/unless}} title="{{#if this.isEmpty}}{{localize 'SODLTRADE.Harvest.RemoveRealm'}}{{else}}{{localize 'SODLTRADE.Errors.RealmNotEmpty'}}{{/if}}"><i class="fas fa-trash"></i></button>
+    </header>
+
+    {{#each this.biomes}}
+    <details class="sodl-trade-biome" data-biome-details="{{this.id}}" {{#if this.open}}open{{/if}}>
+      <summary><span class="sodl-trade-category-name">{{this.name}}</span> <span class="sodl-trade-category-count">{{this.totalText}}</span></summary>
+      <div class="sodl-trade-recipe-fields sodl-trade-biome-fields">
+        <label>{{localize "SODLTRADE.Harvest.BiomeName"}}
+          <input type="text" value="{{this.name}}" data-biome-name="{{this.id}}">
+        </label>
+        <label>{{localize "SODLTRADE.Harvest.Realm"}}
+          <select data-biome-realm="{{this.id}}">
+            {{#each this.realms}}<option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>{{/each}}
+          </select>
+        </label>
+      </div>
+      <label class="sodl-trade-biome-description">{{localize "SODLTRADE.Harvest.Description"}}
+        <textarea rows="2" data-biome-description="{{this.id}}">{{this.description}}</textarea>
+      </label>
+      <div class="sodl-trade-dropzone" data-biome-drop="{{this.id}}">
+        <ul class="sodl-trade-offer">
+          {{#each this.entries}}
+          <li>
+            <img src="{{this.img}}" alt="">
+            <span class="sodl-trade-item-name">{{this.name}}</span>
+            <input type="text" class="sodl-trade-chance" value="{{this.chance}}" data-entry-chance="{{../id}}/{{this.id}}" title="{{localize 'SODLTRADE.Harvest.ChanceHint'}}"><span>%</span>
+            <input type="text" class="sodl-trade-dice" value="{{this.quantity}}" data-entry-quantity="{{../id}}/{{this.id}}" title="{{localize 'SODLTRADE.Harvest.DiceHint'}}">
+            <button type="button" class="sodl-trade-icon" data-action="harvestRemoveEntry" data-biome-id="{{../id}}" data-entry-id="{{this.id}}" title="{{localize 'SODLTRADE.Window.Remove'}}"><i class="fas fa-xmark"></i></button>
+          </li>
+          {{/each}}
+        </ul>
+        <p class="sodl-trade-dropzone-hint"><i class="fas fa-hand-pointer"></i> {{localize "SODLTRADE.Harvest.DropHint"}}</p>
+      </div>
+      <div class="sodl-trade-box-footer">
+        <p class="sodl-trade-hint">{{localize "SODLTRADE.Harvest.Totals" total=this.totalText nothing=this.nothingText}}</p>
+        <button type="button" class="sodl-trade-icon" data-action="harvestRemoveBiome" data-biome-id="{{this.id}}" title="{{localize 'SODLTRADE.Harvest.RemoveBiome'}}"><i class="fas fa-trash"></i></button>
+      </div>
+    </details>
+    {{/each}}
+
+    <div class="sodl-trade-import">
+      <input type="text" data-new-biome="{{this.id}}" placeholder="{{localize 'SODLTRADE.Harvest.BiomePlaceholder'}}">
+      <button type="button" data-action="harvestAddBiome" data-realm-id="{{this.id}}"><i class="fas fa-plus"></i> {{localize "SODLTRADE.Harvest.AddBiome"}}</button>
+    </div>
+  </article>
+  {{/each}}
+
+  {{else}}
+
+  {{#if harvest.site}}
+  <div class="sodl-trade-box sodl-trade-harvest-site">
+    <header class="sodl-trade-box-header">
+      <span><i class="fas fa-seedling"></i> {{harvest.site.name}}</span>
+      <span class="sodl-trade-shop-state is-open">{{localize "SODLTRADE.Harvest.Open"}}</span>
+    </header>
+    <p class="sodl-trade-box-text">{{harvest.site.description}}</p>
+    <div class="sodl-trade-recipe-tags">
+      <span><i class="fas fa-dice-d20"></i> {{harvest.site.checkText}}</span>
+      <span><i class="fas fa-skull"></i> {{harvest.scarcity}}</span>
+    </div>
+    {{#if isGM}}
+    <div class="sodl-trade-chips sodl-trade-harvesters">
+      {{#each harvest.site.harvesters}}
+      <span class="sodl-trade-chip {{#if this.done}}is-active{{/if}}">{{#if this.done}}<i class="fas fa-check"></i> {{/if}}{{this.name}}</span>
+      {{/each}}
+    </div>
+    <div class="sodl-trade-box-footer">
+      <p class="sodl-trade-hint">{{localize "SODLTRADE.Harvest.GmHint"}}</p>
+      <span>
+        <button type="button" data-action="harvestRenew"><i class="fas fa-rotate"></i> {{localize "SODLTRADE.Harvest.Renew"}}</button>
+        <button type="button" data-action="harvestClose"><i class="fas fa-lock"></i> {{localize "SODLTRADE.Harvest.Close"}}</button>
+      </span>
+    </div>
+    {{else}}
+    {{#if acting}}
+    <div class="sodl-trade-box-footer">
+      {{#if harvest.site.alreadyHarvested}}
+      <p class="sodl-trade-hint">{{localize "SODLTRADE.Harvest.AlreadyDone"}}</p>
+      {{else}}
+      <p class="sodl-trade-hint">{{localize "SODLTRADE.Harvest.PlayerHint"}}</p>
+      {{/if}}
+      <button type="button" class="sodl-trade-craft-button" data-action="harvestGather" {{#if harvest.site.alreadyHarvested}}disabled{{/if}}><i class="fas fa-hand-holding"></i> {{localize "SODLTRADE.Harvest.Gather"}}</button>
+    </div>
+    {{/if}}
+    {{/if}}
+  </div>
+  {{else}}
+  {{#if isGM}}
+  {{#if harvest.hasBiomes}}
+  <div class="sodl-trade-box">
+    <header class="sodl-trade-box-header"><span><i class="fas fa-map"></i> {{localize "SODLTRADE.Harvest.Setup"}}</span></header>
+    <div class="sodl-trade-recipe-fields sodl-trade-harvest-fields">
+      <label>{{localize "SODLTRADE.Harvest.Biome"}}
+        <select name="harvestBiome">
+          {{#each harvest.realms}}
+          <optgroup label="{{this.name}}">
+            {{#each this.biomes}}<option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>{{/each}}
+          </optgroup>
+          {{/each}}
+        </select>
+      </label>
+      <label>{{localize "SODLTRADE.Crafting.Roll"}}
+        <select name="harvestAttribute">
+          {{#each harvest.attributes}}<option value="{{this.attribute}}">{{this.label}}</option>{{/each}}
+        </select>
+      </label>
+      <label>{{localize "SODLTRADE.Crafting.BoonsLabel"}}
+        <input type="number" name="harvestBoons" value="0" title="{{localize 'SODLTRADE.Crafting.BoonsHint'}}">
+      </label>
+    </div>
+    <p class="sodl-trade-box-text sodl-trade-hint">{{harvest.preview.description}}</p>
+    <div class="sodl-trade-box-footer">
+      <p class="sodl-trade-hint"><i class="fas fa-skull"></i> {{harvest.scarcity}}</p>
+      <button type="button" class="is-primary" data-action="harvestOpen"><i class="fas fa-lock-open"></i> {{localize "SODLTRADE.Harvest.OpenButton"}}</button>
+    </div>
+  </div>
+  {{else}}
+  <p class="sodl-trade-empty">{{localize "SODLTRADE.Harvest.NoBiome"}}</p>
+  {{/if}}
+  {{/if}}
+  {{/if}}
+
+  {{#if isGM}}
+  {{#if harvest.preview}}
+  <div class="sodl-trade-box">
+    <header class="sodl-trade-box-header">
+      <span><i class="fas fa-list"></i> {{localize "SODLTRADE.Harvest.Table"}}</span>
+      <span class="sodl-trade-category-count">{{localize "SODLTRADE.Harvest.ChanceColumns"}}</span>
+    </header>
+    <ul class="sodl-trade-offer sodl-trade-catalog">
+      {{#each harvest.preview.entries}}
+      <li>
+        <img src="{{this.img}}" alt="">
+        <span class="sodl-trade-item-name">{{this.name}} <small>{{this.quantity}}</small></span>
+        <span class="sodl-trade-ingredient-count">{{this.chanceText}} → <strong>{{this.effectiveText}}</strong></span>
+      </li>
+      {{/each}}
+      <li class="sodl-trade-empty">
+        <span class="sodl-trade-item-name">{{localize "SODLTRADE.Harvest.Nothing"}}</span>
+        <span class="sodl-trade-ingredient-count">{{harvest.preview.nothingText}} → <strong>{{harvest.preview.effectiveNothingText}}</strong></span>
+      </li>
+    </ul>
+  </div>
+  {{/if}}
+  {{/if}}
+
+  {{/if}}
+</section>

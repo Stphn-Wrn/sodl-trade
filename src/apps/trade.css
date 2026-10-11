@@ -710,6 +710,182 @@
   color: var(--trade-accepted);
 }
 
+.sodl-trade-help {
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--trade-surface);
+  line-height: 1.45;
+}
+
+.sodl-trade-help summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.sodl-trade-help summary i {
+  margin-right: 6px;
+}
+
+.sodl-trade-help ol {
+  margin: 6px 0 0;
+  padding-left: 20px;
+}
+
+.sodl-trade-help li {
+  margin-bottom: 3px;
+}
+
+.sodl-trade-help-example {
+  margin: 6px 0 0;
+  color: var(--trade-muted);
+  font-style: italic;
+}
+
+.sodl-trade-harvest-fields {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
+.sodl-trade-harvest-intro {
+  margin: 0 0 8px;
+  text-align: left;
+}
+
+.sodl-trade-biome {
+  margin: 4px 0;
+  padding: 4px 8px;
+  border: 1px solid var(--trade-border);
+  border-radius: 6px;
+}
+
+.sodl-trade-biome summary {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sodl-trade-biome summary .sodl-trade-category-name {
+  flex: 1;
+}
+
+.sodl-trade-biome-fields {
+  grid-template-columns: 2fr 1fr;
+}
+
+.sodl-trade-biome-description {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 6px 0;
+  font-size: 11px;
+  color: var(--trade-muted);
+}
+
+.sodl-trade-offer input.sodl-trade-chance {
+  width: 52px;
+  text-align: right;
+}
+
+.sodl-trade-offer input.sodl-trade-dice {
+  width: 52px;
+}
+
+.sodl-trade-harvesters {
+  margin-top: 8px;
+}
+
+.sodl-trade-recipe-icon {
+  width: 20px;
+  height: 20px;
+  border: none;
+}
+
+.sodl-trade-recipe-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.sodl-trade-recipe-fields {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.sodl-trade-recipe-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--trade-muted);
+}
+
+.sodl-trade-recipe-fields input,
+.sodl-trade-recipe-fields select {
+  width: 100%;
+}
+
+.sodl-trade-recipe-result {
+  margin: 4px 0;
+  font-weight: bold;
+}
+
+.sodl-trade-ingredient-count {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.sodl-trade-catalog li.is-missing .sodl-trade-ingredient-count {
+  color: var(--trade-waiting);
+  font-weight: bold;
+}
+
+.sodl-trade-recipe-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--trade-muted);
+}
+
+.sodl-trade-recipe-blocked {
+  margin: 4px 0 0;
+  text-align: left;
+  color: var(--trade-waiting);
+}
+
+.sodl-trade-recipe-requirements {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 6px 0 0;
+  font-size: 12px;
+}
+
+.sodl-trade-requirement {
+  padding: 0 8px;
+  border: 1px solid var(--trade-border);
+  border-radius: 10px;
+}
+
+.sodl-trade-requirement.is-owned {
+  border-color: var(--trade-accepted);
+}
+
+.sodl-trade-requirement.is-missing {
+  color: var(--trade-waiting);
+  border-color: var(--trade-waiting);
+}
+
+.sodl-trade-craft-button:not(:disabled) {
+  border-color: var(--trade-accepted);
+}
+
 /* Counter on the toolbar button; the button draws its icon with ::before, so the counter uses ::after. */
 #scene-controls [data-control="sodlTrade"] {
   position: relative;

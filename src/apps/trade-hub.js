@@ -3,6 +3,8 @@ import { captureFocus, restoreFocus } from "./focus.js";
 import { isPlayerCharacter, openApps, t } from "../shared/foundry-adapter.js";
 import { describeOffer } from "../trade/trade-view.js";
 import { isEmptyWealth, toWealth } from "../trade/wealth.js";
+import { craftingPanel } from "./panels/crafting-panel.js";
+import { harvestPanel } from "./panels/harvest-panel.js";
 import { lootPanel } from "./panels/loot-panel.js";
 import { shopPanel } from "./panels/shop-panel.js";
 import { tradesPanel } from "./panels/trades-panel.js";
@@ -17,10 +19,15 @@ function describePurse(wealth) {
 }
 
 // Each tab is a panel with its own template, context, listeners and actions.
-const PANELS = [tradesPanel, lootPanel, shopPanel];
+const PANELS = [tradesPanel, lootPanel, shopPanel, craftingPanel, harvestPanel];
+
+// A panel the GM turned off in the settings has no tab at all.
+function enabledPanels() {
+  return PANELS.filter((panel) => !panel.enabled || panel.enabled());
+}
 
 export function hubBadgeTotal() {
-  return PANELS.reduce((total, panel) => total + (panel.badge?.() ?? 0), 0);
+  return enabledPanels().reduce((total, panel) => total + (panel.badge?.() ?? 0), 0);
 }
 
 export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -63,7 +70,16 @@ export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
   // The GM browses shops like players do, and switches to edit mode to change them.
   shopEditing = false;
   lootEditing = false;
+  craftingEditing = false;
+  // null until the user opens or closes the crafting guide themselves.
+  craftingHelpOpen = null;
+  // Biome the GM is looking at before opening the harvest.
+  harvestBiome = null;
+  harvestEditing = false;
+  // Biomes the GM has unfolded while editing the map.
+  openBiomes = new Set();
   collapsedCategories = new Set();
+  collapsedRecipes = new Set();
 
   #ownedCharacters(characters) {
     if (game.user.isGM) {
@@ -84,19 +100,24 @@ export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
       acting = { id: actingActor.id, name: actingActor.name, img: actingActor.img, purse: describePurse(toWealth(actingActor.system.wealth)) };
     }
     const base = { isGM: game.user.isGM, characters };
-    const closed = PANELS.filter((panel) => !game.user.isGM && panel.isOpen && !panel.isOpen()).map((panel) => panel.id);
-    if (closed.includes(this.tab)) {
-      this.tab = "trades";
+    const panels = enabledPanels();
+    const closed = panels.filter((panel) => !game.user.isGM && panel.isOpen && !panel.isOpen()).map((panel) => panel.id);
+    if (closed.includes(this.tab) || !panels.some((panel) => panel.id === this.tab)) {
+      this.tab = panels.find((panel) => !closed.includes(panel.id))?.id ?? panels[0]?.id ?? null;
     }
     const context = {
       isGM: game.user.isGM,
-      tabs: PANELS.map((panel) => ({ id: panel.id, label: t(`SODLTRADE.Hub.Tabs.${panel.id}`), badge: panel.badge?.() ?? 0, active: panel.id === this.tab, closed: closed.includes(panel.id) })),
+      tabs: panels.map((panel) => ({ id: panel.id, label: t(`SODLTRADE.Hub.Tabs.${panel.id}`), badge: panel.badge?.() ?? 0, active: panel.id === this.tab, closed: closed.includes(panel.id) })),
       mine: mine.map((actor) => ({ id: actor.id, name: actor.name, selected: actor.id === this.actingId })),
       noCharacter: !game.user.isGM && mine.length === 0,
       acting
     };
     for (const panel of PANELS) {
-      context[panel.id] = { visible: panel.id === this.tab, ...(await panel.prepare(this, base)) };
+      if (panels.includes(panel)) {
+        context[panel.id] = { visible: panel.id === this.tab, ...(await panel.prepare(this, base)) };
+      } else {
+        context[panel.id] = { visible: false };
+      }
     }
     return context;
   }
@@ -116,7 +137,7 @@ export class TradeHub extends HandlebarsApplicationMixin(ApplicationV2) {
       this.actingId = event.target.value;
       this.render();
     });
-    for (const panel of PANELS) {
+    for (const panel of enabledPanels()) {
       panel.bind?.(this);
     }
   }

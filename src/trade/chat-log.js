@@ -1,4 +1,4 @@
-import { CHAT_LOOT_SETTING, CHAT_SHOP_SETTING, CHAT_TRADES_SETTING, MODULE_ID, modulePath } from "../shared/constants.js";
+import { CHAT_CRAFT_SETTING, CHAT_LOOT_SETTING, CHAT_SHOP_SETTING, CHAT_TRADES_SETTING, MODULE_ID, modulePath } from "../shared/constants.js";
 import { isPlayerCharacter, renderTemplate, t } from "../shared/foundry-adapter.js";
 import { chatDelivery } from "./chat-audience.js";
 import { describeOffer } from "./trade-view.js";
@@ -94,4 +94,32 @@ export function postOrderEvent(event, order) {
 export function postPurchaseEvent(actor, purchase) {
   const text = t("SODLTRADE.Chat.bought", { name: actor.name, item: describeUnits(purchase.name, purchase.units), cost: describeCost(purchase.cost) });
   return post(CHAT_SHOP_SETTING, { event: "bought", text, showOffers: false, canOpen: false }, { actorIds: [actor.id], alias: t("SODLTRADE.Shop.Title") });
+}
+
+export function postCraftEvent(actor, recipe, succeeded) {
+  const item = describeUnits(recipe.result.name, recipe.result.quantity);
+  let event = "crafted";
+  if (!succeeded) {
+    event = "craftFailed";
+  }
+  const text = t(`SODLTRADE.Chat.${event}`, { name: actor.name, item });
+  return post(CHAT_CRAFT_SETTING, { event, text, showOffers: false, canOpen: false }, { actorIds: [actor.id], alias: t("SODLTRADE.Crafting.Title") });
+}
+
+export function postCraftOrderEvent(event, order) {
+  const actor = game.actors.get(order.actorId);
+  const text = t(`SODLTRADE.Chat.craftOrder.${event}`, { name: actor?.name ?? "", item: order.name });
+  return post(CHAT_CRAFT_SETTING, { event: `craft-order-${event}`, text, showOffers: false, canOpen: false, openCrafting: event === "ordered" }, { actorIds: [order.actorId], alias: t("SODLTRADE.Crafting.Title") });
+}
+
+export function postHarvestEvent({ actor, succeeded, found }, place) {
+  let event = "harvested";
+  if (!succeeded) {
+    event = "harvestFailed";
+  } else if (found.length === 0) {
+    event = "harvestEmpty";
+  }
+  const items = describeOffer({ items: found, wealth: emptyWealth() }, t);
+  const text = t(`SODLTRADE.Chat.${event}`, { name: actor.name, place, items });
+  return post(CHAT_CRAFT_SETTING, { event, text, showOffers: false, canOpen: false }, { actorIds: [actor.id], alias: t("SODLTRADE.Harvest.Title") });
 }

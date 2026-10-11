@@ -1,0 +1,229 @@
+<section class="sodl-trade-panel" data-panel="crafting" {{#unless crafting.visible}}hidden{{/unless}}>
+  {{#if isGM}}
+  <div class="sodl-trade-shop-toolbar">
+    {{#if crafting.editing}}
+    <input type="text" name="newRecipe" placeholder="{{localize 'SODLTRADE.Crafting.RecipePlaceholder'}}">
+    <button type="button" data-action="craftAddRecipe"><i class="fas fa-plus"></i> {{localize "SODLTRADE.Crafting.AddRecipe"}}</button>
+    <button type="button" class="is-primary" data-action="craftToggleEdit"><i class="fas fa-check"></i> {{localize "SODLTRADE.Shop.DoneEditing"}}</button>
+    {{else}}
+    <button type="button" data-action="craftImportRecipes" title="{{localize 'SODLTRADE.Crafting.ImportRecipesHint'}}"><i class="fas fa-book"></i> {{localize "SODLTRADE.Crafting.ImportRecipes"}}</button>
+    <button type="button" data-action="craftImportResources" title="{{localize 'SODLTRADE.Crafting.ImportResourcesHint'}}"><i class="fas fa-seedling"></i> {{localize "SODLTRADE.Crafting.ImportResources"}}</button>
+    <button type="button" data-action="craftToggleEdit"><i class="fas fa-pen"></i> {{localize "SODLTRADE.Crafting.Edit"}}</button>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  <details class="sodl-trade-help" data-craft-help {{#if crafting.help.open}}open{{/if}}>
+    <summary><i class="fas fa-circle-question"></i> {{localize "SODLTRADE.Crafting.Help.Title"}}</summary>
+    <ol>
+      {{#each crafting.help.steps}}<li>{{this}}</li>{{/each}}
+    </ol>
+    {{#if crafting.help.example}}
+    <p class="sodl-trade-help-example"><i class="fas fa-flask"></i> {{crafting.help.example}}</p>
+    {{/if}}
+  </details>
+
+  {{#if crafting.orders.length}}
+  <div class="sodl-trade-box sodl-trade-orders">
+    <header class="sodl-trade-box-header">
+      {{#if isGM}}
+      <span><i class="fas fa-clipboard-list"></i> {{localize "SODLTRADE.Crafting.Orders"}}</span>
+      {{else}}
+      <span><i class="fas fa-clipboard-list"></i> {{localize "SODLTRADE.Crafting.MyOrders"}}</span>
+      {{/if}}
+      <span class="sodl-trade-category-count">{{crafting.orders.length}}</span>
+    </header>
+    <ul class="sodl-trade-offer sodl-trade-catalog">
+      {{#each crafting.orders}}
+      <li>
+        {{#if @root.isGM}}<img src="{{this.crafterImg}}" alt="" title="{{this.crafter}}">{{/if}}
+        <img src="{{this.img}}" alt="">
+        <span class="sodl-trade-item-name">
+          {{this.name}}
+          {{#if @root.isGM}}<small class="sodl-trade-order-buyer">{{localize "SODLTRADE.Crafting.OrderBy" name=this.crafter}}</small>{{/if}}
+        </span>
+        {{#if @root.isGM}}
+        <button type="button" class="sodl-trade-icon sodl-trade-approve" data-action="craftApproveOrder" data-order-id="{{this.id}}" title="{{localize 'SODLTRADE.Window.Approve'}}"><i class="fas fa-check"></i></button>
+        <button type="button" class="sodl-trade-icon" data-action="craftRejectOrder" data-order-id="{{this.id}}" title="{{localize 'SODLTRADE.Window.Reject'}}"><i class="fas fa-ban"></i></button>
+        {{else}}
+        <span class="sodl-trade-status-chip is-awaitingApproval">{{localize "SODLTRADE.Shop.Pending"}}</span>
+        <button type="button" class="sodl-trade-icon" data-action="craftCancelOrder" data-order-id="{{this.id}}" title="{{localize 'SODLTRADE.Shop.CancelOrder'}}"><i class="fas fa-xmark"></i></button>
+        {{/if}}
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+  {{#if crafting.isEmpty}}
+  {{#if isGM}}
+  <p class="sodl-trade-empty">{{localize "SODLTRADE.Crafting.Empty"}}</p>
+  {{else}}
+  <p class="sodl-trade-empty">{{localize "SODLTRADE.Crafting.NoKnownRecipe"}}</p>
+  {{/if}}
+  {{/if}}
+
+  {{#each crafting.recipes}}
+  <article class="sodl-trade-category sodl-trade-recipe {{#if this.collapsed}}is-collapsed{{/if}}">
+    <header class="sodl-trade-category-header">
+      <button type="button" class="sodl-trade-category-toggle {{#unless @root.crafting.editing}}is-grow{{/unless}}" data-action="craftToggleRecipe" data-recipe-id="{{this.id}}" title="{{localize 'SODLTRADE.Shop.ToggleCategory'}}">
+        <i class="fas {{#if this.collapsed}}fa-chevron-right{{else}}fa-chevron-down{{/if}}"></i>
+        {{#if this.result}}<img class="sodl-trade-recipe-icon" src="{{this.result.img}}" alt="">{{/if}}
+        {{#unless @root.crafting.editing}}<span class="sodl-trade-category-name">{{this.name}}</span>{{/unless}}
+      </button>
+      {{#if @root.crafting.editing}}
+      <input type="text" value="{{this.rawName}}" placeholder="{{localize 'SODLTRADE.Crafting.Unnamed'}}" data-craft-name="{{this.id}}">
+      <button type="button" class="sodl-trade-icon" data-action="craftRemoveRecipe" data-recipe-id="{{this.id}}" title="{{localize 'SODLTRADE.Crafting.RemoveRecipe'}}"><i class="fas fa-trash"></i></button>
+      {{else}}
+      {{#if @root.acting}}
+      <button type="button" class="sodl-trade-craft-button" data-action="craftMake" data-recipe-id="{{this.id}}" {{#unless this.ready}}disabled title="{{this.blocked}}"{{/unless}}><i class="fas fa-hammer"></i> {{#if @root.crafting.requireApproval}}{{localize "SODLTRADE.Crafting.Request"}}{{else}}{{localize "SODLTRADE.Crafting.Make"}}{{/if}}</button>
+      {{/if}}
+      {{/if}}
+    </header>
+
+    {{#unless this.collapsed}}
+    {{#if @root.crafting.editing}}
+
+    <div class="sodl-trade-recipe-section">
+      <span class="sodl-trade-label">{{localize "SODLTRADE.Crafting.Result"}}</span>
+      <div class="sodl-trade-dropzone" data-craft-result-drop="{{this.id}}">
+        {{#if this.result}}
+        <ul class="sodl-trade-offer">
+          <li>
+            <img src="{{this.result.img}}" alt="">
+            <span class="sodl-trade-item-name">{{this.result.name}}</span>
+            <input type="number" min="1" value="{{this.result.quantity}}" data-craft-result-quantity="{{this.id}}" title="{{localize 'SODLTRADE.Crafting.ResultQuantityHint'}}">
+          </li>
+        </ul>
+        {{/if}}
+        <p class="sodl-trade-dropzone-hint"><i class="fas fa-hand-pointer"></i> {{localize "SODLTRADE.Crafting.ResultDropHint"}}</p>
+      </div>
+    </div>
+
+    <div class="sodl-trade-recipe-section">
+      <span class="sodl-trade-label">{{localize "SODLTRADE.Crafting.Ingredients"}}</span>
+      <div class="sodl-trade-dropzone" data-craft-ingredient-drop="{{this.id}}">
+        <ul class="sodl-trade-offer">
+          {{#each this.ingredients}}
+          <li>
+            <img src="{{this.img}}" alt="">
+            <span class="sodl-trade-item-name">{{this.name}}</span>
+            <input type="number" min="1" value="{{this.quantity}}" data-craft-ingredient-quantity="{{../id}}/{{this.id}}" title="{{localize 'SODLTRADE.Window.Quantity'}}">
+            <button type="button" class="sodl-trade-icon" data-action="craftRemoveIngredient" data-recipe-id="{{../id}}" data-ingredient-id="{{this.id}}" title="{{localize 'SODLTRADE.Window.Remove'}}"><i class="fas fa-xmark"></i></button>
+          </li>
+          {{/each}}
+        </ul>
+        <p class="sodl-trade-dropzone-hint"><i class="fas fa-hand-pointer"></i> {{localize "SODLTRADE.Crafting.IngredientDropHint"}}</p>
+      </div>
+    </div>
+
+    <div class="sodl-trade-recipe-section">
+      <span class="sodl-trade-label">{{localize "SODLTRADE.Crafting.Requirements"}}</span>
+      <div class="sodl-trade-dropzone" data-craft-requirement-drop="{{this.id}}">
+        <ul class="sodl-trade-offer">
+          {{#each this.requirements}}
+          <li>
+            {{#if this.img}}<img src="{{this.img}}" alt="">{{else}}<i class="fas fa-id-badge"></i>{{/if}}
+            <span class="sodl-trade-item-name">{{this.name}}</span>
+            <button type="button" class="sodl-trade-icon" data-action="craftRemoveRequirement" data-recipe-id="{{../id}}" data-requirement-id="{{this.id}}" title="{{localize 'SODLTRADE.Window.Remove'}}"><i class="fas fa-xmark"></i></button>
+          </li>
+          {{/each}}
+        </ul>
+        <div class="sodl-trade-import">
+          <input type="text" data-requirement-input="{{this.id}}" placeholder="{{localize 'SODLTRADE.Crafting.RequirementPlaceholder'}}">
+          <button type="button" data-action="craftAddRequirement" data-recipe-id="{{this.id}}"><i class="fas fa-plus"></i> {{localize "SODLTRADE.Crafting.AddRequirement"}}</button>
+        </div>
+        <p class="sodl-trade-dropzone-hint"><i class="fas fa-hand-pointer"></i> {{localize "SODLTRADE.Crafting.RequirementDropHint"}}</p>
+      </div>
+    </div>
+
+    <div class="sodl-trade-recipe-section">
+      <span class="sodl-trade-label">{{localize "SODLTRADE.Crafting.Tools"}}</span>
+      <div class="sodl-trade-dropzone" data-craft-tool-drop="{{this.id}}">
+        <ul class="sodl-trade-offer">
+          {{#each this.tools}}
+          <li>
+            <img src="{{this.img}}" alt="">
+            <span class="sodl-trade-item-name">{{this.name}}</span>
+            <button type="button" class="sodl-trade-icon" data-action="craftRemoveTool" data-recipe-id="{{../id}}" data-tool-id="{{this.id}}" title="{{localize 'SODLTRADE.Window.Remove'}}"><i class="fas fa-xmark"></i></button>
+          </li>
+          {{/each}}
+        </ul>
+        <p class="sodl-trade-dropzone-hint"><i class="fas fa-hand-pointer"></i> {{localize "SODLTRADE.Crafting.ToolDropHint"}}</p>
+      </div>
+    </div>
+
+    <div class="sodl-trade-recipe-fields">
+      <label>{{localize "SODLTRADE.Crafting.Cost"}}
+        <input type="text" class="sodl-trade-price" value="{{this.costText}}" placeholder="{{localize 'SODLTRADE.Crafting.Free'}}" data-craft-cost="{{this.id}}" title="{{localize 'SODLTRADE.Crafting.CostHint'}}">
+      </label>
+      <label>{{localize "SODLTRADE.Crafting.Time"}}
+        <input type="text" value="{{this.time}}" placeholder="{{localize 'SODLTRADE.Crafting.TimePlaceholder'}}" data-craft-time="{{this.id}}">
+      </label>
+      <label>{{localize "SODLTRADE.Crafting.Roll"}}
+        <select data-craft-attribute="{{this.id}}">
+          {{#each this.attributes}}<option value="{{this.attribute}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>{{/each}}
+        </select>
+      </label>
+      <label>{{localize "SODLTRADE.Crafting.BoonsLabel"}}
+        <input type="number" value="{{this.boons}}" data-craft-boons="{{this.id}}" title="{{localize 'SODLTRADE.Crafting.BoonsHint'}}">
+      </label>
+    </div>
+
+    <div class="sodl-trade-recipe-section">
+      <span class="sodl-trade-label">{{localize "SODLTRADE.Crafting.KnownBy"}}</span>
+      <div class="sodl-trade-chips">
+        {{#each this.known}}
+        <button type="button" class="sodl-trade-chip {{#if this.known}}is-active{{/if}}" data-action="craftToggleKnown" data-recipe-id="{{../id}}" data-actor-id="{{this.id}}">{{this.name}}</button>
+        {{else}}
+        <span class="sodl-trade-empty">{{localize "SODLTRADE.Hub.NoPartner"}}</span>
+        {{/each}}
+      </div>
+    </div>
+
+    {{else}}
+
+    <div class="sodl-trade-recipe-body">
+      {{#if this.result}}
+      <p class="sodl-trade-recipe-result"><i class="fas fa-arrow-right"></i> {{this.result.name}}{{#if this.result.isBundle}} <small>×{{this.result.quantity}}</small>{{/if}}</p>
+      {{else}}
+      <p class="sodl-trade-empty">{{localize "SODLTRADE.Crafting.NoResult"}}</p>
+      {{/if}}
+      <ul class="sodl-trade-offer sodl-trade-catalog">
+        {{#each this.ingredients}}
+        <li class="{{#if this.isMissing}}is-missing{{/if}}">
+          <img src="{{this.img}}" alt="">
+          <span class="sodl-trade-item-name">{{this.name}}</span>
+          {{#if this.showOwned}}
+          <span class="sodl-trade-ingredient-count">{{this.owned}} / {{this.quantity}}</span>
+          {{else}}
+          <span class="sodl-trade-ingredient-count">×{{this.quantity}}</span>
+          {{/if}}
+        </li>
+        {{/each}}
+        {{#each this.tools}}
+        <li class="{{#if this.isMissing}}is-missing{{/if}}">
+          <img src="{{this.img}}" alt="">
+          <span class="sodl-trade-item-name">{{this.name}}</span>
+          <span class="sodl-trade-ingredient-count" title="{{localize 'SODLTRADE.Crafting.ToolHint'}}"><i class="fas fa-screwdriver-wrench"></i>{{#if this.showOwned}} {{#if this.isMissing}}{{localize "SODLTRADE.Crafting.ToolMissing"}}{{else}}{{localize "SODLTRADE.Crafting.ToolOwned"}}{{/if}}{{/if}}</span>
+        </li>
+        {{/each}}
+      </ul>
+      {{#if this.requirements.length}}
+      <p class="sodl-trade-recipe-requirements"><i class="fas fa-id-badge"></i> {{localize "SODLTRADE.Crafting.RequiresOneOf"}}
+        {{#each this.requirements}}<span class="sodl-trade-requirement {{#if this.isMissing}}is-missing{{/if}} {{#if this.owned}}is-owned{{/if}}">{{this.name}}</span>{{/each}}
+      </p>
+      {{/if}}
+      <div class="sodl-trade-recipe-tags">
+        {{#if this.costText}}<span><i class="fas fa-coins"></i> {{this.costText}}</span>{{/if}}
+        {{#if this.time}}<span><i class="fas fa-hourglass-half"></i> {{this.time}}</span>{{/if}}
+        {{#if this.checkText}}<span><i class="fas fa-dice-d20"></i> {{this.checkText}}</span>{{/if}}
+        {{#if @root.isGM}}<span><i class="fas fa-book"></i> {{#if this.knownNames}}{{this.knownNames}}{{else}}{{localize "SODLTRADE.Crafting.KnownByNobody"}}{{/if}}</span>{{/if}}
+      </div>
+      {{#if this.blocked}}<p class="sodl-trade-hint sodl-trade-recipe-blocked">{{this.blocked}}</p>{{/if}}
+    </div>
+    {{/if}}
+    {{/unless}}
+  </article>
+  {{/each}}
+</section>

@@ -1,0 +1,179 @@
+{
+  "recipes": [
+    {
+      "key": "poison",
+      "name": { "fr": "Poison", "en": "Poison" },
+      "result": { "names": ["Poison"] },
+      "quantity": 1,
+      "ingredients": [],
+      "tools": [{ "names": ["Alchemist's kit", "Trousse d’alchimiste", "Trousse d'alchimiste"] }],
+      "cost": "1 cp",
+      "time": { "fr": "1 minute", "en": "1 minute" },
+      "check": { "attribute": "", "boons": 0 }
+    },
+    {
+      "key": "healing-potion",
+      "name": { "fr": "Potion de soins", "en": "Healing potion" },
+      "result": { "names": ["Healing Potion", "Potion de soins"] },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "healing-herbs" }, "quantity": 3 }, { "ref": { "resource": "empty-vial" }, "quantity": 1 }],
+      "tools": [{ "names": ["Alchemist's kit", "Trousse d’alchimiste", "Trousse d'alchimiste"] }],
+      "cost": "auto",
+      "time": { "fr": "Entre deux aventures", "en": "Between adventures" },
+      "check": { "attribute": "intellect", "boons": 0 }
+    },
+    {
+      "key": "antitoxin-potion",
+      "name": { "fr": "Potion anti-toxine", "en": "Antitoxin potion" },
+      "result": { "names": ["Antitoxin Potion", "Potion anti-toxine"] },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "bitter-root" }, "quantity": 2 }, { "ref": { "resource": "venom-gland" }, "quantity": 1 }, { "ref": { "resource": "empty-vial" }, "quantity": 1 }],
+      "tools": [{ "names": ["Alchemist's kit", "Trousse d’alchimiste", "Trousse d'alchimiste"] }],
+      "cost": "auto",
+      "time": { "fr": "Entre deux aventures", "en": "Between adventures" },
+      "check": { "attribute": "intellect", "boons": 0 }
+    },
+    {
+      "key": "fire-resistance-potion",
+      "name": { "fr": "Potion de résistance au feu", "en": "Fire resistance potion" },
+      "result": { "names": ["Fire Resistance Potion", "Potion de résistance au feu"] },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "sulfur" }, "quantity": 2 }, { "ref": { "resource": "empty-vial" }, "quantity": 1 }],
+      "tools": [{ "names": ["Alchemist's kit", "Trousse d’alchimiste", "Trousse d'alchimiste"] }],
+      "cost": "auto",
+      "time": { "fr": "Entre deux aventures", "en": "Between adventures" },
+      "check": { "attribute": "intellect", "boons": -1 }
+    },
+    {
+      "key": "alertness-potion",
+      "name": { "fr": "Potion de vigilance", "en": "Alertness potion" },
+      "result": { "names": ["Alertness Potion", "Potion de vigilance"] },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "cave-mushroom" }, "quantity": 2 }, { "ref": { "resource": "distilled-spirit" }, "quantity": 1 }, { "ref": { "resource": "empty-vial" }, "quantity": 1 }],
+      "tools": [{ "names": ["Alchemist's kit", "Trousse d’alchimiste", "Trousse d'alchimiste"] }],
+      "cost": "auto",
+      "time": { "fr": "Entre deux aventures", "en": "Between adventures" },
+      "check": { "attribute": "intellect", "boons": -1 }
+    },
+    {
+      "key": "oil-flask",
+      "name": { "fr": "Huile, flasque", "en": "Oil, flask" },
+      "result": { "names": ["Oil, flask", "Huile, flasque"] },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "beeswax" }, "quantity": 1 }, { "ref": { "resource": "empty-vial" }, "quantity": 1 }],
+      "tools": [],
+      "cost": "auto",
+      "time": { "fr": "1 heure", "en": "1 hour" },
+      "check": { "attribute": "", "boons": 0 }
+    },
+    {
+      "key": "torch",
+      "name": { "fr": "Torche", "en": "Torch" },
+      "result": { "names": ["Torch", "Torche"] },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "hardwood" }, "quantity": 1 }, { "ref": { "resource": "cloth-bolt" }, "quantity": 1 }],
+      "tools": [],
+      "cost": null,
+      "time": { "fr": "10 minutes", "en": "10 minutes" },
+      "check": { "attribute": "", "boons": 0 }
+    },
+    {
+      "key": "candle",
+      "name": { "fr": "Bougie", "en": "Candle" },
+      "result": { "names": ["Candle", "Bougie"] },
+      "quantity": 2,
+      "ingredients": [{ "ref": { "resource": "beeswax" }, "quantity": 1 }, { "ref": { "resource": "thread" }, "quantity": 1 }],
+      "tools": [],
+      "cost": null,
+      "time": { "fr": "1 heure", "en": "1 hour" },
+      "check": { "attribute": "", "boons": 0 }
+    },
+    {
+      "key": "arrows",
+      "name": { "fr": "Flèches", "en": "Arrows" },
+      "result": { "names": ["Arrows", "Flèches"] },
+      "ingredients": [{ "ref": { "resource": "hardwood" }, "quantity": 1 }, { "ref": { "resource": "feathers" }, "quantity": 2 }, { "ref": { "resource": "scrap-metal" }, "quantity": 1 }],
+      "tools": [{ "names": ["Tool kit", "Trousse à outils"] }],
+      "cost": null,
+      "time": { "fr": "1 heure", "en": "1 hour" },
+      "check": { "attribute": "", "boons": 0 }
+    },
+    {
+      "key": "iron-ingot",
+      "name": { "fr": "Lingot de fer", "en": "Iron ingot" },
+      "result": { "resource": "iron-ingot" },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "iron-ore" }, "quantity": 2 }],
+      "tools": [{ "names": ["Tool kit", "Trousse à outils"] }],
+      "cost": null,
+      "time": { "fr": "1 heure", "en": "1 hour" },
+      "check": { "attribute": "", "boons": 0 }
+    },
+    {
+      "key": "iron-from-scrap",
+      "name": { "fr": "Lingot de fer (ferraille)", "en": "Iron ingot (scrap)" },
+      "result": { "resource": "iron-ingot" },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "scrap-metal" }, "quantity": 4 }],
+      "tools": [{ "names": ["Tool kit", "Trousse à outils"] }],
+      "cost": null,
+      "time": { "fr": "1 heure", "en": "1 hour" },
+      "check": { "attribute": "", "boons": 0 }
+    },
+    {
+      "key": "silver-ingot",
+      "name": { "fr": "Lingot d'argent", "en": "Silver ingot" },
+      "result": { "resource": "silver-ingot" },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "silver-ore" }, "quantity": 2 }],
+      "tools": [{ "names": ["Tool kit", "Trousse à outils"] }],
+      "cost": null,
+      "time": { "fr": "1 heure", "en": "1 hour" },
+      "check": { "attribute": "", "boons": 0 }
+    },
+    {
+      "key": "steel-ingot",
+      "name": { "fr": "Lingot d'acier", "en": "Steel ingot" },
+      "result": { "resource": "steel-ingot" },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "iron-ingot" }, "quantity": 2 }, { "ref": { "resource": "lamp-black" }, "quantity": 1 }],
+      "tools": [{ "names": ["Tool kit", "Trousse à outils"] }],
+      "cost": null,
+      "time": { "fr": "4 heures", "en": "4 hours" },
+      "check": { "attribute": "intellect", "boons": 0 }
+    },
+    {
+      "key": "bone-powder",
+      "name": { "fr": "Poudre d'os", "en": "Bone powder" },
+      "result": { "resource": "bone-powder" },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "creature-bones" }, "quantity": 2 }],
+      "tools": [],
+      "cost": null,
+      "time": { "fr": "10 minutes", "en": "10 minutes" },
+      "check": { "attribute": "", "boons": 0 }
+    },
+    {
+      "key": "tanned-leather",
+      "name": { "fr": "Cuir tanné", "en": "Tanned leather" },
+      "result": { "resource": "tanned-leather" },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "fur-pelt" }, "quantity": 1 }, { "ref": { "resource": "bitter-root" }, "quantity": 1 }],
+      "tools": [{ "names": ["Tool kit", "Trousse à outils"] }],
+      "cost": null,
+      "time": { "fr": "1 jour", "en": "1 day" },
+      "check": { "attribute": "", "boons": 0 }
+    },
+    {
+      "key": "distilled-spirit",
+      "name": { "fr": "Alcool distillé", "en": "Distilled spirit" },
+      "result": { "resource": "distilled-spirit" },
+      "quantity": 1,
+      "ingredients": [{ "ref": { "resource": "bitter-root" }, "quantity": 2 }, { "ref": { "resource": "empty-vial" }, "quantity": 1 }],
+      "tools": [{ "names": ["Alchemist's kit", "Trousse d’alchimiste", "Trousse d'alchimiste"] }],
+      "cost": null,
+      "time": { "fr": "1 jour", "en": "1 day" },
+      "check": { "attribute": "", "boons": 0 }
+    }
+  ]
+}

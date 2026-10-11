@@ -1,9 +1,14 @@
 import { TradeHub, hubBadgeTotal } from "./apps/trade-hub.js";
 import { TradeWindow } from "./apps/trade-window.js";
-import { CHAT_LOOT_SETTING, CHAT_SHOP_SETTING, CHAT_TRADES_SETTING, LOOT_SETTING, SHOP_APPROVAL_SETTING, MODULE_ID, PRICE_UNIT_SETTING, SHOP_SETTING, TRADES_SETTING } from "./shared/constants.js";
-import { backToTokenControls, isPlayerCharacter, ownedCharacterIds, t } from "./shared/foundry-adapter.js";
+import { CHAT_CRAFT_SETTING, CHAT_LOOT_SETTING, CHAT_SHOP_SETTING, CHAT_TRADES_SETTING, CRAFT_APPROVAL_SETTING, CRAFTING_SETTING, HARVEST_SCARCITY_SETTING, HARVEST_SETTING, LOOT_SETTING, SHOP_APPROVAL_SETTING, MODULE_ID, PRICE_UNIT_SETTING, SHOP_SETTING, TRADES_SETTING } from "./shared/constants.js";
+import { FEATURES, featureSetting } from "./shared/features.js";
+import { anyFeatureEnabled, backToTokenControls, isPlayerCharacter, ownedCharacterIds, t } from "./shared/foundry-adapter.js";
 import { registerSocket } from "./socket.js";
 import { CHAT_MODES } from "./trade/chat-audience.js";
+import { emptyCrafting, knownRecipes } from "./trade/crafting.js";
+import { readCrafting } from "./trade/crafting-store.js";
+import { SCARCITY_LEVELS, emptyHarvest } from "./trade/harvest.js";
+import { readHarvest } from "./trade/harvest-store.js";
 import { readLoot } from "./trade/loot-store.js";
 import { canAccessLoot, emptyLoot } from "./trade/loot.js";
 import { emptyShop, openCategories } from "./trade/shop.js";
@@ -18,6 +23,12 @@ let knownLootAccess = false;
 let knownOrderIds = new Set();
 // Ids of the shops players could already buy from.
 let knownOpenShopIds = new Set();
+// Ids of the crafting requests the GM has already been told about.
+let knownCraftOrderIds = new Set();
+// Recipes the player's characters already knew, as "actorId/recipeId".
+let knownRecipeKeys = new Set();
+// The harvest as the player last saw it, to tell them when it opens or is renewed.
+let knownHarvestSite = null;
 
 const CONTROL_NAME = "sodlTrade";
 
@@ -105,7 +116,80 @@ function onLootChanged(loot) {
   refreshToolbarBadge();
 }
 
+function recipeKeys(crafting) {
+  if (game.user.isGM) {
+    return new Set();
+  }
+  return new Set(ownedCharacterIds().flatMap((actorId) => knownRecipes(crafting, actorId).map((recipe) => `${actorId}/${recipe.id}`)));
+}
+
+function notifyLearned(crafting) {
+  for (const key of recipeKeys(crafting)) {
+    if (knownRecipeKeys.has(key)) {
+      continue;
+    }
+    const [actorId, recipeId] = key.split("/");
+    const recipe = crafting.recipes.find((entry) => entry.id === recipeId);
+    ui.notifications.info(t("SODLTRADE.Notify.RecipeLearned", { name: game.actors.get(actorId)?.name ?? "", recipe: recipe.name }));
+  }
+}
+
+function onCraftingChanged(crafting) {
+  const orders = crafting.orders ?? [];
+  if (game.user.isGM && orders.some((order) => !knownCraftOrderIds.has(order.id))) {
+    ui.notifications.info(t("SODLTRADE.Notify.NewCraftOrder"));
+  }
+  notifyLearned(crafting);
+  knownCraftOrderIds = new Set(orders.map((order) => order.id));
+  knownRecipeKeys = recipeKeys(crafting);
+  TradeHub.refreshAll();
+  refreshToolbarBadge();
+}
+
+function myHarvesters(site) {
+  const mine = ownedCharacterIds();
+  return site.harvestedBy.filter((actorId) => mine.includes(actorId));
+}
+
+function notifyHarvest(site) {
+  if (game.user.isGM || !site) {
+    return;
+  }
+  if (!knownHarvestSite || knownHarvestSite.biome !== site.biome) {
+    ui.notifications.info(t("SODLTRADE.Notify.HarvestOpened"));
+    return;
+  }
+  if (myHarvesters(knownHarvestSite).length > 0 && myHarvesters(site).length === 0) {
+    ui.notifications.info(t("SODLTRADE.Notify.HarvestRenewed"));
+  }
+}
+
+function onHarvestChanged(harvest) {
+  notifyHarvest(harvest.site);
+  knownHarvestSite = harvest.site;
+  TradeHub.refreshAll();
+  refreshToolbarBadge();
+}
+
+// Turning a part on or off changes the tabs, and the toolbar button when every part is off.
+function onFeatureToggled() {
+  TradeHub.refreshAll();
+  ui.controls?.render({ reset: true });
+}
+
 Hooks.once("init", () => {
+  // Registered first so the switches head the module's settings.
+  for (const feature of FEATURES) {
+    game.settings.register(MODULE_ID, featureSetting(feature), {
+      name: `SODLTRADE.Settings.Features.${feature}.Name`,
+      hint: `SODLTRADE.Settings.Features.${feature}.Hint`,
+      scope: "world",
+      config: true,
+      type: Boolean,
+      default: true,
+      onChange: onFeatureToggled
+    });
+  }
   game.settings.register(MODULE_ID, TRADES_SETTING, {
     scope: "world",
     config: false,
@@ -127,6 +211,20 @@ Hooks.once("init", () => {
     default: emptyShop(),
     onChange: onShopChanged
   });
+  game.settings.register(MODULE_ID, CRAFTING_SETTING, {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: emptyCrafting(),
+    onChange: onCraftingChanged
+  });
+  game.settings.register(MODULE_ID, HARVEST_SETTING, {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: emptyHarvest(),
+    onChange: onHarvestChanged
+  });
   game.settings.register(MODULE_ID, PRICE_UNIT_SETTING, {
     name: "SODLTRADE.Settings.PriceUnit.Name",
     hint: "SODLTRADE.Settings.PriceUnit.Hint",
@@ -140,7 +238,8 @@ Hooks.once("init", () => {
   for (const [key, label, fallback] of [
     [CHAT_TRADES_SETTING, "Trades", "involved"],
     [CHAT_LOOT_SETTING, "Loot", "everyone"],
-    [CHAT_SHOP_SETTING, "Shop", "involved"]
+    [CHAT_SHOP_SETTING, "Shop", "involved"],
+    [CHAT_CRAFT_SETTING, "Craft", "involved"]
   ]) {
     game.settings.register(MODULE_ID, key, {
       name: `SODLTRADE.Settings.Chat${label}.Name`,
@@ -161,6 +260,25 @@ Hooks.once("init", () => {
     default: true,
     onChange: () => TradeHub.refreshAll()
   });
+  game.settings.register(MODULE_ID, HARVEST_SCARCITY_SETTING, {
+    name: "SODLTRADE.Settings.HarvestScarcity.Name",
+    hint: "SODLTRADE.Settings.HarvestScarcity.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: Object.fromEntries(Object.keys(SCARCITY_LEVELS).map((level) => [level, `SODLTRADE.Settings.HarvestScarcity.${level}`])),
+    default: "dying",
+    onChange: () => TradeHub.refreshAll()
+  });
+  game.settings.register(MODULE_ID, CRAFT_APPROVAL_SETTING, {
+    name: "SODLTRADE.Settings.CraftApproval.Name",
+    hint: "SODLTRADE.Settings.CraftApproval.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: () => TradeHub.refreshAll()
+  });
 });
 
 Hooks.once("ready", () => {
@@ -172,12 +290,19 @@ Hooks.once("ready", () => {
   const shop = readShop();
   knownOrderIds = new Set((shop.orders ?? []).map((order) => order.id));
   knownOpenShopIds = new Set(openCategories(shop).map((category) => category.id));
+  const crafting = readCrafting();
+  knownCraftOrderIds = new Set((crafting.orders ?? []).map((order) => order.id));
+  knownRecipeKeys = recipeKeys(crafting);
+  knownHarvestSite = readHarvest().site;
   refreshToolbarBadge();
 });
 
 Hooks.on("renderSceneControls", () => refreshToolbarBadge());
 
 Hooks.on("getSceneControlButtons", (controls) => {
+  if (!anyFeatureEnabled()) {
+    return;
+  }
   controls[CONTROL_NAME] = {
     name: CONTROL_NAME,
     title: t("SODLTRADE.Title"),
@@ -208,12 +333,24 @@ Hooks.on("updateActor", (actor) => {
   }
 });
 
+// Keeps the ingredients a character owns up to date in the crafting tab.
+for (const hook of ["createItem", "updateItem", "deleteItem"]) {
+  Hooks.on(hook, (item) => {
+    if (isPlayerCharacter(item.parent)) {
+      TradeHub.refreshAll();
+    }
+  });
+}
+
 Hooks.on("renderChatMessageHTML", (message, html) => {
   for (const button of html.querySelectorAll("[data-sodl-trade-open]")) {
     button.addEventListener("click", () => TradeWindow.open(button.dataset.sodlTradeOpen));
   }
   for (const button of html.querySelectorAll("[data-sodl-trade-shop]")) {
     button.addEventListener("click", () => TradeHub.open("shop"));
+  }
+  for (const button of html.querySelectorAll("[data-sodl-trade-crafting]")) {
+    button.addEventListener("click", () => TradeHub.open("crafting"));
   }
   for (const button of html.querySelectorAll("[data-sodl-trade-loot]")) {
     button.addEventListener("click", () => TradeHub.open("loot"));

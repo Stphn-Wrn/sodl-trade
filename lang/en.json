@@ -14,7 +14,9 @@
       "Tabs": {
         "trades": "Trades",
         "loot": "Rewards",
-        "shop": "Shop"
+        "shop": "Shop",
+        "crafting": "Crafting",
+        "harvest": "Harvest"
       },
       "Acting": "Character",
       "ClosedTab": "Closed by the GM",
@@ -149,7 +151,18 @@
         "rejected": "The GM rejected {name}'s purchase: {item}.",
         "cancelled": "{name} cancelled their purchase request: {item}.",
         "updated": "The GM changed {name}'s request: {item} for {cost}."
-      }
+      },
+      "crafted": "{name} crafts {item}.",
+      "craftFailed": "{name} fails to craft {item}: the ingredients are lost.",
+      "OpenCrafting": "See crafting",
+      "craftOrder": {
+        "ordered": "{name} asks to craft {item}.",
+        "rejected": "The GM rejected {name}'s crafting: {item}.",
+        "cancelled": "{name} cancelled their crafting request: {item}."
+      },
+      "harvested": "{name} searches the area ({place}) and finds {items}.",
+      "harvestEmpty": "{name} searches the area ({place}) but finds nothing: the land is dead.",
+      "harvestFailed": "{name} searches the area ({place}) and finds nothing."
     },
     "Errors": {
       "NoGM": "A GM must be connected to handle trades.",
@@ -182,14 +195,42 @@
       "OutOfStock": "\"{name}\" is sold out.",
       "NotEnoughStock": "Only {stock} \"{name}\" left in stock.",
       "OrderGone": "This purchase request no longer exists.",
-      "ShopClosed": "This shop is closed."
+      "ShopClosed": "This shop is closed.",
+      "NotCraftable": "\"{name}\" cannot be crafted: only equipment can.",
+      "RecipeGone": "This recipe no longer exists.",
+      "IngredientGone": "This ingredient is no longer in the recipe.",
+      "InvalidAttribute": "Unknown attribute.",
+      "RecipeUnknown": "This character does not know the \"{name}\" recipe.",
+      "NoResult": "The \"{name}\" recipe does not make anything yet.",
+      "MissingTool": "\"{name}\" is needed to craft this item.",
+      "ResourcesFailed": "Could not create the resources: see the console (F12).",
+      "HarvestClosed": "The harvest is not open.",
+      "AlreadyHarvested": "This character has already harvested here.",
+      "FeatureDisabled": "The GM has turned this part of the module off.",
+      "RealmNotEmpty": "This world still has biomes: move or delete them first.",
+      "BiomeGone": "This biome no longer exists.",
+      "EntryGone": "This line no longer exists.",
+      "InvalidChance": "Invalid chance: write a percentage between 0 and 100.",
+      "InvalidDice": "Invalid quantity: write for instance 1d3, 2d4 or 2.",
+      "ChanceOver100": "The chances of \"{name}\" would add up to more than 100%.",
+      "RecipesFailed": "Could not add the recipes: see the console (F12).",
+      "MissingRequirement": "You need to be: {names} (any one is enough)."
     },
     "Notify": {
       "Invited": "{name} offers you a trade.",
       "LootAdded": "New rewards are available.",
       "LootOpened": "The rewards are open!",
       "NewOrder": "New purchase request to approve.",
-      "ShopOpened": "The \"{name}\" shop is open."
+      "ShopOpened": "The \"{name}\" shop is open.",
+      "RecipeLearned": "{name} learns the \"{recipe}\" recipe.",
+      "NewCraftOrder": "New crafting request to approve.",
+      "ResourcesCreated": "{count} resource(s) created in the \"Crafting resources\" items folder.",
+      "ResourcesUpToDate": "All the basic resources already exist.",
+      "HarvestOpened": "The harvest is open!",
+      "HarvestRenewed": "You can harvest again.",
+      "RecipesImported": "{count} recipe(s) added. Teach them to characters in \"Edit recipes\".",
+      "RecipesUpToDate": "All the default recipes are already there.",
+      "RecipesSkipped": "Recipes left out because their items could not be found in the world or the compendiums: {names}."
     },
     "Settings": {
       "PriceUnit": {
@@ -217,7 +258,154 @@
         "gm": "GM only",
         "involved": "People involved (GM and players concerned)",
         "everyone": "Everyone"
+      },
+      "ChatCraft": {
+        "Name": "Crafting and harvest messages",
+        "Hint": "Successful or failed crafting, requests, rejections, cancellations and harvests."
+      },
+      "CraftApproval": {
+        "Name": "Crafting must be approved by the GM",
+        "Hint": "Crafting files a request the GM approves or rejects. Nothing is used up before approval."
+      },
+      "HarvestScarcity": {
+        "Name": "State of the world",
+        "Hint": "Multiplies every chance of finding something, even with a good roll.",
+        "preserved": "Preserved: chances unchanged",
+        "dying": "Dying: chances halved",
+        "devastated": "Devastated: chances divided by four"
+      },
+      "Features": {
+        "trades": {
+          "Name": "Enable trades",
+          "Hint": "GM-approved trades negotiated between players."
+        },
+        "loot": {
+          "Name": "Enable rewards",
+          "Hint": "Shared loot the GM prepares and reveals, and money splitting."
+        },
+        "shop": {
+          "Name": "Enable shops",
+          "Hint": "Shops with prices, availability, stock and purchase requests."
+        },
+        "crafting": {
+          "Name": "Enable crafting",
+          "Hint": "Recipes learned by characters, who craft from their own ingredients."
+        },
+        "harvest": {
+          "Name": "Enable harvesting",
+          "Hint": "The GM opens the biome where the party is, and each character searches it with a roll."
+        }
       }
+    },
+    "Crafting": {
+      "Title": "Crafting",
+      "Edit": "Edit recipes",
+      "RecipePlaceholder": "Recipe name",
+      "AddRecipe": "Add a recipe",
+      "RemoveRecipe": "Delete the recipe",
+      "Unnamed": "Unnamed recipe",
+      "Empty": "No recipes yet. Switch to edit mode to create one.",
+      "NoKnownRecipe": "This character does not know any recipe yet.",
+      "Orders": "Crafting to approve",
+      "MyOrders": "My crafting requests",
+      "OrderBy": "requested by {name}",
+      "Make": "Craft",
+      "Request": "Request",
+      "Result": "Result",
+      "ResultQuantityHint": "Quantity crafted",
+      "ResultDropHint": "Drop the crafted item here (potion, poison, ammunition…).",
+      "Ingredients": "Ingredients",
+      "IngredientDropHint": "Drop the items used up by crafting here.",
+      "Cost": "Materials",
+      "Free": "Free",
+      "CostHint": "Money spent on materials each time. Filled in automatically with a quarter of the crafted item's price (Demon Lord's Companion), and can be changed.",
+      "Time": "Time",
+      "TimePlaceholder": "1 minute, 1 hour…",
+      "Roll": "Roll",
+      "BoonsLabel": "Boons",
+      "BoonsHint": "Boons granted on the roll, or banes when the number is negative.",
+      "KnownBy": "Known by",
+      "KnownByNobody": "Nobody knows it",
+      "NoResult": "This recipe does not make anything yet.",
+      "NoCheck": "No roll",
+      "Check": "{attribute} roll",
+      "Boons": "{count} boon(s)",
+      "Banes": "{count} bane(s)",
+      "Tools": "Required tools",
+      "ToolDropHint": "Drop the tools needed but not used up here (alchemist's kit, smith's tools…).",
+      "ToolHint": "Required tool, not used up",
+      "ToolOwned": "owned",
+      "ToolMissing": "missing",
+      "Help": {
+        "Title": "How does it work?",
+        "Gm": {
+          "Resources": "Click \"Create resources\" to add a \"Crafting resources\" folder to the world's items (herbs, ores, creature parts, vials…), with prices and availability. You can edit them, add more, sell them in shops or put them in the rewards.",
+          "Defaults": "Or click \"Default recipes\" to start from ready-made recipes: core book potions and poison, torches, candles, arrows, ingots… Book items are looked up in your compendiums; a recipe whose item is missing is left out.",
+          "Create": "Click \"Edit recipes\", type a name and click \"Add a recipe\".",
+          "Result": "Drop the crafted item on the \"Result\" zone, from the sidebar or a compendium, then set the quantity made. The \"Materials\" field is filled in with a quarter of its price (Companion rule): change or clear it if needed.",
+          "Ingredients": "Drop the items used up on \"Ingredients\" and set how many are needed. Optional: the materials cost is often enough.",
+          "Tools": "Drop on \"Required tools\" what the character must own without using it up, such as an alchemist's kit.",
+          "Requirements": "Optional: add requirements (profession, path, talent, ancestry). Drop one or type a word like \"blacksmith\"; any one is enough to craft.",
+          "Roll": "Pick a roll (Intellect for a simple item, per the Companion) with its boons or banes, or \"No roll\". The time is only shown to players. On a failure, the ingredients and materials are lost.",
+          "Teach": "Click the names of the characters who know the recipe, such as those with the right profession. They are told.",
+          "Done": "Click \"Done\". Players craft from this tab. To approve each crafting yourself, turn it on in the module settings.",
+          "Example": "Example, the Assassin's Poison Crafting: result Poison, materials 1 cp, tool Alchemist's kit, time 1 minute, no roll."
+        },
+        "Player": {
+          "Character": "If you have several characters, pick the one crafting in the banner.",
+          "Read": "Each recipe shows what it makes, the ingredients (what you have / what is needed), the tools to own, the materials cost and any roll. What is missing is shown in orange.",
+          "Craft": "When nothing is missing, click \"Craft\". The roll uses your character's bonuses and succeeds on 10 or more. On a failure, the ingredients and materials are lost.",
+          "Immediate": "The item goes straight into your inventory, and the ingredients and money are removed.",
+          "Approval": "Your request goes to the GM, who approves or rejects it. Nothing is used up before approval, and you can cancel it while it waits."
+        }
+      },
+      "ImportResources": "Create resources",
+      "ImportResourcesHint": "Adds a \"Crafting resources\" folder to the world's items: plants, minerals, creature parts, alchemical components and craft materials. Resources already created are not duplicated.",
+      "ResourcesFolder": "Crafting resources",
+      "ImportRecipes": "Default recipes",
+      "ImportRecipesHint": "Adds ready-made recipes: core book potions and poison (Companion rules), torches, candles, arrows, ingots, leather… Missing resources are created. The recipes still have to be taught to characters.",
+      "Requirements": "Requirements (any one is enough)",
+      "RequirementPlaceholder": "blacksmith, alchemist…",
+      "AddRequirement": "Add",
+      "RequirementDropHint": "Drop a profession, path, talent or ancestry, or type a word: it is enough for the name of something the character has to contain it (\"smith\" matches \"Artisan (blacksmith)\").",
+      "RequiresOneOf": "Requires:"
+    },
+    "Harvest": {
+      "Title": "Harvest",
+      "Open": "Open",
+      "Setup": "Open the harvest",
+      "Biome": "Biome",
+      "OpenButton": "Open to players",
+      "Renew": "Renew",
+      "Close": "Close",
+      "Table": "What can be found there",
+      "Gather": "Harvest",
+      "GmHint": "Each character harvests once. \"Renew\" lets them try again, after a day of searching for instance.",
+      "PlayerHint": "A successful roll allows one search, 20 or more allows two. The world is dying: you often come back empty-handed.",
+      "AlreadyDone": "You have already harvested here. Wait for the GM to renew the harvest.",
+      "Edit": "Edit biomes",
+      "RealmPlaceholder": "World name",
+      "AddRealm": "Add a world",
+      "Reset": "Reset from the catalog",
+      "ResetHint": "Replaces every world and biome with the ones shipped with the module.",
+      "ResetConfirm": "All your worlds, biomes and percentages will be replaced with the catalog shipped with the module, and the current harvest will close. Continue?",
+      "EditHint": "Each line has a chance in % and a quantity in dice (1d3, 2d4 or a number). What is left up to 100% finds nothing. Chances are those of a preserved world: the state of the world then lowers them. Drop any item on a biome to add it.",
+      "RemoveRealm": "Delete the world",
+      "BiomeName": "Biome name",
+      "Realm": "World",
+      "Description": "Description (shown to players)",
+      "ChanceHint": "Chance to find this item on each successful search, in a preserved world",
+      "DiceHint": "Quantity found: 1d3, 2d4 or a number",
+      "DropHint": "Drop items here (resources, sidebar, compendium).",
+      "Totals": "Total: {total} · Nothing: {nothing}",
+      "RemoveBiome": "Delete the biome",
+      "BiomePlaceholder": "Biome name",
+      "AddBiome": "Add a biome",
+      "NoBiome": "No biomes. Click \"Edit biomes\" to create some.",
+      "ChanceColumns": "Chance → per the state of the world",
+      "Nothing": "Nothing found",
+      "NewRealm": "New world",
+      "NewBiome": "New biome"
     }
   }
 }

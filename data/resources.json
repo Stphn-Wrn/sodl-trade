@@ -1,0 +1,1060 @@
+{
+  "realms": [
+    {
+      "key": "mortal",
+      "name": {
+        "fr": "Monde des mortels",
+        "en": "Mortal world"
+      }
+    },
+    {
+      "key": "hidden",
+      "name": {
+        "fr": "Royaumes cachés",
+        "en": "Hidden Kingdoms"
+      }
+    },
+    {
+      "key": "underworld",
+      "name": {
+        "fr": "Royaume des morts",
+        "en": "Underworld"
+      }
+    },
+    {
+      "key": "hell",
+      "name": {
+        "fr": "Enfer",
+        "en": "Hell"
+      }
+    },
+    {
+      "key": "void",
+      "name": {
+        "fr": "Le Vide",
+        "en": "The Void"
+      }
+    }
+  ],
+  "biomes": [
+    {
+      "key": "forest",
+      "name": {
+        "fr": "Forêt",
+        "en": "Forest"
+      },
+      "description": {
+        "fr": "Des bois malades où les arbres pourrissent sur pied. Quelques plantes survivent encore à l'ombre des troncs morts.",
+        "en": "Sickly woods where trees rot where they stand. A few plants still survive in the shade of the dead trunks."
+      },
+      "realm": "mortal"
+    },
+    {
+      "key": "swamp",
+      "name": {
+        "fr": "Marais",
+        "en": "Swamp"
+      },
+      "description": {
+        "fr": "Des eaux stagnantes et fétides, où seul ce qui aime la mort prospère.",
+        "en": "Stagnant, fetid waters where only what loves death thrives."
+      },
+      "realm": "mortal"
+    },
+    {
+      "key": "mountains",
+      "name": {
+        "fr": "Montagnes",
+        "en": "Mountains"
+      },
+      "description": {
+        "fr": "Des pentes nues balayées par un vent de cendre. La roche garde ses filons, pour qui sait les trouver.",
+        "en": "Bare slopes swept by an ash-laden wind. The rock keeps its veins, for those who can find them."
+      },
+      "realm": "mortal"
+    },
+    {
+      "key": "caves",
+      "name": {
+        "fr": "Souterrains",
+        "en": "Underground"
+      },
+      "description": {
+        "fr": "Cavernes, galeries et mines abandonnées. Dans le noir, la fin du monde semble encore loin.",
+        "en": "Caves, tunnels and abandoned mines. In the dark, the end of the world still seems far away."
+      },
+      "realm": "mortal"
+    },
+    {
+      "key": "plains",
+      "name": {
+        "fr": "Plaines et landes",
+        "en": "Plains and moors"
+      },
+      "description": {
+        "fr": "Des champs brûlés et des landes grises où les herbes folles reprennent ce que les hommes ont abandonné.",
+        "en": "Burnt fields and grey moors where weeds take back what people left behind."
+      },
+      "realm": "mortal"
+    },
+    {
+      "key": "ruins",
+      "name": {
+        "fr": "Ruines et cimetières",
+        "en": "Ruins and graveyards"
+      },
+      "description": {
+        "fr": "Villages pillés et tombes ouvertes. On n'y cueille rien : on y fouille ce que les morts ont laissé.",
+        "en": "Looted villages and open graves. Nothing is picked here: you search through what the dead left behind."
+      },
+      "realm": "mortal"
+    },
+    {
+      "key": "coast",
+      "name": {
+        "fr": "Côtes et rivières",
+        "en": "Coasts and rivers"
+      },
+      "description": {
+        "fr": "Berges boueuses et grèves grises, où l'eau charrie plus de débris que de vie.",
+        "en": "Muddy banks and grey shores, where the water carries more debris than life."
+      },
+      "realm": "mortal"
+    },
+    {
+      "key": "faerie",
+      "realm": "hidden",
+      "name": {
+        "fr": "Royaumes cachés",
+        "en": "Hidden Kingdoms"
+      },
+      "description": {
+        "fr": "Les terres où les fées se sont enfuies. Tout y pousse encore, mais rien n'y est gratuit, et le temps n'y passe pas comme ailleurs.",
+        "en": "The lands the fey fled to. Everything still grows there, but nothing comes free, and time does not pass as it does elsewhere."
+      }
+    },
+    {
+      "key": "underworld",
+      "realm": "underworld",
+      "name": {
+        "fr": "Royaume des morts",
+        "en": "Underworld"
+      },
+      "description": {
+        "fr": "Le domaine des ombres, gardé pour que nul vivant n'y entre. Ce qu'on y trouve a le froid de la mort.",
+        "en": "The domain of the shades, guarded so that no living being enters. What is found there carries the chill of death."
+      }
+    },
+    {
+      "key": "hell",
+      "realm": "hell",
+      "name": {
+        "fr": "Fosses de l'Enfer",
+        "en": "Pits of Hell"
+      },
+      "description": {
+        "fr": "Les fosses où les diables tourmentent les damnés. Y mettre le pied, c'est inviter la corruption.",
+        "en": "The pits where devils torment the damned. Setting foot there invites corruption."
+      }
+    },
+    {
+      "key": "void",
+      "realm": "void",
+      "name": {
+        "fr": "Épaves du Vide",
+        "en": "Wrecks of the Void"
+      },
+      "description": {
+        "fr": "Des débris de réalités détruites dérivant dans les ténèbres glacées, hantés par les démons.",
+        "en": "Debris of destroyed realities drifting in the frozen dark, haunted by demons."
+      }
+    }
+  ],
+  "folders": [
+    {
+      "key": "plants",
+      "name": {
+        "fr": "Plantes et champignons",
+        "en": "Plants and mushrooms"
+      },
+      "items": [
+        {
+          "key": "healing-herbs",
+          "name": {
+            "fr": "Herbes médicinales",
+            "en": "Healing herbs"
+          },
+          "description": {
+            "fr": "Bouquet de plantes courantes qui calment la douleur et aident à la guérison.",
+            "en": "A bundle of common plants that soothe pain and help healing."
+          },
+          "value": 0.01,
+          "availability": "C",
+          "img": "icons/consumables/plants/herb-tied-bundle-green.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "forest": "C",
+              "plains": "U"
+            }
+          }
+        },
+        {
+          "key": "bitter-root",
+          "name": {
+            "fr": "Racine amère",
+            "en": "Bitter root"
+          },
+          "description": {
+            "fr": "Racine noueuse au goût âcre, utilisée dans les remèdes et les antidotes.",
+            "en": "A gnarled, acrid root used in remedies and antidotes."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/consumables/plants/dried-bundle-stems-sticks-roots-brown.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "forest": "C",
+              "swamp": "U",
+              "plains": "C"
+            }
+          }
+        },
+        {
+          "key": "cave-mushroom",
+          "name": {
+            "fr": "Champignon des cavernes",
+            "en": "Cave mushroom"
+          },
+          "description": {
+            "fr": "Champignon pâle qui pousse dans l'obscurité, prisé des alchimistes.",
+            "en": "A pale mushroom that grows in the dark, prized by alchemists."
+          },
+          "value": 0.05,
+          "availability": "U",
+          "img": "icons/consumables/mushrooms/ovate-blue.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "caves": "C",
+              "swamp": "U"
+            }
+          }
+        },
+        {
+          "key": "nightshade",
+          "name": {
+            "fr": "Belladone",
+            "en": "Nightshade"
+          },
+          "description": {
+            "fr": "Baies et feuilles toxiques, base de nombreux poisons.",
+            "en": "Toxic berries and leaves, the base of many poisons."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/commodities/flowers/buds-black-red.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "forest": "U",
+              "swamp": "U"
+            }
+          }
+        },
+        {
+          "key": "grave-moss",
+          "name": {
+            "fr": "Mousse de tombe",
+            "en": "Grave moss"
+          },
+          "description": {
+            "fr": "Mousse grise grattée sur les pierres tombales, réputée pour les préparations nécromantiques.",
+            "en": "Grey moss scraped from gravestones, said to serve in necromantic preparations."
+          },
+          "value": 0.05,
+          "availability": "U",
+          "img": "icons/consumables/plants/leaf-old-dried-curled-green.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "ruins": "U",
+              "swamp": "R",
+              "underworld": "U"
+            }
+          }
+        },
+        {
+          "key": "moonpetal",
+          "name": {
+            "fr": "Pétale de lune",
+            "en": "Moonpetal"
+          },
+          "description": {
+            "fr": "Fleur blanche qui ne s'ouvre qu'à la pleine lune ; elle entre dans les potions les plus puissantes.",
+            "en": "A white flower that only opens under the full moon, used in the strongest potions."
+          },
+          "value": 0.5,
+          "availability": "R",
+          "img": "icons/commodities/flowers/lotus-white.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "forest": "R",
+              "swamp": "R"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "minerals",
+      "name": {
+        "fr": "Minéraux et métaux",
+        "en": "Minerals and metals"
+      },
+      "items": [
+        {
+          "key": "iron-ingot",
+          "name": {
+            "fr": "Lingot de fer",
+            "en": "Iron ingot"
+          },
+          "description": {
+            "fr": "Fer brut prêt à être forgé.",
+            "en": "Raw iron ready for the forge."
+          },
+          "value": 0.05,
+          "availability": "C",
+          "img": "icons/commodities/metal/ingot-iron.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "ruins": "R"
+            }
+          }
+        },
+        {
+          "key": "steel-ingot",
+          "name": {
+            "fr": "Lingot d'acier",
+            "en": "Steel ingot"
+          },
+          "description": {
+            "fr": "Acier de qualité pour les armes et les armures.",
+            "en": "Quality steel for weapons and armor."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/commodities/metal/ingot-steel.webp"
+        },
+        {
+          "key": "silver-ingot",
+          "name": {
+            "fr": "Lingot d'argent",
+            "en": "Silver ingot"
+          },
+          "description": {
+            "fr": "Argent pur, utile contre les créatures qui le craignent.",
+            "en": "Pure silver, useful against creatures that fear it."
+          },
+          "value": 0.5,
+          "availability": "U",
+          "img": "icons/commodities/metal/ingot-silver.webp"
+        },
+        {
+          "key": "cold-iron",
+          "name": {
+            "fr": "Fer froid",
+            "en": "Cold iron"
+          },
+          "description": {
+            "fr": "Fer forgé sans chaleur, redouté des fées.",
+            "en": "Iron worked without heat, dreaded by the fey."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/commodities/metal/ingot-worn-iron.webp"
+        },
+        {
+          "key": "sulfur",
+          "name": {
+            "fr": "Soufre",
+            "en": "Sulfur"
+          },
+          "description": {
+            "fr": "Poudre jaune à l'odeur infernale, utilisée dans les mélanges explosifs et incendiaires.",
+            "en": "A yellow powder with a hellish smell, used in explosive and incendiary mixtures."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/commodities/materials/bowl-powder-yellow.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "mountains": "U",
+              "caves": "U",
+              "hell": "C"
+            }
+          }
+        },
+        {
+          "key": "saltpeter",
+          "name": {
+            "fr": "Salpêtre",
+            "en": "Saltpeter"
+          },
+          "description": {
+            "fr": "Cristaux blancs indispensables aux bombes et à la poudre.",
+            "en": "White crystals needed for bombs and powder."
+          },
+          "value": 0.05,
+          "availability": "U",
+          "img": "icons/commodities/stone/ore-pile-white.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "caves": "U",
+              "ruins": "R"
+            }
+          }
+        },
+        {
+          "key": "quicksilver",
+          "name": {
+            "fr": "Vif-argent",
+            "en": "Quicksilver"
+          },
+          "description": {
+            "fr": "Métal liquide et brillant, aussi précieux que dangereux.",
+            "en": "A shining liquid metal, as precious as it is dangerous."
+          },
+          "value": 0.5,
+          "availability": "R",
+          "img": "icons/commodities/materials/metal-liquid.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "caves": "R"
+            }
+          }
+        },
+        {
+          "key": "iron-ore",
+          "name": {
+            "fr": "Minerai de fer",
+            "en": "Iron ore"
+          },
+          "description": {
+            "fr": "Roche veinée de fer, à fondre pour en tirer des lingots.",
+            "en": "Rock veined with iron, to be smelted into ingots."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/commodities/stone/ore-chunk-iron-black.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "mountains": "C",
+              "caves": "C"
+            }
+          }
+        },
+        {
+          "key": "silver-ore",
+          "name": {
+            "fr": "Minerai d'argent",
+            "en": "Silver ore"
+          },
+          "description": {
+            "fr": "Pépites d'argent prises dans la roche, de plus en plus rares.",
+            "en": "Silver nuggets caught in the rock, rarer by the day."
+          },
+          "value": 0.2,
+          "availability": "U",
+          "img": "icons/commodities/stone/ore-chunk-silver-gray.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "mountains": "R",
+              "caves": "R"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "creatures",
+      "name": {
+        "fr": "Parties de créatures",
+        "en": "Creature parts"
+      },
+      "items": [
+        {
+          "key": "creature-bones",
+          "name": {
+            "fr": "Os de créature",
+            "en": "Creature bones"
+          },
+          "description": {
+            "fr": "Os nettoyés, bons pour la poudre d'os ou l'artisanat.",
+            "en": "Cleaned bones, good for bone powder or crafts."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/commodities/bones/bones-stack-tan.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "ruins": "C",
+              "plains": "U",
+              "caves": "U"
+            }
+          }
+        },
+        {
+          "key": "monster-blood",
+          "name": {
+            "fr": "Sang de monstre",
+            "en": "Monster blood"
+          },
+          "description": {
+            "fr": "Fiole de sang épais prélevé sur une créature monstrueuse.",
+            "en": "A vial of thick blood taken from a monstrous creature."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/commodities/materials/liquid-purple.webp"
+        },
+        {
+          "key": "venom-gland",
+          "name": {
+            "fr": "Glande à venin",
+            "en": "Venom gland"
+          },
+          "description": {
+            "fr": "Glande intacte d'une créature venimeuse, pour les poisons et les antidotes.",
+            "en": "An intact gland from a venomous creature, for poisons and antidotes."
+          },
+          "value": 0.5,
+          "availability": "R",
+          "img": "icons/commodities/biological/organ-bladder-red.webp"
+        },
+        {
+          "key": "giant-scales",
+          "name": {
+            "fr": "Écailles de reptile géant",
+            "en": "Giant reptile scales"
+          },
+          "description": {
+            "fr": "Écailles dures comme l'acier, recherchées par les armuriers.",
+            "en": "Scales as hard as steel, sought after by armorers."
+          },
+          "value": 0.5,
+          "availability": "R",
+          "img": "icons/commodities/leather/scales-green.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "swamp": "R",
+              "coast": "R"
+            }
+          }
+        },
+        {
+          "key": "undead-dust",
+          "name": {
+            "fr": "Poussière de mort-vivant",
+            "en": "Undead dust"
+          },
+          "description": {
+            "fr": "Cendres grises recueillies sur un mort-vivant détruit.",
+            "en": "Grey ashes gathered from a destroyed undead."
+          },
+          "value": 0.1,
+          "availability": "R",
+          "img": "icons/commodities/materials/powder-grey.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "ruins": "R",
+              "underworld": "C"
+            }
+          }
+        },
+        {
+          "key": "demon-ichor",
+          "name": {
+            "fr": "Ichor démoniaque",
+            "en": "Demon ichor"
+          },
+          "description": {
+            "fr": "Sang noir et brûlant d'un démon ; le manipuler est rarement sans conséquence.",
+            "en": "The black, burning blood of a demon; handling it rarely comes without consequences."
+          },
+          "value": 5,
+          "availability": "E",
+          "img": "icons/commodities/materials/slime-thick-orange.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "void": "R",
+              "hell": "R"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "alchemy",
+      "name": {
+        "fr": "Composants alchimiques",
+        "en": "Alchemical components"
+      },
+      "items": [
+        {
+          "key": "empty-vial",
+          "name": {
+            "fr": "Fiole vide",
+            "en": "Empty vial"
+          },
+          "description": {
+            "fr": "Petit récipient de verre bouché, pour contenir une potion ou un poison.",
+            "en": "A small stoppered glass container for a potion or poison."
+          },
+          "value": 0.01,
+          "availability": "C",
+          "img": "icons/consumables/potions/bottle-round-empty-glass.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "ruins": "U"
+            }
+          }
+        },
+        {
+          "key": "distilled-spirit",
+          "name": {
+            "fr": "Alcool distillé",
+            "en": "Distilled spirit"
+          },
+          "description": {
+            "fr": "Alcool fort qui sert de base aux teintures et aux élixirs.",
+            "en": "Strong alcohol used as the base of tinctures and elixirs."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/consumables/potions/bottle-corked-empty.webp"
+        },
+        {
+          "key": "bone-powder",
+          "name": {
+            "fr": "Poudre d'os",
+            "en": "Bone powder"
+          },
+          "description": {
+            "fr": "Os broyés finement, liant pour les préparations alchimiques.",
+            "en": "Finely ground bones, a binder for alchemical preparations."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/tools/laboratory/mortar-powder-green.webp"
+        },
+        {
+          "key": "lamp-black",
+          "name": {
+            "fr": "Noir de fumée",
+            "en": "Lamp black"
+          },
+          "description": {
+            "fr": "Suie très fine pour les encres et les pigments.",
+            "en": "Very fine soot for inks and pigments."
+          },
+          "value": 0.01,
+          "availability": "C",
+          "img": "icons/commodities/materials/powder-black.webp"
+        },
+        {
+          "key": "arcane-salts",
+          "name": {
+            "fr": "Sels arcaniques",
+            "en": "Arcane salts"
+          },
+          "description": {
+            "fr": "Cristaux chargés de magie résiduelle, recherchés pour les potions magiques.",
+            "en": "Crystals charged with lingering magic, sought for magic potions."
+          },
+          "value": 1,
+          "availability": "R",
+          "img": "icons/commodities/gems/gem-cluster-teal.webp"
+        }
+      ]
+    },
+    {
+      "key": "crafts",
+      "name": {
+        "fr": "Matériaux d'artisan",
+        "en": "Craft materials"
+      },
+      "items": [
+        {
+          "key": "tanned-leather",
+          "name": {
+            "fr": "Cuir tanné",
+            "en": "Tanned leather"
+          },
+          "description": {
+            "fr": "Peau préparée pour la maroquinerie et les armures de cuir.",
+            "en": "Prepared hide for leatherwork and leather armor."
+          },
+          "value": 0.05,
+          "availability": "C",
+          "img": "icons/commodities/leather/leather-bolt-brown.webp"
+        },
+        {
+          "key": "fur-pelt",
+          "name": {
+            "fr": "Fourrure",
+            "en": "Fur pelt"
+          },
+          "description": {
+            "fr": "Peau avec ses poils, pour les vêtements chauds.",
+            "en": "A hide with its fur, for warm clothing."
+          },
+          "value": 0.05,
+          "availability": "C",
+          "img": "icons/commodities/leather/fur-pelt-brown.webp"
+        },
+        {
+          "key": "hardwood",
+          "name": {
+            "fr": "Bois dur",
+            "en": "Hardwood"
+          },
+          "description": {
+            "fr": "Planches de chêne ou de frêne pour les manches, les arcs et les boucliers.",
+            "en": "Oak or ash planks for hafts, bows and shields."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/commodities/wood/lumber-plank-brown.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "forest": "C",
+              "coast": "U"
+            }
+          }
+        },
+        {
+          "key": "cloth-bolt",
+          "name": {
+            "fr": "Rouleau de tissu",
+            "en": "Bolt of cloth"
+          },
+          "description": {
+            "fr": "Toile solide pour les vêtements, les sacs et les bandages.",
+            "en": "Sturdy cloth for garments, bags and bandages."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/commodities/cloth/cloth-bolt-tan.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "ruins": "R"
+            }
+          }
+        },
+        {
+          "key": "thread",
+          "name": {
+            "fr": "Fil et aiguille",
+            "en": "Thread and needle"
+          },
+          "description": {
+            "fr": "Pour coudre, réparer et assembler.",
+            "en": "For sewing, mending and assembling."
+          },
+          "value": 0.005,
+          "availability": "C",
+          "img": "icons/commodities/cloth/thread-and-needle.webp"
+        },
+        {
+          "key": "feathers",
+          "name": {
+            "fr": "Plumes",
+            "en": "Feathers"
+          },
+          "description": {
+            "fr": "Plumes d'oie pour l'empennage des flèches ou l'écriture.",
+            "en": "Goose feathers for fletching arrows or for writing."
+          },
+          "value": 0.005,
+          "availability": "C",
+          "img": "icons/commodities/materials/feathers-brown.webp",
+          "harvest": {
+            "quantity": "1d4",
+            "biomes": {
+              "plains": "C",
+              "coast": "U",
+              "forest": "U"
+            }
+          }
+        },
+        {
+          "key": "beeswax",
+          "name": {
+            "fr": "Cire d'abeille",
+            "en": "Beeswax"
+          },
+          "description": {
+            "fr": "Pour les bougies, les sceaux et l'imperméabilisation.",
+            "en": "For candles, seals and waterproofing."
+          },
+          "value": 0.01,
+          "availability": "C",
+          "img": "icons/commodities/materials/bowl-liquid-white.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "forest": "R"
+            }
+          }
+        },
+        {
+          "key": "clay",
+          "name": {
+            "fr": "Argile",
+            "en": "Clay"
+          },
+          "description": {
+            "fr": "Terre glaise pour les pots, les moules et les fioles scellées.",
+            "en": "Clay for pots, molds and sealed jars."
+          },
+          "value": 0.002,
+          "availability": "C",
+          "img": "icons/commodities/stone/clay-grey.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "swamp": "C",
+              "coast": "C"
+            }
+          }
+        },
+        {
+          "key": "scrap-metal",
+          "name": {
+            "fr": "Ferraille",
+            "en": "Scrap metal"
+          },
+          "description": {
+            "fr": "Clous, anneaux et lames brisées récupérés dans les décombres ; un forgeron peut encore en tirer quelque chose.",
+            "en": "Nails, rings and broken blades salvaged from the rubble; a smith can still make something of them."
+          },
+          "value": 0.01,
+          "availability": "C",
+          "img": "icons/commodities/metal/fragments-steel-ring.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "ruins": "C",
+              "coast": "U"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "otherworlds",
+      "name": {
+        "fr": "Autres mondes",
+        "en": "Other worlds"
+      },
+      "items": [
+        {
+          "key": "faerie-dew",
+          "name": {
+            "fr": "Rosée féerique",
+            "en": "Faerie dew"
+          },
+          "description": {
+            "fr": "Gouttes cueillies à l'aube sur les fleurs des Royaumes cachés ; elles ne s'évaporent jamais.",
+            "en": "Drops gathered at dawn from the flowers of the Hidden Kingdoms; they never evaporate."
+          },
+          "value": 1,
+          "availability": "E",
+          "img": "icons/commodities/materials/liquid-droplet-blue.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "faerie": "U"
+            }
+          }
+        },
+        {
+          "key": "faerie-pollen",
+          "name": {
+            "fr": "Pollen de fée",
+            "en": "Faerie pollen"
+          },
+          "description": {
+            "fr": "Poudre dorée qui fait tourner la tête de qui la respire.",
+            "en": "A golden powder that makes whoever breathes it dizzy."
+          },
+          "value": 0.5,
+          "availability": "E",
+          "img": "icons/commodities/materials/bowl-powder-gold.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "faerie": "C"
+            }
+          }
+        },
+        {
+          "key": "deathmoth-eggs",
+          "name": {
+            "fr": "Œufs de phalène des morts",
+            "en": "Death moth eggs"
+          },
+          "description": {
+            "fr": "Œufs d'une phalène extrêmement rare qu'on ne trouve que dans le Royaume des morts ; ils servent à préparer la sentence de mort (Compagnon du Seigneur Démon).",
+            "en": "Eggs of an extremely rare moth found only in the Underworld; they are used to prepare death sentence (Demon Lord's Companion)."
+          },
+          "value": 2,
+          "availability": "E",
+          "img": "icons/commodities/biological/wing-insect-blue.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "underworld": "R"
+            }
+          }
+        },
+        {
+          "key": "asphodel",
+          "name": {
+            "fr": "Asphodèle grise",
+            "en": "Grey asphodel"
+          },
+          "description": {
+            "fr": "Fleur pâle qui couvre les plaines du Royaume des morts ; elle fait oublier.",
+            "en": "A pale flower covering the plains of the Underworld; it brings forgetfulness."
+          },
+          "value": 0.5,
+          "availability": "E",
+          "img": "icons/commodities/flowers/lily-grey-orange.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "underworld": "C"
+            }
+          }
+        },
+        {
+          "key": "shade-essence",
+          "name": {
+            "fr": "Essence d'ombre",
+            "en": "Shade essence"
+          },
+          "description": {
+            "fr": "Un reste d'ombre capturé dans du verre, froid au toucher.",
+            "en": "A remnant of a shade caught in glass, cold to the touch."
+          },
+          "value": 3,
+          "availability": "E",
+          "img": "icons/commodities/materials/glass-orb-teal.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "underworld": "U"
+            }
+          }
+        },
+        {
+          "key": "hell-brimstone",
+          "name": {
+            "fr": "Soufre infernal",
+            "en": "Hellish brimstone"
+          },
+          "description": {
+            "fr": "Roche qui brûle sans se consumer, arrachée aux parois des fosses.",
+            "en": "Rock that burns without being consumed, torn from the walls of the pits."
+          },
+          "value": 2,
+          "availability": "E",
+          "img": "icons/commodities/stone/ore-chunk-magma-brown.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "hell": "C"
+            }
+          }
+        },
+        {
+          "key": "damned-ember",
+          "name": {
+            "fr": "Braise de damné",
+            "en": "Ember of the damned"
+          },
+          "description": {
+            "fr": "Une braise où l'on croit entendre crier. Les diables s'en servent pour leurs tourments.",
+            "en": "An ember in which one seems to hear screaming. Devils use them for their torments."
+          },
+          "value": 5,
+          "availability": "E",
+          "img": "icons/commodities/stone/stone-meterorite-glowing-yellow.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "hell": "R"
+            }
+          }
+        },
+        {
+          "key": "dead-reality-shard",
+          "name": {
+            "fr": "Éclat de réalité morte",
+            "en": "Shard of a dead reality"
+          },
+          "description": {
+            "fr": "Fragment d'un monde détruit dérivant dans le Vide ; ses lois ne sont pas les nôtres.",
+            "en": "A fragment of a destroyed world drifting in the Void; its laws are not ours."
+          },
+          "value": 5,
+          "availability": "E",
+          "img": "icons/commodities/bones/fossil-chitin.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "void": "U"
+            }
+          }
+        },
+        {
+          "key": "titan-bone",
+          "name": {
+            "fr": "Os calcifié de titan",
+            "en": "Calcified titan bone"
+          },
+          "description": {
+            "fr": "Reste d'un être titanesque mort dans le Vide, dur comme la pierre.",
+            "en": "A remnant of a titanic being dead in the Void, hard as stone."
+          },
+          "value": 3,
+          "availability": "E",
+          "img": "icons/commodities/bones/bones-stack-grey.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "void": "C"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
