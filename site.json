@@ -1,0 +1,26 @@
+{
+  "group": "sodl",
+  "platform": "foundry",
+  "icon": "fa-right-left",
+  "order": 30,
+  "text": {
+    "fr": {
+      "title": "Échanges",
+      "summary": "Échanges entre joueurs approuvés par le MJ, butin commun et boutiques.",
+      "features": [
+        "Négociation d'objets et d'argent entre personnages",
+        "Butin commun dévoilé au fil de la partie, argent partagé",
+        "Boutiques avec prix, disponibilité et stock"
+      ]
+    },
+    "en": {
+      "title": "Trade",
+      "summary": "GM-approved trades between players, shared loot and shops.",
+      "features": [
+        "Item and money negotiation between characters",
+        "Shared loot revealed as you play, money split evenly",
+        "Shops with prices, availability and stock"
+      ]
+    }
+  }
+}
