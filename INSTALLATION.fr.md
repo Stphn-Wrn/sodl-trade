@@ -5,9 +5,9 @@
 ## Avant de commencer
 
 Il vous faut :
-- Foundry VTT (v13 minimum, testé sur v14) ;
-- le système de jeu `demonlord` (« Shadow of the Demon Lord ») installé ;
-- un accès MJ pour activer le module.
+- Foundry VTT (v13 minimum, testé sur v14)
+- le système de jeu `demonlord` (« Shadow of the Demon Lord ») installé
+- un accès MJ pour activer le module
 
 ## Installer
 
