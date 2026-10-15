@@ -91,6 +91,15 @@ test("un prérequis est rempli par un métier, une voie, un talent ou une ascend
   assert.deepEqual(requirementStatus(recipe, inventory), { met: true, requirements: [{ id: "q1", sourceUuid: null, name: "Forgeron", img: "", owned: true }] });
 });
 
+test("un prérequis des recettes livrées est aussi reconnu sous ses autres noms, comme la version anglaise d'une fiche", () => {
+  const recipe = { ingredients: [], tools: [], requirements: [{ id: "q1", sourceUuid: null, name: "Apothicaire ou guérisseur", img: "", aliases: ["Apothecary", "Alchemist"] }], cost: null };
+  const english = { wealth: wealth({}), items: [], traits: [{ name: "Alchemist", sourceUuids: [] }] };
+  const unrelated = { wealth: wealth({}), items: [], traits: [{ name: "Soldat", sourceUuids: [] }] };
+
+  assert.equal(requirementStatus(recipe, english).met, true);
+  assert.equal(requirementStatus(recipe, unrelated).met, false);
+});
+
 test("un prérequis glissé depuis un compendium est aussi reconnu par l'objet dont la fiche est une copie", () => {
   const recipe = { ingredients: [], tools: [], requirements: [{ id: "q1", sourceUuid: "Compendium.prof.Artisan", name: "Artisan", img: "" }], cost: null };
   const inventory = { wealth: wealth({}), items: [], traits: [{ name: "Forgeron", sourceUuids: ["Compendium.prof.Artisan"] }] };

@@ -32,7 +32,7 @@ function describeResource(key) {
 }
 
 // Book items are looked up by name in the world first, then in every item compendium (translated names included).
-async function findByNames(names) {
+export async function findByNames(names) {
   const wanted = names.map(normalize);
   const worldItem = game.items.find((item) => wanted.includes(normalize(item.name)));
   if (worldItem) {
@@ -66,7 +66,7 @@ async function resolveRefs(refs) {
 
 // Runs on the GM's client. The resources the recipes use are created first if the world lacks them.
 export async function importDefaultRecipes() {
-  const response = await fetch(modulePath("data/recipes.json"));
+  const response = await fetch(modulePath("data/recipes.json"), { cache: "no-cache" });
   const { recipes: definitions } = await response.json();
   const refs = recipeRefs(definitions);
   if (refs.some((ref) => ref.resource && !worldResource(ref.resource))) {

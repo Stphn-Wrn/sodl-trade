@@ -4,7 +4,7 @@ function localized(text, lang) {
   return text[lang] ?? text[FALLBACK_LANG];
 }
 
-// The system stores an item's price as a number of gold crowns, in a text field.
+// The system stores an item's price as a number of silver shillings, in a text field.
 export function resourceItemData(resource, lang) {
   return {
     name: localized(resource.name, lang),

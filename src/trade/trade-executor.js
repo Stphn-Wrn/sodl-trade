@@ -1,6 +1,6 @@
 import { createShieldResolver } from "./shield-resolver.js";
 import { unpairedShieldHalves } from "./shield-pairs.js";
-import { prepareReceivedItem } from "./transfer-plan.js";
+import { prepareReceivedItem, stackCrafted } from "./transfer-plan.js";
 import { DENOMINATIONS, emptyWealth, isEmptyWealth, settleWealth, toWealth } from "./wealth.js";
 
 function shieldView(item) {
@@ -97,7 +97,12 @@ export async function executeCraft(actor, plan, crafted) {
   if (plan.wealth) {
     await actor.update(wealthUpdate(plan.wealth));
   }
-  if (crafted.length > 0) {
-    await actor.createEmbeddedDocuments("Item", crafted);
+  // Read after the ingredients are spent, so a stack used up just now is not added to.
+  const { create, update } = stackCrafted([...actor.items], crafted);
+  if (update.length > 0) {
+    await actor.updateEmbeddedDocuments("Item", update);
+  }
+  if (create.length > 0) {
+    await actor.createEmbeddedDocuments("Item", create);
   }
 }

@@ -9,6 +9,10 @@
       "NoTrade": "Aucun échange en cours.",
       "Open": "Ouvrir",
       "New": "Proposer un échange",
+      "Preview": {
+        "Label": "Voir comme",
+        "GM": "Le MJ (moi)"
+      },
       "NoCharacter": "Vous ne possédez aucun personnage.",
       "NoPartner": "Aucun autre personnage joueur.",
       "Tabs": {
@@ -16,12 +20,14 @@
         "loot": "Récompenses",
         "shop": "Boutiques",
         "crafting": "Artisanat",
-        "harvest": "Récolte"
+        "harvest": "Récolte",
+        "lab": "Laboratoire"
       },
       "Acting": "Personnage",
       "ClosedTab": "Fermé par le MJ",
       "ProposeTo": "Proposer un échange à {name}",
-      "ProposeHint": "Cliquez sur un personnage pour lui proposer un échange."
+      "ProposeHint": "Cliquez sur un personnage pour lui proposer un échange.",
+      "Title": "Échanges et artisanat"
     },
     "Loot": {
       "Title": "Récompenses",
@@ -162,10 +168,26 @@
       },
       "harvested": "{name} fouille les environs ({place}) et trouve {items}.",
       "harvestEmpty": "{name} fouille les environs ({place}) mais ne trouve rien : la terre est morte.",
-      "harvestFailed": "{name} fouille les environs ({place}) sans rien trouver."
+      "harvestFailed": "{name} fouille les environs ({place}) sans rien trouver.",
+      "OpenAlchemy": "Voir le chaudron",
+      "lab": {
+        "incantationWritten": "{name} écrit {item}.",
+        "incantationCopied": "{name} recopie {item}.",
+        "identified": "{name} identifie {item} et apprend la recette « {recipe} ».",
+        "spellBrewed": "{name} prépare {item} par le sort Brew Potion.",
+        "mixed": {
+          "transformed": "{name} mélange {names} : les potions deviennent une nouvelle potion, au choix du MJ, qui dure trois fois plus longtemps.",
+          "doubled": "{name} mélange {names} : les effets se cumulent et durent deux fois plus longtemps.",
+          "combined": "{name} mélange {names} : les effets se cumulent.",
+          "oneFades": "{name} mélange {names} : une des potions, au choix du MJ, perd sa magie.",
+          "allFade": "{name} mélange {names} : les deux potions perdent leur magie.",
+          "poison": "{name} mélange {names} : le mélange devient un poison.",
+          "explosion": "{name} mélange {names} : le mélange explose ! Tout ce qui se trouve à 5 mètres subit les dégâts (la moitié sur un jet d'Agilité réussi)."
+        }
+      }
     },
     "Errors": {
-      "NoGM": "Un MJ doit être connecté pour gérer les échanges.",
+      "NoGM": "Un MJ doit être connecté : c'est son client qui vérifie et applique les échanges, achats, fabrications et récoltes.",
       "TradeNotFound": "Cet échange n'existe plus.",
       "ActorMissing": "Un des personnages de l'échange n'existe plus.",
       "NotYourCharacter": "Vous ne pouvez proposer un échange qu'avec votre propre personnage.",
@@ -214,7 +236,14 @@
       "InvalidDice": "Quantité invalide : écrivez par exemple 1d3, 2d4 ou 2.",
       "ChanceOver100": "Le total des chances de « {name} » dépasserait 100 %.",
       "RecipesFailed": "Impossible d'ajouter les recettes : voir la console (F12).",
-      "MissingRequirement": "Il faut être : {names} (l'un d'eux suffit)."
+      "MissingRequirement": "Il faut être : {names} (l'un d'eux suffit).",
+      "InvalidStation": "Cet atelier n'existe pas.",
+      "NoCastingLeft": "« {name} » n'a plus de lancer avant le prochain repos.",
+      "SpellNotLearned": "Ce personnage ne connaît pas le sort « {name} ».",
+      "NotAPotion": "« {name} » n'est pas une potion.",
+      "NotAnIncantation": "« {name} » n'est pas une incantation.",
+      "NoPotionRecipe": "« {name} » ne vient d'aucun compendium : le MJ doit créer sa recette.",
+      "NoContainer": "Il faut un récipient vide (fiole vide ou flasque)."
     },
     "Notify": {
       "Invited": "{name} vous propose un échange.",
@@ -230,12 +259,13 @@
       "HarvestRenewed": "Vous pouvez de nouveau récolter.",
       "RecipesImported": "{count} recette(s) ajoutée(s). Apprenez-les aux personnages dans « Modifier les recettes ».",
       "RecipesUpToDate": "Toutes les recettes par défaut sont déjà là.",
-      "RecipesSkipped": "Recettes ignorées, faute de trouver leurs objets dans le monde ou les compendiums : {names}."
+      "RecipesSkipped": "Recettes ignorées, faute de trouver leurs objets dans le monde ou les compendiums : {names}.",
+      "RecipesLearned": "{name} apprend {count} recettes."
     },
     "Settings": {
       "PriceUnit": {
         "Name": "Unité des prix sans unité",
-        "Hint": "Unité utilisée quand le prix d'un objet est un simple nombre, comme « 5 » ou « 0.5 ». Le système Shadow of the Demon Lord stocke ses prix en couronnes d'or."
+        "Hint": "Unité utilisée quand le prix d'un objet est un simple nombre, comme « 5 » ou « 0.5 ». Les compendiums officiels de Shadow of the Demon Lord écrivent leurs prix en pièces d'argent (une potion de soins à « 2 » coûte 2 CA, comme dans le livre)."
       },
       "ShopApproval": {
         "Name": "Les achats doivent être validés par le MJ",
@@ -265,7 +295,7 @@
       },
       "CraftApproval": {
         "Name": "Les fabrications doivent être validées par le MJ",
-        "Hint": "Fabriquer crée une demande que le MJ valide ou refuse. Rien n'est consommé avant la validation."
+        "Hint": "Fabriquer, écrire ou copier une incantation, brasser une potion par sort ou au chaudron et mélanger des potions créent une demande que le MJ valide ou refuse depuis l'onglet Artisanat. Rien n'est consommé avant la validation."
       },
       "HarvestScarcity": {
         "Name": "État du monde",
@@ -299,9 +329,6 @@
     },
     "Crafting": {
       "Title": "Artisanat",
-      "Edit": "Modifier les recettes",
-      "RecipePlaceholder": "Nom de la recette",
-      "AddRecipe": "Ajouter une recette",
       "RemoveRecipe": "Supprimer la recette",
       "Unnamed": "Recette sans nom",
       "Empty": "Aucune recette. Passez en mode modification pour en créer une.",
@@ -310,6 +337,7 @@
       "MyOrders": "Mes demandes de fabrication",
       "OrderBy": "demandé par {name}",
       "Make": "Fabriquer",
+      "MaterialsOnly": "Seulement les matériaux",
       "Request": "Demander",
       "Result": "Résultat",
       "ResultQuantityHint": "Quantité fabriquée",
@@ -340,21 +368,21 @@
         "Title": "Comment ça marche ?",
         "Gm": {
           "Resources": "Cliquez sur « Créer les ressources » pour ajouter aux objets du monde un dossier « Ressources d'artisanat » (herbes, minerais, parties de créatures, fioles…), avec prix et disponibilité. Vous pouvez les modifier, en ajouter, les mettre en boutique ou dans les récompenses.",
-          "Defaults": "Ou cliquez sur « Recettes par défaut » pour partir de recettes prêtes : potions et poison du livre de base, torches, bougies, flèches, lingots… Les objets du livre sont cherchés dans vos compendiums ; une recette dont l'objet manque est ignorée.",
-          "Create": "Cliquez sur « Modifier les recettes », tapez un nom et cliquez sur « Ajouter une recette ».",
+          "Defaults": "Ou cliquez sur « Recettes par défaut » pour partir de recettes conformes aux livres : potions du livre de base et du Demon Lord's Companion, poison de l'Assassin, eau bénite, et objets courants (torches, flèches, lingots…). Chacune demande le métier ou la voie qui convient, sans jet, avec des matériaux au quart du prix (règle du Compagnon). Les objets du livre sont cherchés dans vos compendiums ; une recette dont l'objet manque est ignorée.",
+          "Create": "Cliquez sur « Nouvelle recette » : elle s'ouvre directement en édition à droite. Pour changer une recette existante, choisissez-la dans la liste et cliquez sur « Modifier cette recette ».",
           "Result": "Glissez dans la zone « Résultat » l'objet fabriqué, depuis la barre latérale ou un compendium, puis réglez la quantité produite. Le champ « Matériaux » se remplit au quart de son prix (règle du Compagnon) : changez-le ou videz-le si besoin.",
           "Ingredients": "Glissez dans « Ingrédients » les objets consommés, et réglez combien il en faut. Facultatif : les matériaux en argent suffisent souvent.",
           "Tools": "Glissez dans « Outils requis » ce que le personnage doit posséder sans le consommer, comme une trousse d'alchimiste.",
           "Requirements": "Facultatif : ajoutez des prérequis (métier, voie, talent, ascendance). Glissez-en un ou tapez un mot comme « forgeron » ; un seul suffit pour fabriquer.",
-          "Roll": "Choisissez un jet (Intellect pour un objet simple, selon le Compagnon) et ses faveurs ou pénalités, ou « Aucun jet ». Le temps est seulement affiché aux joueurs. En cas d'échec, les ingrédients et les matériaux sont perdus.",
-          "Teach": "Cliquez sur le nom des personnages qui connaissent la recette, par exemple ceux qui ont la profession appropriée. Ils sont prévenus.",
-          "Done": "Cliquez sur « Terminer ». Les joueurs fabriquent depuis cet onglet. Pour valider chaque fabrication vous-même, activez-le dans les paramètres du module.",
-          "Example": "Exemple, la Fabrication de poison de l'Assassin : résultat Poison, matériaux 1 sc, outil Trousse d'alchimiste, temps 1 minute, aucun jet."
+          "Roll": "Le Compagnon ne prévoit pas de jet pour fabriquer : il suffit du métier, des outils, des matériaux et du temps. Pour un objet assez simple pour que n'importe qui le fasse, le MJ peut demander un jet d'Intellect. Le temps est seulement affiché aux joueurs. En cas d'échec, les ingrédients et les matériaux sont perdus.",
+          "Teach": "Cliquez sur le nom des personnages qui connaissent la recette, sur l'établi ou dans l'éditeur. Ils sont prévenus.",
+          "Done": "Cliquez sur « Terminer » pour revoir l'établi tel que les joueurs le verront. Les joueurs fabriquent depuis cet onglet. Pour valider chaque fabrication vous-même, activez-le dans les paramètres du module.",
+          "Example": "Exemple, la Fabrication de poison de l'Assassin : résultat Poison, matériaux 5 sc, outil Trousse d'alchimiste, prérequis Fabrication de poison, temps 1 minute, aucun jet."
         },
         "Player": {
           "Character": "Si vous avez plusieurs personnages, choisissez dans le bandeau celui qui fabrique.",
-          "Read": "Chaque recette indique ce qu'elle produit, les ingrédients (ce que vous avez / ce qu'il faut), les outils à posséder, le coût des matériaux et le jet éventuel. Ce qui manque est signalé en orange.",
-          "Craft": "Quand rien ne manque, cliquez sur « Fabriquer ». Le jet est lancé avec les bonus de votre personnage et réussit sur 10 ou plus. En cas d'échec, les ingrédients et les matériaux sont perdus.",
+          "Read": "Choisissez une recette dans la liste : cherchez-la par son nom, filtrez par atelier (chaudron, forge, établi) ou ne gardez que celles que vous pouvez faire (anneau vert). L'établi montre à gauche les ingrédients (ce que vous avez / ce qu'il faut) et les outils, au centre l'atelier, à droite ce qui sera produit. Ce qui manque est signalé en orange.",
+          "Craft": "Quand rien ne manque, le chaudron bouillonne : cliquez sur « Fabriquer ». Le jet est lancé avec les bonus de votre personnage et réussit sur 10 ou plus. En cas d'échec, les ingrédients et les matériaux sont perdus.",
           "Immediate": "L'objet arrive directement dans votre inventaire, et les ingrédients et l'argent sont retirés.",
           "Approval": "Votre demande part au MJ, qui la valide ou la refuse. Rien n'est consommé avant sa validation, et vous pouvez l'annuler tant qu'elle attend."
         }
@@ -368,7 +396,24 @@
       "RequirementPlaceholder": "forgeron, alchimiste…",
       "AddRequirement": "Ajouter",
       "RequirementDropHint": "Glissez une profession, une voie, un talent ou une ascendance, ou tapez un mot : il suffit que le nom d'un élément du personnage le contienne (« forgeron » reconnaît « Artisan (forgeron) »).",
-      "RequiresOneOf": "Requiert :"
+      "RequiresOneOf": "Requiert :",
+      "Station": "Atelier",
+      "Stations": {
+        "all": "Tout",
+        "cauldron": "Chaudron",
+        "forge": "Forge",
+        "workbench": "Établi"
+      },
+      "Search": "Rechercher une recette ou un ingrédient…",
+      "ReadyOnly": "Faisables seulement",
+      "NoMatch": "Aucune recette ne correspond.",
+      "Via": "avec {name}",
+      "FindUses": "Voir les recettes qui utilisent {name}",
+      "NewRecipe": "Nouvelle recette",
+      "EditRecipe": "Modifier cette recette",
+      "ConfirmRemove": "Supprimer la recette « {name} » ? Les demandes en attente pour elle seront annulées.",
+      "HalfTime": "temps divisé par deux (Recipe Reference)",
+      "New": "Nouveau"
     },
     "Harvest": {
       "Title": "Récolte",
@@ -406,6 +451,67 @@
       "Nothing": "Rien trouvé",
       "NewRealm": "Nouveau monde",
       "NewBiome": "Nouveau biome"
+    },
+    "Lab": {
+      "Title": "Laboratoire",
+      "Help": {
+        "Title": "Ce que disent les livres",
+        "Incantation": "Incantations (livre de base) : on écrit un sort qu'on a appris, ou on recopie une incantation qu'on possède, avec un kit d'écriture et des encres spéciales valant la moitié du prix de l'incantation. Cela prend 1 heure.",
+        "Identify": "Identify Substance (Alchimie 0, Demon Lord's Companion) : on apprend le nom d'une potion, ce qu'elle fait et sa recette. La recette rejoint celles du personnage dans l'artisanat.",
+        "Brew": "Brew Potion (Alchimie 1, Demon Lord's Companion) : une heure avec la trousse d'alchimiste remplit un récipient d'une dose d'une potion dont on connaît la recette, sans autre ingrédient. Avec Recipe Reference (Brewmaster, Occult Philosophy), le temps est divisé par deux.",
+        "Mix": "Mélanger des potions (Demon Lord's Companion) : verser une potion dans une autre donne un résultat imprévisible ; le MJ lance 3d6 sur la table ci-dessous."
+      },
+      "Rank": "rang {rank}",
+      "Castings": "{left}/{max} lancers",
+      "NoPotion": "Aucune potion dans l'inventaire.",
+      "Incantation": {
+        "Title": "Écrire une incantation",
+        "Kit": "Kit d'écriture",
+        "Rule": "Encres à la moitié du prix de l'incantation, 1 heure de travail.",
+        "Ink": "encres {cost}",
+        "Write": "Écrire",
+        "Copy": "Recopier",
+        "NoSpell": "Ce personnage ne connaît aucun sort."
+      },
+      "Alchemy": {
+        "Title": "Sorts d'alchimie"
+      },
+      "Identify": {
+        "Button": "Identifier",
+        "Unknown": "Identify Substance (Alchimie 0) : ce personnage ne connaît pas ce sort."
+      },
+      "Brew": {
+        "Button": "Préparer",
+        "Unknown": "Brew Potion (Alchimie 1) : ce personnage ne connaît pas ce sort.",
+        "NoRecipe": "Aucune recette de potion connue : identifiez une potion ou demandez au MJ de vous en apprendre une.",
+        "Time": "1 heure",
+        "TimeReference": "30 minutes (Recipe Reference)"
+      },
+      "Mix": {
+        "Title": "Mélanger des potions",
+        "Pick": "Choisir une potion…",
+        "Button": "Mélanger",
+        "NeedTwo": "Il faut au moins deux potions pour en mélanger.",
+        "Table": "Table des mélanges (3d6)",
+        "RollFlavor": "Mélange de potions : {names}",
+        "ExplosionFlavor": "Le mélange explose : dégâts dans une sphère de 5 mètres",
+        "Outcome": {
+          "transformed": "18 : les potions deviennent une nouvelle potion au choix du MJ, dont la durée est triplée.",
+          "doubled": "16-17 : les effets de toutes les potions se produisent normalement, mais chacun dure deux fois plus longtemps.",
+          "combined": "13-15 : les effets de toutes les potions se produisent normalement.",
+          "oneFades": "9-12 : une potion au choix du MJ perd sa magie ; son effet prend fin.",
+          "allFade": "6-8 : les deux potions perdent leur magie ; leurs effets prennent fin.",
+          "poison": "4-5 : le mélange devient un poison. Qui en est affecté doit réussir un jet de Force, sinon il subit des dégâts égaux à la moitié de sa Santé et est empoisonné pendant 1 minute ; tant qu'il l'est, il refait le jet à la fin de chaque round ou subit 1d6 dégâts.",
+          "explosion": "3 : le mélange explose dans une sphère de 5 mètres de rayon : 5d6 dégâts à tout ce qui s'y trouve, la moitié sur un jet d'Agilité réussi. Un mélange fait à l'intérieur d'une créature ne laisse pas de jet."
+        },
+        "Item": {
+          "transformed": "Mélange transformé (potion au choix du MJ)",
+          "doubled": "Mélange de potions (durées doublées)",
+          "combined": "Mélange de potions",
+          "oneFades": "Mélange de potions (une a perdu sa magie)",
+          "poison": "Mélange empoisonné"
+        }
+      }
     }
   }
 }

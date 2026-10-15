@@ -11,6 +11,36 @@ const TYPED_REQUIREMENT = "text";
 // Attributes a recipe can ask to roll; an empty one means no roll.
 export const CRAFT_ATTRIBUTES = ["", "strength", "agility", "intellect", "will"];
 
+// Where a recipe is made, which sets the scene drawn on the workbench.
+export const STATIONS = ["cauldron", "forge", "workbench"];
+const ALCHEMY_TOOL_WORDS = ["alchim"];
+const METAL_WORDS = ["lingot", "ingot", "minerai", "ore", "ferraille", "scrap", "metal"];
+
+// A name mentions a word when one of its words starts with it: "alchim" finds "Trousse d'alchimiste".
+function mentions(names, words) {
+  return names.some((name) => String(name ?? "")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .split(/[^a-z]+/)
+    .some((token) => words.some((word) => token.startsWith(word))));
+}
+
+// Recipes made before stations existed get one from their tools and materials.
+export function recipeStation(recipe) {
+  if (STATIONS.includes(recipe.station)) {
+    return recipe.station;
+  }
+  if (mentions((recipe.tools ?? []).map((tool) => tool.name), ALCHEMY_TOOL_WORDS)) {
+    return "cauldron";
+  }
+  const metal = [recipe.result?.name, ...recipe.ingredients.map((ingredient) => ingredient.name)];
+  if (mentions(metal, METAL_WORDS)) {
+    return "forge";
+  }
+  return "workbench";
+}
+
 export function emptyCrafting() {
   return { recipes: [], orders: [] };
 }
@@ -104,7 +134,7 @@ function removeRecipe(crafting, { recipeId }) {
 }
 
 // Demon Lord's Companion: the materials are worth a quarter of the item's price.
-function materialsCost(entry, defaultUnit) {
+export function materialsCost(entry, defaultUnit) {
   const price = parsePrice(entry.value, defaultUnit);
   if (!price || isEmptyWealth(price)) {
     return null;
@@ -239,12 +269,35 @@ function setCheck(crafting, { recipeId, attribute, boons }) {
   return result(updateRecipe(crafting, recipeId, (recipe) => ({ ...recipe, check: { attribute, boons: toBoons(boons) } })));
 }
 
+function setStation(crafting, { recipeId, station }) {
+  if (!STATIONS.includes(station)) {
+    throw new LocalizedError("SODLTRADE.Errors.InvalidStation");
+  }
+  return result(updateRecipe(crafting, recipeId, (recipe) => ({ ...recipe, station })));
+}
+
 function toggleKnown(crafting, { recipeId, actorId }) {
   const recipe = findRecipe(crafting, recipeId);
   if (recipe.knownBy.includes(actorId)) {
     return result(updateRecipe(crafting, recipeId, (current) => ({ ...current, knownBy: current.knownBy.filter((id) => id !== actorId) })));
   }
   return result(updateRecipe(crafting, recipeId, (current) => ({ ...current, knownBy: [...current.knownBy, actorId] })), null, "learned");
+}
+
+// Teaching a whole book at once: every recipe is learned, or forgotten, by the character.
+function teachAll(crafting, { actorId, known }) {
+  const recipes = crafting.recipes.map((recipe) => {
+    const without = recipe.knownBy.filter((id) => id !== actorId);
+    if (known) {
+      return { ...recipe, knownBy: [...without, actorId] };
+    }
+    return { ...recipe, knownBy: without };
+  });
+  let event = null;
+  if (known) {
+    event = "learned";
+  }
+  return result({ ...crafting, recipes }, null, event);
 }
 
 function craftableRecipe(crafting, recipeId, actorId) {
@@ -280,8 +333,17 @@ function withoutOrder(crafting, orderId) {
   return { ...crafting, orders: (crafting.orders ?? []).filter((order) => order.id !== orderId) };
 }
 
+// A creation outside a recipe (laboratory, cauldron) waits as an order carrying the request to run once approved.
+function requestCreation(crafting, { actorId, orderId, name, img, request }) {
+  const order = { id: orderId, actorId, name, img, request };
+  return result({ ...crafting, orders: [...(crafting.orders ?? []), order] }, null, "ordered", order);
+}
+
 function approveOrder(crafting, { orderId }) {
   const order = findOrder(crafting, orderId);
+  if (order.request) {
+    return result(withoutOrder(crafting, orderId), null, "approved", order);
+  }
   const recipe = craftableRecipe(crafting, order.recipeId, order.actorId);
   return result(withoutOrder(crafting, orderId), { actorId: order.actorId, recipe }, "approved", order);
 }
@@ -297,6 +359,27 @@ function cancelOrder(crafting, { orderId }, context) {
     throw new LocalizedError("SODLTRADE.Errors.NotYourCharacter");
   }
   return result(withoutOrder(crafting, orderId), null, "cancelled", order);
+}
+
+// An extension's own way of finding recipes (the essence cauldron, for one) teaches them to the character.
+// The rule runs here, on the GM's client, so a player cannot simply name the recipes they want.
+function discover(crafting, { actorId, rule, payload }, context) {
+  const find = context.discover?.(rule);
+  if (!find) {
+    throw new LocalizedError("SODLTRADE.Errors.UnknownAction");
+  }
+  const unknown = crafting.recipes.filter((recipe) => !recipe.knownBy.includes(actorId));
+  const found = find(unknown, payload, actorId);
+  if (found.length === 0) {
+    return result(crafting);
+  }
+  const recipes = crafting.recipes.map((recipe) => {
+    if (found.includes(recipe.id) && !recipe.knownBy.includes(actorId)) {
+      return { ...recipe, knownBy: [...recipe.knownBy, actorId] };
+    }
+    return recipe;
+  });
+  return result({ ...crafting, recipes }, null, "learned");
 }
 
 const GM = "gm";
@@ -320,8 +403,12 @@ const ACTIONS = {
   setCost: { role: GM, run: setCost },
   setTime: { role: GM, run: setTime },
   setCheck: { role: GM, run: setCheck },
+  setStation: { role: GM, run: setStation },
   toggleKnown: { role: GM, run: toggleKnown },
+  teachAll: { role: GM, run: teachAll },
   craft: { role: OWNER, run: craft },
+  discover: { role: OWNER, run: discover },
+  requestCreation: { role: OWNER, run: requestCreation },
   approveOrder: { role: GM, run: approveOrder },
   rejectOrder: { role: GM, run: rejectOrder },
   cancelOrder: { role: ANYONE, run: cancelOrder }

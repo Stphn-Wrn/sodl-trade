@@ -17,10 +17,11 @@ async function ensureFolder(flag, value, name, parentId) {
 
 let catalogRequest = null;
 
-// The catalog ships with the module and never changes during a session, so it is fetched once.
+// The catalog ships with the module and never changes during a session, so it is fetched once;
+// "no-cache" makes the browser check for a newer version after a module update.
 export function loadResourceCatalog() {
   if (!catalogRequest) {
-    catalogRequest = fetch(modulePath("data/resources.json")).then((response) => response.json());
+    catalogRequest = fetch(modulePath("data/resources.json"), { cache: "no-cache" }).then((response) => response.json());
   }
   return catalogRequest;
 }

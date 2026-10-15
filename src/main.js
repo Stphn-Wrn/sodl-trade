@@ -1,8 +1,9 @@
-import { TradeHub, hubBadgeTotal } from "./apps/trade-hub.js";
+import { TradeHub, hasAnyTab, hubBadgeTotal } from "./apps/trade-hub.js";
+import { createApi } from "./api.js";
 import { TradeWindow } from "./apps/trade-window.js";
-import { CHAT_CRAFT_SETTING, CHAT_LOOT_SETTING, CHAT_SHOP_SETTING, CHAT_TRADES_SETTING, CRAFT_APPROVAL_SETTING, CRAFTING_SETTING, HARVEST_SCARCITY_SETTING, HARVEST_SETTING, LOOT_SETTING, SHOP_APPROVAL_SETTING, MODULE_ID, PRICE_UNIT_SETTING, SHOP_SETTING, TRADES_SETTING } from "./shared/constants.js";
+import { SEEN_RECIPES_SETTING, CHAT_CRAFT_SETTING, CHAT_LOOT_SETTING, CHAT_SHOP_SETTING, CHAT_TRADES_SETTING, CRAFT_APPROVAL_SETTING, CRAFTING_SETTING, HARVEST_SCARCITY_SETTING, HARVEST_SETTING, LOOT_SETTING, SHOP_APPROVAL_SETTING, MODULE_ID, PRICE_UNIT_SETTING, SHOP_SETTING, TRADES_SETTING } from "./shared/constants.js";
 import { FEATURES, featureSetting } from "./shared/features.js";
-import { anyFeatureEnabled, backToTokenControls, isPlayerCharacter, ownedCharacterIds, t } from "./shared/foundry-adapter.js";
+import { backToTokenControls, isPlayerCharacter, ownedCharacterIds, t } from "./shared/foundry-adapter.js";
 import { registerSocket } from "./socket.js";
 import { CHAT_MODES } from "./trade/chat-audience.js";
 import { emptyCrafting, knownRecipes } from "./trade/crafting.js";
@@ -123,14 +124,23 @@ function recipeKeys(crafting) {
   return new Set(ownedCharacterIds().flatMap((actorId) => knownRecipes(crafting, actorId).map((recipe) => `${actorId}/${recipe.id}`)));
 }
 
+// A whole book taught at once gives one message per character rather than one per recipe.
 function notifyLearned(crafting) {
+  const learned = new Map();
   for (const key of recipeKeys(crafting)) {
     if (knownRecipeKeys.has(key)) {
       continue;
     }
     const [actorId, recipeId] = key.split("/");
-    const recipe = crafting.recipes.find((entry) => entry.id === recipeId);
-    ui.notifications.info(t("SODLTRADE.Notify.RecipeLearned", { name: game.actors.get(actorId)?.name ?? "", recipe: recipe.name }));
+    learned.set(actorId, [...(learned.get(actorId) ?? []), crafting.recipes.find((entry) => entry.id === recipeId)]);
+  }
+  for (const [actorId, recipes] of learned) {
+    const name = game.actors.get(actorId)?.name ?? "";
+    if (recipes.length === 1) {
+      ui.notifications.info(t("SODLTRADE.Notify.RecipeLearned", { name, recipe: recipes[0].name }));
+    } else {
+      ui.notifications.info(t("SODLTRADE.Notify.RecipesLearned", { name, count: recipes.length }));
+    }
   }
 }
 
@@ -218,6 +228,13 @@ Hooks.once("init", () => {
     default: emptyCrafting(),
     onChange: onCraftingChanged
   });
+  // Recipes each of this player's characters has already opened, so new ones stand out in the list.
+  game.settings.register(MODULE_ID, SEEN_RECIPES_SETTING, {
+    scope: "client",
+    config: false,
+    type: Object,
+    default: {}
+  });
   game.settings.register(MODULE_ID, HARVEST_SETTING, {
     scope: "world",
     config: false,
@@ -232,7 +249,8 @@ Hooks.once("init", () => {
     config: true,
     type: String,
     choices: { gc: "SODLTRADE.Wealth.gc", ss: "SODLTRADE.Wealth.ss", cp: "SODLTRADE.Wealth.cp", bits: "SODLTRADE.Wealth.bits" },
-    default: "gc"
+    // The system's compendiums write prices in silver shillings.
+    default: "ss"
   });
   // One setting per kind of chat message: who sees it, if anyone.
   for (const [key, label, fallback] of [
@@ -276,9 +294,14 @@ Hooks.once("init", () => {
     scope: "world",
     config: true,
     type: Boolean,
-    default: false,
+    // Players create nothing without the GM unless the GM chooses otherwise.
+    default: true,
     onChange: () => TradeHub.refreshAll()
   });
+  // Extensions (the essence alchemy, for one) add their tabs and requests once the module is set up.
+  const api = createApi({ onFeatureToggled });
+  game.modules.get(MODULE_ID).api = api;
+  Hooks.callAll("sodlTrade.init", api);
 });
 
 Hooks.once("ready", () => {
@@ -300,7 +323,7 @@ Hooks.once("ready", () => {
 Hooks.on("renderSceneControls", () => refreshToolbarBadge());
 
 Hooks.on("getSceneControlButtons", (controls) => {
-  if (!anyFeatureEnabled()) {
+  if (!hasAnyTab()) {
     return;
   }
   controls[CONTROL_NAME] = {

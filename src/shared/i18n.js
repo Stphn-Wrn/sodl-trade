@@ -21,9 +21,11 @@ export function createTranslator(dictionary) {
   };
 }
 
+// An error whose message is a translation key. Extensions throw their own, marked the same way.
 export class LocalizedError extends Error {
   constructor(key, data = {}) {
     super(key);
     this.data = data;
+    this.localized = true;
   }
 }

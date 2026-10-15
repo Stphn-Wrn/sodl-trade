@@ -1,6 +1,6 @@
 import { isPartyCharacter } from "../trade/inventory.js";
 import { MODULE_ID } from "./constants.js";
-import { FEATURES, featureSetting } from "./features.js";
+import { featureSetting } from "./features.js";
 
 export function t(key, data) {
   if (data) {
@@ -44,8 +44,4 @@ export function backToTokenControls() {
 
 export function isFeatureEnabled(feature) {
   return game.settings.get(MODULE_ID, featureSetting(feature));
-}
-
-export function anyFeatureEnabled() {
-  return FEATURES.some(isFeatureEnabled);
 }

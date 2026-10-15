@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applyCraftingAction, emptyCrafting, knownRecipes } from "../../src/trade/crafting.js";
+import { applyCraftingAction, emptyCrafting, knownRecipes, recipeStation } from "../../src/trade/crafting.js";
 
 function gm(crafting, action, requireApproval = false) {
   return applyCraftingAction(crafting, action, { isGM: true, ownsActor: () => false, defaultUnit: "ss", requireApproval });
@@ -223,4 +223,79 @@ test("le MJ tape un prérequis à la main, puis le retire", () => {
 
   assert.deepEqual(gm(typed, { type: "removeRequirement", recipeId: "r1", requirementId: "q1" }).crafting.recipes[0].requirements, []);
   assert.throws(() => gm(crafting, { type: "addRequirements", recipeId: "r1", entries: [{ id: "q2", sourceUuid: null, name: "  ", img: "", type: "text" }] }), { message: "SODLTRADE.Errors.NothingImported" });
+});
+
+test("sans atelier choisi, une recette se fait au chaudron avec une trousse d'alchimiste, à la forge avec du métal, sinon à l'établi", () => {
+  const alchemy = potionRecipe({ tools: [{ id: "t", name: "Trousse d’alchimiste" }] });
+  const forge = potionRecipe({ result: { name: "Lingot d'argent" }, ingredients: [{ id: "g", name: "Silver ore", quantity: 2 }] });
+  const scrap = potionRecipe({ result: { name: "Flèches" }, ingredients: [{ id: "g", name: "Ferraille", quantity: 1 }, { id: "h", name: "Bois dur", quantity: 1 }] });
+  const torch = potionRecipe({ result: { name: "Torche" }, ingredients: [{ id: "g", name: "Bois dur", quantity: 1 }] });
+  const chosen = potionRecipe({ station: "forge", tools: [{ id: "t", name: "Trousse d'alchimiste" }] });
+
+  const stations = [alchemy, forge, scrap, torch, chosen].map(recipeStation);
+
+  assert.deepEqual(stations, ["cauldron", "forge", "forge", "workbench", "forge"]);
+});
+
+test("le MJ choisit l'atelier d'une recette parmi le chaudron, la forge et l'établi", () => {
+  const crafting = { recipes: [potionRecipe()], orders: [] };
+
+  const updated = gm(crafting, { type: "setStation", recipeId: "r1", station: "workbench" }).crafting;
+
+  assert.equal(updated.recipes[0].station, "workbench");
+  assert.throws(() => gm(crafting, { type: "setStation", recipeId: "r1", station: "moulin" }), { message: "SODLTRADE.Errors.InvalidStation" });
+});
+
+test("le MJ apprend toutes les recettes à un personnage d'un coup, ou les lui retire toutes", () => {
+  const crafting = { recipes: [potionRecipe({ id: "r1", knownBy: [] }), potionRecipe({ id: "r2", knownBy: ["b"] }), potionRecipe({ id: "r3", knownBy: ["a"] })], orders: [] };
+
+  const taught = gm(crafting, { type: "teachAll", actorId: "a", known: true });
+  const forgotten = gm(taught.crafting, { type: "teachAll", actorId: "a", known: false }).crafting;
+
+  assert.deepEqual(taught.crafting.recipes.map((recipe) => recipe.knownBy), [["a"], ["b", "a"], ["a"]]);
+  assert.equal(taught.event, "learned");
+  assert.deepEqual(forgotten.recipes.map((recipe) => recipe.knownBy), [[], ["b"], []]);
+});
+
+test("seul le MJ apprend toutes les recettes", () => {
+  const crafting = { recipes: [potionRecipe({ knownBy: [] })], orders: [] };
+
+  assert.throws(() => player(crafting, { type: "teachAll", actorId: "a", known: true }), { message: "SODLTRADE.Errors.NotAllowed" });
+});
+
+test("une extension fait découvrir des recettes selon sa propre règle ; jamais pour le personnage d'un autre ni avec une règle inconnue", () => {
+  const crafting = { orders: [], recipes: [
+    { id: "r1", name: "Potion", result: { name: "Potion" }, ingredients: [], knownBy: [] },
+    { id: "r2", name: "Huile", result: { name: "Huile" }, ingredients: [], knownBy: ["a"] }
+  ] };
+  const rules = { cauldron: (recipes, payload) => recipes.filter((recipe) => payload.names.includes(recipe.name)).map((recipe) => recipe.id) };
+  const owner = { isGM: false, ownsActor: (actorId) => actorId === "a", discover: (rule) => rules[rule] ?? null };
+  const action = { type: "discover", actorId: "a", rule: "cauldron", payload: { names: ["Potion", "Huile"] } };
+
+  const { crafting: next, event } = applyCraftingAction(crafting, action, owner);
+
+  assert.deepEqual(next.recipes.map((recipe) => recipe.knownBy), [["a"], ["a"]]);
+  assert.equal(event, "learned");
+  assert.throws(() => applyCraftingAction(crafting, { ...action, actorId: "b" }, owner), { message: "SODLTRADE.Errors.NotYourCharacter" });
+  assert.throws(() => applyCraftingAction(crafting, { ...action, rule: "magic" }, owner), { message: "SODLTRADE.Errors.UnknownAction" });
+});
+
+test("un joueur demande au MJ de créer un objet hors recette ; le MJ valide et reçoit la demande à exécuter", () => {
+  const request = { type: "lab", data: { action: { type: "mix", actorId: "a", itemIds: ["p1", "p2"] } } };
+  const ordered = player(emptyCrafting(), { type: "requestCreation", actorId: "a", orderId: "o1", name: "Potion + Potion", img: "p.webp", request });
+
+  assert.equal(ordered.event, "ordered");
+  assert.deepEqual(ordered.crafting.orders, [{ id: "o1", actorId: "a", name: "Potion + Potion", img: "p.webp", request }]);
+
+  const approved = gm(ordered.crafting, { type: "approveOrder", orderId: "o1" });
+  assert.equal(approved.event, "approved");
+  assert.equal(approved.craft, null);
+  assert.deepEqual(approved.order.request, request);
+  assert.deepEqual(approved.crafting.orders, []);
+});
+
+test("on ne demande pas de création pour le personnage d'un autre", () => {
+  const request = { type: "alchemy", data: { action: { type: "brew", actorId: "b", itemIds: [] } } };
+
+  assert.throws(() => player(emptyCrafting(), { type: "requestCreation", actorId: "b", orderId: "o1", name: "Potion", img: "", request }), { message: "SODLTRADE.Errors.NotYourCharacter" });
 });

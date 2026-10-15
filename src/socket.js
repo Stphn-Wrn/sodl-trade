@@ -1,4 +1,5 @@
-import { SOCKET_CHANNEL } from "./shared/constants.js";
+import { CRAFT_APPROVAL_SETTING, MODULE_ID, SOCKET_CHANNEL } from "./shared/constants.js";
+import { needsApproval, runsOnOwnClient } from "./shared/features.js";
 import { errorMessage, t } from "./shared/foundry-adapter.js";
 import { processRequest } from "./trade/trade-store.js";
 
@@ -28,12 +29,19 @@ export function registerSocket() {
 }
 
 export function sendRequest(type, data) {
+  const request = { type, data };
+  // What only touches the player's own character is done on their client, GM or not,
+  // unless the GM has to approve it first.
+  const approval = needsApproval(request, { isGM: game.user.isGM, requireApproval: game.settings.get(MODULE_ID, CRAFT_APPROVAL_SETTING) });
+  if (runsOnOwnClient(type) && !approval) {
+    processRequest(game.user.id, request, reportError);
+    return;
+  }
   const gm = game.users.activeGM;
   if (!gm) {
     ui.notifications.warn(t("SODLTRADE.Errors.NoGM"));
     return;
   }
-  const request = { type, data };
   if (gm.isSelf) {
     processRequest(game.user.id, request, reportError);
     return;

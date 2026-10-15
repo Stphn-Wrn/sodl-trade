@@ -1,10 +1,12 @@
-import { MODULE_ID, TRADES_SETTING } from "../shared/constants.js";
+import { CRAFT_APPROVAL_SETTING, MODULE_ID, TRADES_SETTING } from "../shared/constants.js";
 import { errorMessage, isFeatureEnabled, isPlayerCharacter, ownsActor } from "../shared/foundry-adapter.js";
-import { featureOfRequest } from "../shared/features.js";
+import { extensions } from "../shared/extensions.js";
+import { featureOfRequest, needsApproval } from "../shared/features.js";
 import { LocalizedError } from "../shared/i18n.js";
 import { postTradeEvent } from "./chat-log.js";
-import { handleCraftingRequest } from "./crafting-store.js";
+import { handleCraftingRequest, requestCreation } from "./crafting-store.js";
 import { handleHarvestRequest } from "./harvest-store.js";
+import { handleLabRequest } from "./lab-store.js";
 import { handleLootRequest } from "./loot-store.js";
 import { handleShopRequest } from "./shop-store.js";
 import { resolveRole, toInventory } from "./inventory.js";
@@ -100,23 +102,37 @@ async function act(user, { tradeId, action }, trades) {
   }
 }
 
-const REQUESTS = { create, act, loot: handleLootRequest, shop: handleShopRequest, crafting: handleCraftingRequest, harvest: handleHarvestRequest };
+const REQUESTS = { create, act, loot: handleLootRequest, shop: handleShopRequest, crafting: handleCraftingRequest, lab: handleLabRequest, harvest: handleHarvestRequest };
+
+// An extension has its own switch; the core's requests follow the feature they belong to.
+function requestEnabled(type, extension) {
+  if (extension) {
+    return extension.enabled();
+  }
+  return isFeatureEnabled(featureOfRequest(type));
+}
 
 let queue = Promise.resolve();
 
 async function run(userId, request, onError) {
   try {
-    const handler = REQUESTS[request.type];
+    const extension = extensions.request(request.type);
+    const handler = REQUESTS[request.type] ?? extension?.handler;
     if (!handler) {
       throw new LocalizedError("SODLTRADE.Errors.UnknownAction");
     }
     // A player's window may still show a part the GM has just turned off.
-    if (!isFeatureEnabled(featureOfRequest(request.type))) {
+    if (!requestEnabled(request.type, extension)) {
       throw new LocalizedError("SODLTRADE.Errors.FeatureDisabled");
     }
-    await handler(game.users.get(userId), request.data, readTrades());
+    const user = game.users.get(userId);
+    if (needsApproval(request, { isGM: user.isGM, requireApproval: game.settings.get(MODULE_ID, CRAFT_APPROVAL_SETTING) })) {
+      await requestCreation(user, request);
+      return;
+    }
+    await handler(user, request.data, readTrades());
   } catch (err) {
-    if (!(err instanceof LocalizedError)) {
+    if (!err?.localized) {
       console.error(`${MODULE_ID} | Request failed`, err);
     }
     onError(userId, err);

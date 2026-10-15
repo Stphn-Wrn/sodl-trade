@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { planTransfer, prepareReceivedItem } from "../../src/trade/transfer-plan.js";
+import { planTransfer, prepareReceivedItem, stackCrafted } from "../../src/trade/transfer-plan.js";
 
 function party(actorId, items, wealth) {
   return { actorId, accepted: true, offer: { items, wealth: { gc: 0, ss: 0, cp: 0, bits: 0, ...wealth } } };
@@ -75,4 +75,25 @@ test("l'objet reçu est une copie à la quantité échangée, déséquipée, san
 
   assert.deepEqual(prepareReceivedItem(source, 2), { name: "Épée", type: "weapon", system: { quantity: 2, wear: false, damage: "2d6" } });
   assert.equal(source.system.quantity, 3);
+});
+
+test("un objet fabriqué rejoint la pile identique de l'inventaire au lieu d'ajouter une ligne", () => {
+  const owned = [
+    { id: "p1", name: "Potion de soins", type: "item", system: { description: "<p>Soigne.</p>", quantity: 2 } },
+    { id: "c1", name: "Corde", type: "item", system: { description: "", quantity: 1 } }
+  ];
+  const crafted = [
+    { name: "Potion de soins", type: "item", system: { description: "<p>Soigne.</p>", quantity: 1 } },
+    { name: "Potion de soins", type: "item", system: { description: "<p>Soigne.</p>", quantity: 1 } }
+  ];
+
+  assert.deepEqual(stackCrafted(owned, crafted), { create: [], update: [{ _id: "p1", "system.quantity": 4 }] });
+});
+
+test("un objet de même nom mais d'une autre description, ou d'un autre type, reste à part", () => {
+  const owned = [{ id: "p1", name: "Élixir trouble de vigilance", type: "item", system: { description: "<p>Nausée.</p>", quantity: 1 } }];
+  const other = { name: "Élixir trouble de vigilance", type: "item", system: { description: "<p>Folie.</p>", quantity: 1 } };
+  const weapon = { name: "Élixir trouble de vigilance", type: "weapon", system: { description: "<p>Nausée.</p>", quantity: 1 } };
+
+  assert.deepEqual(stackCrafted(owned, [other, weapon]), { create: [other, weapon], update: [] });
 });

@@ -1,13 +1,19 @@
-import { CRAFT_APPROVAL_SETTING, MODULE_ID, modulePath } from "../../shared/constants.js";
+import { CRAFT_APPROVAL_SETTING, MODULE_ID, SEEN_RECIPES_SETTING, modulePath } from "../../shared/constants.js";
 import { errorMessage, isFeatureEnabled, ownedCharacterIds, t } from "../../shared/foundry-adapter.js";
 import { sendRequest } from "../../socket.js";
+import { playBrew } from "./brew-animation.js";
+import { stationSvg } from "./stations.js";
 import { ingredientStatus, planCraft, requirementStatus, toolStatus } from "../../trade/craft-plan.js";
-import { CRAFT_ATTRIBUTES, knownRecipes } from "../../trade/crafting.js";
+import { hasRecipeReference } from "../../trade/potion-spells.js";
+import { CRAFT_ATTRIBUTES, STATIONS, knownRecipes, recipeStation } from "../../trade/crafting.js";
 import { readCrafting } from "../../trade/crafting-store.js";
+import { ALL_STATIONS, matchRecipe, unseenRecipeIds } from "../../trade/recipe-filter.js";
 import { importDefaultRecipes } from "../../trade/recipe-import.js";
 import { importResources } from "../../trade/resource-store.js";
 import { toCraftingInventory } from "../../trade/inventory.js";
 import { describeOffer } from "../../trade/trade-view.js";
+
+const STATION_ICONS = { cauldron: "fa-flask", forge: "fa-hammer", workbench: "fa-toolbox" };
 
 const ATTRIBUTE_LABELS = { strength: "DL.AttributeStrength", agility: "DL.AttributeAgility", intellect: "DL.AttributeIntellect", will: "DL.AttributeWill" };
 
@@ -90,7 +96,11 @@ function knownChips(recipe, characters) {
   return characters.map((actor) => ({ id: actor.id, name: actor.name, known: recipe.knownBy.includes(actor.id) }));
 }
 
-function recipeView(recipe, { inventory, characters, collapsed }) {
+function stationLabel(station) {
+  return t(`SODLTRADE.Crafting.Stations.${station}`);
+}
+
+function recipeView(recipe, { inventory, characters, editingId }) {
   let result = null;
   if (recipe.result) {
     result = { ...recipe.result, isBundle: recipe.result.quantity > 1 };
@@ -99,23 +109,44 @@ function recipeView(recipe, { inventory, characters, collapsed }) {
   if (inventory) {
     status = readiness(recipe, inventory);
   }
+  const station = recipeStation(recipe);
+  const name = recipe.name || t("SODLTRADE.Crafting.Unnamed");
+  // A brewmaster with Recipe Reference brews potions in half the time.
+  const halfTime = Boolean(inventory) && station === "cauldron" && hasRecipeReference(inventory);
+  // The recipe the GM is editing shows its form instead of its workbench, so it needs no drawing.
+  const editing = recipe.id === editingId;
+  let art = "";
+  if (!editing) {
+    art = stationSvg(station, `sodl-craft-${recipe.id}`);
+  }
   return {
     id: recipe.id,
-    name: recipe.name || t("SODLTRADE.Crafting.Unnamed"),
+    name,
+    searchName: `${name} ${recipe.result?.name ?? ""}`,
+    // Tools count too, so searching "alchimiste" lists everything made with the alchemist's kit.
+    ingredientNames: [...recipe.ingredients, ...(recipe.tools ?? [])].map((entry) => entry.name).join("|"),
+    station,
+    stationIcon: STATION_ICONS[station],
+    stationLabel: stationLabel(station),
+    stations: STATIONS.map((entry) => ({ station: entry, label: stationLabel(entry), selected: entry === station })),
+    art,
     rawName: recipe.name,
-    collapsed: collapsed.has(recipe.id),
+    editing,
     result,
     ingredients: ingredientRows(recipe, inventory),
     tools: toolRows(recipe, inventory),
     requirements: requirementRows(recipe, inventory),
     costText: costText(recipe.cost),
     time: recipe.time,
+    halfTime,
     checkText: checkText(recipe.check),
     boons: recipe.check.boons,
     attributes: CRAFT_ATTRIBUTES.map((attribute) => ({ attribute, label: attributeLabel(attribute), selected: attribute === recipe.check.attribute })),
     known: knownChips(recipe, characters),
     knownNames: characters.filter((actor) => recipe.knownBy.includes(actor.id)).map((actor) => actor.name).join(", "),
-    ...status
+    ...status,
+    // Browsing without a character, the fire burns anyway so the GM sees the workshop alive.
+    lit: status.ready || !inventory
   };
 }
 
@@ -139,18 +170,29 @@ function helpView(app, isGM, isEmpty) {
   return { open, steps, example: "" };
 }
 
+// The recipe on the workbench stays put once picked; otherwise the first one that can be made.
+function selectedRecipeId(recipes, wanted) {
+  if (recipes.some((recipe) => recipe.id === wanted)) {
+    return wanted;
+  }
+  const ready = recipes.find((recipe) => recipe.ready);
+  if (ready) {
+    return ready.id;
+  }
+  return recipes[0]?.id ?? null;
+}
+
 function orderView(order) {
   const actor = game.actors.get(order.actorId);
   return { id: order.id, name: order.name, img: order.img, crafter: actor?.name ?? "", crafterImg: actor?.img ?? "" };
 }
 
-function visibleOrders(isGM) {
+function visibleOrders(isGM, ownIds) {
   const orders = readCrafting().orders ?? [];
   if (isGM) {
     return orders;
   }
-  const mine = ownedCharacterIds();
-  return orders.filter((order) => mine.includes(order.actorId));
+  return orders.filter((order) => ownIds.includes(order.actorId));
 }
 
 function toEntry(item) {
@@ -194,6 +236,126 @@ function bindChange(panel, attribute, onChange) {
   }
 }
 
+function stationFilterView(station, active) {
+  if (station === ALL_STATIONS) {
+    return { station, label: t("SODLTRADE.Crafting.Stations.all"), icon: "fa-border-all", showLabel: true, active: active === station };
+  }
+  return { station, label: stationLabel(station), icon: STATION_ICONS[station], showLabel: false, active: active === station };
+}
+
+function entryRecipe(entry) {
+  return {
+    name: entry.dataset.name,
+    ingredients: entry.dataset.ingredients.split("|").filter(Boolean),
+    station: entry.dataset.station,
+    ready: entry.dataset.ready === "1"
+  };
+}
+
+function seenRecipes() {
+  return game.settings.get(MODULE_ID, SEEN_RECIPES_SETTING) ?? {};
+}
+
+// Opening a recipe takes its "New" mark off; the first visit records what is already known.
+function markSeen(actorId, recipeIds) {
+  const seen = seenRecipes();
+  const before = seen[actorId] ?? [];
+  const after = [...new Set([...before, ...recipeIds])];
+  if (seen[actorId] && after.length === before.length) {
+    return;
+  }
+  game.settings.set(MODULE_ID, SEEN_RECIPES_SETTING, { ...seen, [actorId]: after });
+}
+
+// The list is split by station; a station whose recipes are all filtered out hides its header too.
+function stationGroups(views) {
+  return STATIONS
+    .map((station) => ({ station, label: stationLabel(station), recipes: views.filter((view) => view.station === station) }))
+    .filter((group) => group.recipes.length > 0);
+}
+
+function applyFilter(panel, filter) {
+  let shown = 0;
+  for (const entry of panel.querySelectorAll("[data-craft-entry]")) {
+    const { visible, via } = matchRecipe(entryRecipe(entry), filter);
+    entry.hidden = !visible;
+    const viaLabel = entry.querySelector("[data-craft-via]");
+    viaLabel.hidden = !via;
+    if (via) {
+      viaLabel.textContent = t("SODLTRADE.Crafting.Via", { name: via });
+    }
+    if (visible) {
+      shown += 1;
+    }
+  }
+  for (const group of panel.querySelectorAll("[data-craft-group]")) {
+    group.hidden = ![...group.querySelectorAll("[data-craft-entry]")].some((entry) => !entry.hidden);
+  }
+  const noMatch = panel.querySelector("[data-craft-no-match]");
+  if (noMatch) {
+    noMatch.hidden = shown > 0;
+  }
+}
+
+// Picking a recipe or filtering the list only shows and hides what is already drawn:
+// nothing is rendered again, so the window does not flicker or lose its scroll.
+function selectRecipe(panel, recipeId) {
+  for (const button of panel.querySelectorAll("[data-craft-select]")) {
+    button.classList.toggle("is-selected", button.dataset.craftSelect === recipeId);
+  }
+  for (const bench of panel.querySelectorAll("[data-craft-bench]")) {
+    bench.hidden = bench.dataset.craftBench !== recipeId;
+  }
+}
+
+function bindWorkshop(app, panel) {
+  applyFilter(panel, app.craftingFilter);
+  for (const button of panel.querySelectorAll("[data-craft-select]")) {
+    button.addEventListener("click", () => {
+      app.selectedRecipeId = button.dataset.craftSelect;
+      selectRecipe(panel, app.selectedRecipeId);
+      if (app.actingId && !game.user.isGM) {
+        button.querySelector("[data-craft-new]")?.remove();
+        markSeen(app.actingId, [app.selectedRecipeId]);
+      }
+    });
+  }
+  const search = panel.querySelector("[data-craft-search]");
+  search?.addEventListener("input", () => {
+    app.craftingFilter = { ...app.craftingFilter, text: search.value };
+    applyFilter(panel, app.craftingFilter);
+  });
+  // Clicking an ingredient on a workbench lists every recipe that uses it.
+  for (const slot of panel.querySelectorAll("[data-craft-find]")) {
+    slot.addEventListener("click", () => {
+      search.value = slot.dataset.craftFind;
+      app.craftingFilter = { ...app.craftingFilter, text: search.value, station: ALL_STATIONS, readyOnly: false };
+      for (const button of panel.querySelectorAll("[data-craft-station-filter]")) {
+        button.classList.toggle("is-active", button.dataset.craftStationFilter === ALL_STATIONS);
+      }
+      const readyOnly = panel.querySelector("[data-craft-ready-only]");
+      if (readyOnly) {
+        readyOnly.checked = false;
+      }
+      applyFilter(panel, app.craftingFilter);
+      search.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
+  }
+  panel.querySelector("[data-craft-ready-only]")?.addEventListener("change", (event) => {
+    app.craftingFilter = { ...app.craftingFilter, readyOnly: event.target.checked };
+    applyFilter(panel, app.craftingFilter);
+  });
+  for (const button of panel.querySelectorAll("[data-craft-station-filter]")) {
+    button.addEventListener("click", () => {
+      app.craftingFilter = { ...app.craftingFilter, station: button.dataset.craftStationFilter };
+      for (const other of panel.querySelectorAll("[data-craft-station-filter]")) {
+        other.classList.toggle("is-active", other === button);
+      }
+      applyFilter(panel, app.craftingFilter);
+    });
+  }
+}
+
 export const craftingPanel = {
   id: "crafting",
   template: modulePath("src/apps/panels/crafting-panel.html"),
@@ -217,7 +379,10 @@ export const craftingPanel = {
 
   prepare(app, base) {
     const crafting = readCrafting();
-    const editing = base.isGM && app.craftingEditing;
+    let editingId = null;
+    if (base.isGM) {
+      editingId = app.craftingEditingId;
+    }
     let recipes = crafting.recipes;
     let inventory = null;
     if (!base.isGM) {
@@ -227,25 +392,41 @@ export const craftingPanel = {
         inventory = toCraftingInventory(actor);
       }
     }
-    const options = { inventory, characters: base.characters, collapsed: app.collapsedRecipes };
+    const options = { inventory, characters: base.characters, editingId };
+    const views = recipes.map((recipe) => recipeView(recipe, options));
+    app.selectedRecipeId = selectedRecipeId(views, app.selectedRecipeId);
+    // Players see which recipes they learned since they last looked; the GM has nothing to discover.
+    let unseen = [];
+    if (!base.isGM && inventory) {
+      unseen = unseenRecipeIds(views.map((view) => view.id), seenRecipes()[app.actingId] ?? null);
+    }
+    for (const view of views) {
+      view.selected = view.id === app.selectedRecipeId;
+      view.isNew = unseen.includes(view.id);
+    }
     return {
-      editing,
       help: helpView(app, base.isGM, recipes.length === 0),
-      recipes: recipes.map((recipe) => recipeView(recipe, options)),
+      recipes: views,
+      groups: stationGroups(views),
+      filter: app.craftingFilter,
+      stationFilters: [ALL_STATIONS, ...STATIONS].map((station) => stationFilterView(station, app.craftingFilter.station)),
       isEmpty: recipes.length === 0,
       requireApproval: game.settings.get(MODULE_ID, CRAFT_APPROVAL_SETTING),
-      orders: visibleOrders(base.isGM).map(orderView)
+      orders: visibleOrders(base.isGM, base.ownIds).map(orderView)
     };
   },
 
   bind(app) {
     const panel = app.element.querySelector("[data-panel=crafting]");
-    panel.querySelector("[data-craft-help]")?.addEventListener("toggle", (event) => {
-      app.craftingHelpOpen = event.target.open;
-    });
-    if (!game.user.isGM || !app.craftingEditing) {
+    bindWorkshop(app, panel);
+    if (!game.user.isGM) {
+      // The first time a character's list is shown, what they already know is not news.
+      if (app.actingId && !seenRecipes()[app.actingId]) {
+        markSeen(app.actingId, knownRecipes(readCrafting(), app.actingId).map((recipe) => recipe.id));
+      }
       return;
     }
+    bindChange(panel, "data-craft-station-select", (recipeId, input) => sendCrafting({ type: "setStation", recipeId, station: input.value }));
     for (const zone of panel.querySelectorAll("[data-craft-result-drop]")) {
       bindDrop(zone, (item) => sendCrafting({ type: "setResult", recipeId: zone.dataset.craftResultDrop, entry: toEntry(item) }));
     }
@@ -299,25 +480,39 @@ export const craftingPanel = {
         target.disabled = false;
       }
     },
-    craftToggleEdit() {
-      this.craftingEditing = !this.craftingEditing;
+    craftToggleHelp(event, target) {
+      this.craftingHelpOpen = target.getAttribute("aria-expanded") !== "true";
       this.render();
     },
-    craftToggleRecipe(event, target) {
-      const recipeId = target.dataset.recipeId;
-      if (this.collapsedRecipes.has(recipeId)) {
-        this.collapsedRecipes.delete(recipeId);
-      } else {
-        this.collapsedRecipes.add(recipeId);
-      }
+    craftEditRecipe(event, target) {
+      this.selectedRecipeId = target.dataset.recipeId;
+      this.craftingEditingId = target.dataset.recipeId;
       this.render();
     },
+    craftDoneEditing() {
+      this.craftingEditingId = null;
+      this.render();
+    },
+    // The new recipe opens straight in its form; the window renders when the GM's save comes back.
     craftAddRecipe() {
-      const input = this.element.querySelector("[name=newRecipe]");
-      sendCrafting({ type: "addRecipe", id: foundry.utils.randomID(), name: input.value });
+      const id = foundry.utils.randomID();
+      this.selectedRecipeId = id;
+      this.craftingEditingId = id;
+      this.craftingFilter = { text: "", station: "all", readyOnly: false };
+      sendCrafting({ type: "addRecipe", id, name: "" });
     },
-    craftRemoveRecipe(event, target) {
-      sendCrafting({ type: "removeRecipe", recipeId: target.dataset.recipeId });
+    async craftRemoveRecipe(event, target) {
+      const recipeId = target.dataset.recipeId;
+      const recipe = readCrafting().recipes.find((entry) => entry.id === recipeId);
+      const confirmed = await foundry.applications.api.DialogV2.confirm({
+        window: { title: t("SODLTRADE.Crafting.RemoveRecipe") },
+        content: `<p>${t("SODLTRADE.Crafting.ConfirmRemove", { name: recipe?.name || t("SODLTRADE.Crafting.Unnamed") })}</p>`
+      });
+      if (!confirmed) {
+        return;
+      }
+      this.craftingEditingId = null;
+      sendCrafting({ type: "removeRecipe", recipeId });
     },
     craftRemoveIngredient(event, target) {
       sendCrafting({ type: "removeIngredient", recipeId: target.dataset.recipeId, ingredientId: target.dataset.ingredientId });
@@ -336,8 +531,15 @@ export const craftingPanel = {
     craftToggleKnown(event, target) {
       sendCrafting({ type: "toggleKnown", recipeId: target.dataset.recipeId, actorId: target.dataset.actorId });
     },
-    craftMake(event, target) {
-      sendCrafting({ type: "craft", recipeId: target.dataset.recipeId, actorId: this.actingId, orderId: foundry.utils.randomID() });
+    async craftMake(event, target) {
+      const action = { type: "craft", recipeId: target.dataset.recipeId, actorId: this.actingId, orderId: foundry.utils.randomID() };
+      let mode = "immediate";
+      if (game.settings.get(MODULE_ID, CRAFT_APPROVAL_SETTING)) {
+        mode = "request";
+      }
+      target.disabled = true;
+      await playBrew(target.closest("[data-craft-bench]"), mode);
+      sendCrafting(action);
     },
     craftApproveOrder(event, target) {
       sendCrafting({ type: "approveOrder", orderId: target.dataset.orderId });

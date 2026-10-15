@@ -2,8 +2,8 @@ import { localizedName } from "./resources.js";
 import { parsePrice } from "./price.js";
 import { emptyWealth, fromBits, isEmptyWealth, toBits } from "./wealth.js";
 
-// The system stores item prices in gold crowns.
-const ITEM_PRICE_UNIT = "gc";
+// The system's compendiums store item prices in silver shillings: the book's 2 ss healing potion is "2".
+const ITEM_PRICE_UNIT = "ss";
 const AUTO_COST = "auto";
 
 // A recipe points at an item either by catalog resource or by its possible names (English and French books).
@@ -40,6 +40,17 @@ function costOf(definition, result, ingredients) {
   return parsePrice(definition.cost, ITEM_PRICE_UNIT);
 }
 
+// A requirement is shown in the table's language and recognised under every name it has.
+export function buildRequirement(requirement, index, id, lang) {
+  return {
+    id: `${id}-req-${index}`,
+    sourceUuid: null,
+    name: localizedName(requirement.name, lang),
+    img: "",
+    aliases: [...Object.values(requirement.name), ...(requirement.aliases ?? [])]
+  };
+}
+
 function buildRecipe(definition, lang, resolved) {
   const id = `default-${definition.key}`;
   const result = resolved.get(refKey(definition.result));
@@ -53,9 +64,11 @@ function buildRecipe(definition, lang, resolved) {
     id,
     key: definition.key,
     name: localizedName(definition.name, lang),
+    station: definition.station,
     result: { sourceUuid: result.uuid, name: result.name, img: result.img, quantity },
     ingredients: ingredients.map(({ found, quantity: count }, index) => ({ id: `${id}-${index}`, sourceUuid: found.uuid, name: found.name, img: found.img, quantity: count })),
     tools: tools.map((found, index) => ({ id: `${id}-tool-${index}`, sourceUuid: found.uuid, name: found.name, img: found.img })),
+    requirements: (definition.requirements ?? []).map((requirement, index) => buildRequirement(requirement, index, id, lang)),
     cost: costOf(definition, result, ingredients),
     time: localizedName(definition.time, lang),
     check: { ...definition.check },

@@ -305,6 +305,318 @@
               "swamp": "R"
             }
           }
+        },
+        {
+          "key": "wolfsbane",
+          "name": {
+            "fr": "Aconit",
+            "en": "Wolfsbane"
+          },
+          "description": {
+            "fr": "Fleur violette dont le suc engourdit la langue. On dit qu'elle éloigne les bêtes-garous.",
+            "en": "A purple flower whose sap numbs the tongue. They say it keeps werebeasts away."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/commodities/flowers/lily-bloom-purple.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "forest": "U",
+              "mountains": "U"
+            }
+          }
+        },
+        {
+          "key": "bloodthorn",
+          "name": {
+            "fr": "Ronce-sang",
+            "en": "Bloodthorn"
+          },
+          "description": {
+            "fr": "Ronce aux épines rouges qui pousse sur les champs de bataille oubliés.",
+            "en": "A red-thorned bramble that grows over forgotten battlefields."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/consumables/plants/thorned-dried-stem-red.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "forest": "C",
+              "ruins": "U"
+            }
+          }
+        },
+        {
+          "key": "mandrake-root",
+          "name": {
+            "fr": "Racine de mandragore",
+            "en": "Mandrake root"
+          },
+          "description": {
+            "fr": "Racine à forme humaine. Arrachée, elle pousse un cri que personne ne veut entendre deux fois.",
+            "en": "A man-shaped root. Pulled up, it lets out a scream no one wants to hear twice."
+          },
+          "value": 1,
+          "availability": "R",
+          "img": "icons/consumables/plants/dried-stem-vine-root-bramble-brown.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "swamp": "R",
+              "ruins": "R"
+            }
+          }
+        },
+        {
+          "key": "hemlock",
+          "name": {
+            "fr": "Ciguë",
+            "en": "Hemlock"
+          },
+          "description": {
+            "fr": "Ombelle blanche à l'odeur de souris. Quelques feuilles suffisent à figer un homme.",
+            "en": "White umbels smelling of mice. A few leaves are enough to stiffen a man."
+          },
+          "value": 0.05,
+          "availability": "U",
+          "img": "icons/consumables/plants/dill-herb-bundle-green.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "plains": "U",
+              "swamp": "U"
+            }
+          }
+        },
+        {
+          "key": "ghost-lichen",
+          "name": {
+            "fr": "Lichen spectral",
+            "en": "Ghost lichen"
+          },
+          "description": {
+            "fr": "Lichen pâle qui luit faiblement sur les pierres tombales.",
+            "en": "A pale lichen faintly glowing on gravestones."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/consumables/plants/leaf-hastate-white-green.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "ruins": "U",
+              "caves": "U"
+            }
+          }
+        },
+        {
+          "key": "corpse-lily",
+          "name": {
+            "fr": "Lys cadavérique",
+            "en": "Corpse lily"
+          },
+          "description": {
+            "fr": "Grande fleur qui sent la charogne et attire les mouches par nuées.",
+            "en": "A large flower reeking of carrion that draws flies in swarms."
+          },
+          "value": 0.5,
+          "availability": "R",
+          "img": "icons/commodities/flowers/lotus-violet.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "swamp": "R",
+              "underworld": "U"
+            }
+          }
+        },
+        {
+          "key": "stonewort",
+          "name": {
+            "fr": "Herbe-de-pierre",
+            "en": "Stonewort"
+          },
+          "description": {
+            "fr": "Plante grasse qui pousse dans les fissures des falaises, dure comme du cuir.",
+            "en": "A succulent growing in cliff cracks, tough as leather."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/consumables/plants/succulent-bundle-green.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "mountains": "C"
+            }
+          }
+        },
+        {
+          "key": "bog-reed",
+          "name": {
+            "fr": "Roseau des tourbières",
+            "en": "Bog reed"
+          },
+          "description": {
+            "fr": "Roseau creux gorgé d'une eau brune et amère.",
+            "en": "A hollow reed full of bitter brown water."
+          },
+          "value": 0.01,
+          "availability": "C",
+          "img": "icons/consumables/plants/grass-leaves-stems-green.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "swamp": "C",
+              "coast": "U"
+            }
+          }
+        },
+        {
+          "key": "ember-thistle",
+          "name": {
+            "fr": "Chardon-braise",
+            "en": "Ember thistle"
+          },
+          "description": {
+            "fr": "Chardon orangé, tiède au toucher, qui crépite quand on le froisse.",
+            "en": "An orange thistle, warm to the touch, that crackles when crushed."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/consumables/plants/flax-leaves-spiked-bundle-orange.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "plains": "U",
+              "hell": "U"
+            }
+          }
+        },
+        {
+          "key": "witchcap",
+          "name": {
+            "fr": "Chapeau-de-sorcière",
+            "en": "Witchcap"
+          },
+          "description": {
+            "fr": "Champignon violet et luisant. Ceux qui en mangent parlent à des gens qui ne sont pas là.",
+            "en": "A shiny purple mushroom. Those who eat it talk to people who are not there."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/consumables/mushrooms/helm-purple-shiny.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "forest": "U",
+              "caves": "U"
+            }
+          }
+        },
+        {
+          "key": "bleeding-tooth",
+          "name": {
+            "fr": "Hydne sanglant",
+            "en": "Bleeding tooth"
+          },
+          "description": {
+            "fr": "Champignon qui suinte des gouttes rouges comme une plaie.",
+            "en": "A fungus oozing red droplets like a wound."
+          },
+          "value": 0.05,
+          "availability": "U",
+          "img": "icons/consumables/mushrooms/campanulate-bell-shiny-bumpy-red.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "forest": "U",
+              "swamp": "U"
+            }
+          }
+        },
+        {
+          "key": "glowcap",
+          "name": {
+            "fr": "Luisance",
+            "en": "Glowcap"
+          },
+          "description": {
+            "fr": "Petit champignon verdâtre dont la lueur guide les mineurs perdus.",
+            "en": "A small greenish mushroom whose glow guides lost miners."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/consumables/mushrooms/umbontae-green.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "caves": "C"
+            }
+          }
+        },
+        {
+          "key": "dead-mans-fingers",
+          "name": {
+            "fr": "Doigts de mort",
+            "en": "Dead man's fingers"
+          },
+          "description": {
+            "fr": "Champignon noir qui sort de terre en forme de main.",
+            "en": "A black fungus that pushes out of the ground like a hand."
+          },
+          "value": 0.05,
+          "availability": "U",
+          "img": "icons/consumables/mushrooms/cluster-red-brown.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "ruins": "U",
+              "underworld": "C"
+            }
+          }
+        },
+        {
+          "key": "willow-bark",
+          "name": {
+            "fr": "Écorce de saule",
+            "en": "Willow bark"
+          },
+          "description": {
+            "fr": "Écorce amère que mâchent les vieux pour calmer leurs douleurs.",
+            "en": "A bitter bark the old chew to ease their aches."
+          },
+          "value": 0.01,
+          "availability": "C",
+          "img": "icons/consumables/plants/dried-bundle-wrapped-stems-sticks-brown.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "forest": "C",
+              "coast": "U"
+            }
+          }
+        },
+        {
+          "key": "black-kelp",
+          "name": {
+            "fr": "Varech noir",
+            "en": "Black kelp"
+          },
+          "description": {
+            "fr": "Algue luisante rejetée par les tempêtes, salée et visqueuse.",
+            "en": "A glistening seaweed cast up by storms, salty and slimy."
+          },
+          "value": 0.01,
+          "availability": "C",
+          "img": "icons/consumables/plants/kelp-fern-glowing-green.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "coast": "C"
+            }
+          }
         }
       ]
     },
@@ -359,7 +671,7 @@
             "fr": "Argent pur, utile contre les créatures qui le craignent.",
             "en": "Pure silver, useful against creatures that fear it."
           },
-          "value": 0.5,
+          "value": 2,
           "availability": "U",
           "img": "icons/commodities/metal/ingot-silver.webp"
         },
@@ -479,6 +791,110 @@
             "biomes": {
               "mountains": "R",
               "caves": "R"
+            }
+          }
+        },
+        {
+          "key": "bloodstone",
+          "name": {
+            "fr": "Pierre de sang",
+            "en": "Bloodstone"
+          },
+          "description": {
+            "fr": "Pierre sombre veinée de rouge, chaude dans la main.",
+            "en": "A dark stone veined with red, warm in the hand."
+          },
+          "value": 1,
+          "availability": "R",
+          "img": "icons/commodities/gems/gem-rough-cushion-red.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "mountains": "R"
+            }
+          }
+        },
+        {
+          "key": "volcanic-ash",
+          "name": {
+            "fr": "Cendre volcanique",
+            "en": "Volcanic ash"
+          },
+          "description": {
+            "fr": "Poussière grise et piquante qui sent le soufre.",
+            "en": "A grey, prickly dust smelling of sulfur."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/commodities/stone/ore-pile-grey.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "mountains": "U",
+              "hell": "C"
+            }
+          }
+        },
+        {
+          "key": "rock-salt",
+          "name": {
+            "fr": "Sel gemme",
+            "en": "Rock salt"
+          },
+          "description": {
+            "fr": "Cristaux blancs que fuient, dit-on, les esprits et les limaces.",
+            "en": "White crystals that spirits and slugs are said to shun."
+          },
+          "value": 0.01,
+          "availability": "C",
+          "img": "icons/commodities/stone/geode-raw-white.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "caves": "C",
+              "coast": "U"
+            }
+          }
+        },
+        {
+          "key": "amber",
+          "name": {
+            "fr": "Ambre",
+            "en": "Amber"
+          },
+          "description": {
+            "fr": "Résine figée où dort un insecte depuis mille ans.",
+            "en": "Hardened resin where an insect has slept for a thousand years."
+          },
+          "value": 0.5,
+          "availability": "R",
+          "img": "icons/commodities/gems/gem-amber-insect-orange.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "forest": "R",
+              "coast": "R"
+            }
+          }
+        },
+        {
+          "key": "lodestone",
+          "name": {
+            "fr": "Magnétite",
+            "en": "Lodestone"
+          },
+          "description": {
+            "fr": "Pierre noire qui attire le fer et affole les boussoles.",
+            "en": "A black stone that draws iron and maddens compasses."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/commodities/stone/ore-chunk-black.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "mountains": "U",
+              "caves": "U"
             }
           }
         }
@@ -603,6 +1019,287 @@
               "hell": "R"
             }
           }
+        },
+        {
+          "key": "bat-wing",
+          "name": {
+            "fr": "Aile de chauve-souris",
+            "en": "Bat wing"
+          },
+          "description": {
+            "fr": "Membrane fine et cireuse, encore tiède quand elle est fraîche.",
+            "en": "A thin, waxy membrane, still warm when fresh."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/commodities/biological/wing-bat-pink.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "caves": "C",
+              "ruins": "U"
+            }
+          }
+        },
+        {
+          "key": "toad-skin",
+          "name": {
+            "fr": "Peau de crapaud",
+            "en": "Toad skin"
+          },
+          "description": {
+            "fr": "Peau pustuleuse qui laisse sur les doigts un mucus engourdissant.",
+            "en": "A warty skin that leaves a numbing slime on the fingers."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/commodities/biological/foot-amphibian-green.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "swamp": "C"
+            }
+          }
+        },
+        {
+          "key": "troll-heart",
+          "name": {
+            "fr": "Cœur de troll",
+            "en": "Troll heart"
+          },
+          "description": {
+            "fr": "Il bat encore des jours après la mort de la bête.",
+            "en": "It keeps beating for days after the beast has died."
+          },
+          "value": 5,
+          "availability": "E",
+          "img": "icons/commodities/biological/organ-heart-black.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "mountains": "R"
+            }
+          }
+        },
+        {
+          "key": "spider-silk",
+          "name": {
+            "fr": "Soie d'araignée géante",
+            "en": "Giant spider silk"
+          },
+          "description": {
+            "fr": "Fil épais et collant, plus solide qu'une corde.",
+            "en": "A thick, sticky thread, stronger than rope."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/commodities/materials/material-webbing.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "caves": "U",
+              "forest": "R"
+            }
+          }
+        },
+        {
+          "key": "ghoul-tongue",
+          "name": {
+            "fr": "Langue de goule",
+            "en": "Ghoul tongue"
+          },
+          "description": {
+            "fr": "Langue grise et râpeuse qui ne pourrit jamais tout à fait.",
+            "en": "A grey, rasping tongue that never quite rots."
+          },
+          "value": 0.5,
+          "availability": "R",
+          "img": "icons/commodities/biological/tongue-violet.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "ruins": "R",
+              "underworld": "U"
+            }
+          }
+        },
+        {
+          "key": "owl-eye",
+          "name": {
+            "fr": "Œil de chouette",
+            "en": "Owl eye"
+          },
+          "description": {
+            "fr": "Grand œil rond qui semble encore vous suivre.",
+            "en": "A large round eye that still seems to follow you."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/commodities/biological/eye-brown.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "forest": "U"
+            }
+          }
+        },
+        {
+          "key": "serpent-fang",
+          "name": {
+            "fr": "Croc de serpent",
+            "en": "Serpent fang"
+          },
+          "description": {
+            "fr": "Crochet creux où sèche encore une goutte de venin.",
+            "en": "A hollow fang where a drop of venom is still drying."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/commodities/bones/tooth-canine-tan.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "swamp": "U",
+              "plains": "R"
+            }
+          }
+        },
+        {
+          "key": "bloated-leech",
+          "name": {
+            "fr": "Sangsue gorgée",
+            "en": "Bloated leech"
+          },
+          "description": {
+            "fr": "Sangsue gonflée du sang de sa dernière victime.",
+            "en": "A leech swollen with the blood of its last victim."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/commodities/biological/suckers-green.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "swamp": "C"
+            }
+          }
+        },
+        {
+          "key": "wyrm-bile",
+          "name": {
+            "fr": "Bile de wyrm",
+            "en": "Wyrm bile"
+          },
+          "description": {
+            "fr": "Liquide jaune et brûlant qui ronge le cuir des gants.",
+            "en": "A burning yellow fluid that eats through glove leather."
+          },
+          "value": 1,
+          "availability": "R",
+          "img": "icons/commodities/materials/slime-yellow.webp"
+        },
+        {
+          "key": "crow-feather",
+          "name": {
+            "fr": "Plume de corbeau",
+            "en": "Crow feather"
+          },
+          "description": {
+            "fr": "Plume noire aux reflets bleus. Les corbeaux suivent toujours les armées.",
+            "en": "A black feather with a blue sheen. Crows always follow armies."
+          },
+          "value": 0.01,
+          "availability": "C",
+          "img": "icons/commodities/materials/feather-black-blue.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "plains": "C",
+              "ruins": "C"
+            }
+          }
+        },
+        {
+          "key": "beetle-shell",
+          "name": {
+            "fr": "Carapace de scarabée",
+            "en": "Beetle shell"
+          },
+          "description": {
+            "fr": "Élytre verte et dure, qui résonne comme du métal.",
+            "en": "A hard green wing case that rings like metal."
+          },
+          "value": 0.05,
+          "availability": "U",
+          "img": "icons/commodities/biological/shell-ridged-green.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "plains": "U",
+              "caves": "U"
+            }
+          }
+        },
+        {
+          "key": "eel-oil",
+          "name": {
+            "fr": "Huile d'anguille",
+            "en": "Eel oil"
+          },
+          "description": {
+            "fr": "Huile grasse et luisante qui ne gèle jamais.",
+            "en": "A greasy, shiny oil that never freezes."
+          },
+          "value": 0.02,
+          "availability": "C",
+          "img": "icons/commodities/materials/slime-thick-blue.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "coast": "C"
+            }
+          }
+        },
+        {
+          "key": "hanged-hair",
+          "name": {
+            "fr": "Cheveux de pendu",
+            "en": "Hanged man's hair"
+          },
+          "description": {
+            "fr": "Mèche coupée sur un gibet. Elle pousse encore, dit-on.",
+            "en": "A lock cut from a gallows corpse. It still grows, they say."
+          },
+          "value": 0.1,
+          "availability": "U",
+          "img": "icons/commodities/materials/hair-tuft-grey.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "ruins": "U"
+            }
+          }
+        },
+        {
+          "key": "grave-soil",
+          "name": {
+            "fr": "Terre de cimetière",
+            "en": "Graveyard soil"
+          },
+          "description": {
+            "fr": "Terre noire et froide prise sur une tombe fraîche.",
+            "en": "Cold black earth taken from a fresh grave."
+          },
+          "value": 0.01,
+          "availability": "C",
+          "img": "icons/commodities/materials/bowl-powder-grey.webp",
+          "harvest": {
+            "quantity": "1d3",
+            "biomes": {
+              "ruins": "C",
+              "underworld": "C"
+            }
+          }
         }
       ]
     },
@@ -685,7 +1382,7 @@
             "fr": "Cristaux chargés de magie résiduelle, recherchés pour les potions magiques.",
             "en": "Crystals charged with lingering magic, sought for magic potions."
           },
-          "value": 1,
+          "value": 5,
           "availability": "R",
           "img": "icons/commodities/gems/gem-cluster-teal.webp"
         }
@@ -1051,6 +1748,128 @@
             "quantity": "1",
             "biomes": {
               "void": "C"
+            }
+          }
+        },
+        {
+          "key": "wraith-tear",
+          "name": {
+            "fr": "Larme de spectre",
+            "en": "Wraith tear"
+          },
+          "description": {
+            "fr": "Goutte glacée qui ne s'évapore jamais.",
+            "en": "An icy drop that never evaporates."
+          },
+          "value": 2,
+          "availability": "E",
+          "img": "icons/commodities/materials/glass-orb-blue.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "underworld": "U"
+            }
+          }
+        },
+        {
+          "key": "faerie-wing",
+          "name": {
+            "fr": "Aile de fée",
+            "en": "Faerie wing"
+          },
+          "description": {
+            "fr": "Aile translucide qui bourdonne encore quand on souffle dessus.",
+            "en": "A translucent wing that still hums when blown upon."
+          },
+          "value": 1,
+          "availability": "E",
+          "img": "icons/commodities/biological/wing-insect-green.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "faerie": "U"
+            }
+          }
+        },
+        {
+          "key": "imp-horn",
+          "name": {
+            "fr": "Corne de diablotin",
+            "en": "Imp horn"
+          },
+          "description": {
+            "fr": "Petite corne noire, toujours chaude, qui sent le roussi.",
+            "en": "A small black horn, always warm, smelling of scorch."
+          },
+          "value": 1,
+          "availability": "E",
+          "img": "icons/commodities/bones/horn-curved-black.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "hell": "U"
+            }
+          }
+        },
+        {
+          "key": "void-pearl",
+          "name": {
+            "fr": "Perle du Vide",
+            "en": "Void pearl"
+          },
+          "description": {
+            "fr": "Perle noire où l'on croit voir bouger des étoiles mortes.",
+            "en": "A black pearl in which dead stars seem to move."
+          },
+          "value": 5,
+          "availability": "E",
+          "img": "icons/commodities/gems/gem-faceted-round-black.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "void": "R"
+            }
+          }
+        },
+        {
+          "key": "hag-eye",
+          "name": {
+            "fr": "Œil de sorcière",
+            "en": "Hag eye"
+          },
+          "description": {
+            "fr": "Œil laiteux arraché à une sorcière des marais. Il voit encore.",
+            "en": "A milky eye torn from a swamp hag. It still sees."
+          },
+          "value": 2,
+          "availability": "E",
+          "img": "icons/creatures/eyes/void-single-black-purple.webp",
+          "harvest": {
+            "quantity": "1",
+            "biomes": {
+              "faerie": "R",
+              "swamp": "R"
+            }
+          }
+        },
+        {
+          "key": "dryad-sap",
+          "name": {
+            "fr": "Sève de dryade",
+            "en": "Dryad sap"
+          },
+          "description": {
+            "fr": "Sève verte et épaisse, sucrée comme du miel.",
+            "en": "Thick green sap, sweet as honey."
+          },
+          "value": 1,
+          "availability": "E",
+          "img": "icons/commodities/materials/slime-thick-green.webp",
+          "harvest": {
+            "quantity": "1d2",
+            "biomes": {
+              "faerie": "C",
+              "forest": "R"
             }
           }
         }

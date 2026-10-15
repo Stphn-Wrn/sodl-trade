@@ -1,9 +1,19 @@
 <header class="sodl-trade-hub-header">
   <nav class="sodl-trade-tabs">
     {{#each tabs}}
-    <button type="button" class="{{#if this.active}}is-active{{/if}}" data-action="switchPanel" data-panel-id="{{this.id}}" {{#if this.closed}}disabled title="{{localize 'SODLTRADE.Hub.ClosedTab'}}"{{/if}}>{{#if this.closed}}<i class="fas fa-lock"></i> {{/if}}{{this.label}}{{#if this.badge}} <span class="sodl-trade-badge-count">{{this.badge}}</span>{{/if}}</button>
+    <button type="button" class="{{#if this.active}}is-active{{/if}}" data-action="switchPanel" data-panel-id="{{this.id}}" {{#if this.closed}}disabled title="{{localize 'SODLTRADE.Hub.ClosedTab'}}"{{/if}}>{{#if this.closed}}<i class="fas fa-lock"></i>{{/if}}<span>{{this.label}}</span>{{#if this.badge}}<span class="sodl-trade-badge-count">{{this.badge}}</span>{{/if}}</button>
     {{/each}}
   </nav>
+
+  {{#if preview}}
+  <label class="sodl-trade-preview">
+    <i class="fas fa-eye"></i> {{localize "SODLTRADE.Hub.Preview.Label"}}
+    <select name="preview">
+      <option value="">{{localize "SODLTRADE.Hub.Preview.GM"}}</option>
+      {{#each preview.characters}}<option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>{{/each}}
+    </select>
+  </label>
+  {{/if}}
 
   {{#if noCharacter}}
   <p class="sodl-trade-empty">{{localize "SODLTRADE.Hub.NoCharacter"}}</p>

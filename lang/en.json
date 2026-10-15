@@ -9,6 +9,10 @@
       "NoTrade": "No ongoing trade.",
       "Open": "Open",
       "New": "Propose a trade",
+      "Preview": {
+        "Label": "View as",
+        "GM": "The GM (me)"
+      },
       "NoCharacter": "You don't own any character.",
       "NoPartner": "No other player character.",
       "Tabs": {
@@ -16,12 +20,14 @@
         "loot": "Rewards",
         "shop": "Shop",
         "crafting": "Crafting",
-        "harvest": "Harvest"
+        "harvest": "Harvest",
+        "lab": "Laboratory"
       },
       "Acting": "Character",
       "ClosedTab": "Closed by the GM",
       "ProposeTo": "Offer a trade to {name}",
-      "ProposeHint": "Click a character to offer them a trade."
+      "ProposeHint": "Click a character to offer them a trade.",
+      "Title": "Trades and crafting"
     },
     "Loot": {
       "Title": "Rewards",
@@ -162,10 +168,26 @@
       },
       "harvested": "{name} searches the area ({place}) and finds {items}.",
       "harvestEmpty": "{name} searches the area ({place}) but finds nothing: the land is dead.",
-      "harvestFailed": "{name} searches the area ({place}) and finds nothing."
+      "harvestFailed": "{name} searches the area ({place}) and finds nothing.",
+      "OpenAlchemy": "Open the cauldron",
+      "lab": {
+        "incantationWritten": "{name} writes {item}.",
+        "incantationCopied": "{name} copies {item}.",
+        "identified": "{name} identifies {item} and learns the recipe \"{recipe}\".",
+        "spellBrewed": "{name} brews {item} with the Brew Potion spell.",
+        "mixed": {
+          "transformed": "{name} mixes {names}: the potions become a new potion of the GM's choice that lasts three times as long.",
+          "doubled": "{name} mixes {names}: the effects add up and last twice as long.",
+          "combined": "{name} mixes {names}: the effects add up.",
+          "oneFades": "{name} mixes {names}: one of the potions, of the GM's choice, loses its magic.",
+          "allFade": "{name} mixes {names}: both potions lose their magic.",
+          "poison": "{name} mixes {names}: the mixture becomes poison.",
+          "explosion": "{name} mixes {names}: the mixture explodes! Everything within 5 yards takes the damage (half on a successful Agility roll)."
+        }
+      }
     },
     "Errors": {
-      "NoGM": "A GM must be connected to handle trades.",
+      "NoGM": "A GM must be connected: their client checks and applies trades, purchases, crafting and harvests.",
       "TradeNotFound": "This trade no longer exists.",
       "ActorMissing": "One of the trading characters no longer exists.",
       "NotYourCharacter": "You can only propose a trade with your own character.",
@@ -214,7 +236,14 @@
       "InvalidDice": "Invalid quantity: write for instance 1d3, 2d4 or 2.",
       "ChanceOver100": "The chances of \"{name}\" would add up to more than 100%.",
       "RecipesFailed": "Could not add the recipes: see the console (F12).",
-      "MissingRequirement": "You need to be: {names} (any one is enough)."
+      "MissingRequirement": "You need to be: {names} (any one is enough).",
+      "InvalidStation": "This station does not exist.",
+      "NoCastingLeft": "\"{name}\" has no casting left until the next rest.",
+      "SpellNotLearned": "This character does not know the spell \"{name}\".",
+      "NotAPotion": "\"{name}\" is not a potion.",
+      "NotAnIncantation": "\"{name}\" is not an incantation.",
+      "NoPotionRecipe": "\"{name}\" comes from no compendium: the GM must create its recipe.",
+      "NoContainer": "An empty container is needed (empty vial or flask)."
     },
     "Notify": {
       "Invited": "{name} offers you a trade.",
@@ -230,12 +259,13 @@
       "HarvestRenewed": "You can harvest again.",
       "RecipesImported": "{count} recipe(s) added. Teach them to characters in \"Edit recipes\".",
       "RecipesUpToDate": "All the default recipes are already there.",
-      "RecipesSkipped": "Recipes left out because their items could not be found in the world or the compendiums: {names}."
+      "RecipesSkipped": "Recipes left out because their items could not be found in the world or the compendiums: {names}.",
+      "RecipesLearned": "{name} learns {count} recipes."
     },
     "Settings": {
       "PriceUnit": {
         "Name": "Unit of unitless prices",
-        "Hint": "Unit used when an item's price is a plain number, such as \"5\" or \"0.5\". The Shadow of the Demon Lord system stores its prices in gold crowns."
+        "Hint": "Unit used when an item's price is a plain number, such as \"5\" or \"0.5\". The official Shadow of the Demon Lord compendiums write their prices in silver shillings (a \"2\" healing potion costs 2 ss, as in the book)."
       },
       "ShopApproval": {
         "Name": "Purchases must be approved by the GM",
@@ -265,7 +295,7 @@
       },
       "CraftApproval": {
         "Name": "Crafting must be approved by the GM",
-        "Hint": "Crafting files a request the GM approves or rejects. Nothing is used up before approval."
+        "Hint": "Crafting, writing or copying an incantation, brewing a potion by spell or in the cauldron, and mixing potions file a request the GM approves or rejects from the Crafting tab. Nothing is used up before approval."
       },
       "HarvestScarcity": {
         "Name": "State of the world",
@@ -299,9 +329,6 @@
     },
     "Crafting": {
       "Title": "Crafting",
-      "Edit": "Edit recipes",
-      "RecipePlaceholder": "Recipe name",
-      "AddRecipe": "Add a recipe",
       "RemoveRecipe": "Delete the recipe",
       "Unnamed": "Unnamed recipe",
       "Empty": "No recipes yet. Switch to edit mode to create one.",
@@ -310,6 +337,7 @@
       "MyOrders": "My crafting requests",
       "OrderBy": "requested by {name}",
       "Make": "Craft",
+      "MaterialsOnly": "Materials only",
       "Request": "Request",
       "Result": "Result",
       "ResultQuantityHint": "Quantity crafted",
@@ -340,21 +368,21 @@
         "Title": "How does it work?",
         "Gm": {
           "Resources": "Click \"Create resources\" to add a \"Crafting resources\" folder to the world's items (herbs, ores, creature parts, vials…), with prices and availability. You can edit them, add more, sell them in shops or put them in the rewards.",
-          "Defaults": "Or click \"Default recipes\" to start from ready-made recipes: core book potions and poison, torches, candles, arrows, ingots… Book items are looked up in your compendiums; a recipe whose item is missing is left out.",
-          "Create": "Click \"Edit recipes\", type a name and click \"Add a recipe\".",
+          "Defaults": "Or click \"Default recipes\" to start from recipes that follow the books: potions from the core book and the Demon Lord's Companion, the Assassin's poison, holy water, and common goods (torches, arrows, ingots…). Each asks for the right profession or path, with no roll and materials worth a quarter of the price (Companion rule). Book items are looked up in your compendiums; a recipe whose item is missing is left out.",
+          "Create": "Click \"New recipe\": it opens straight in its form on the right. To change an existing recipe, pick it in the list and click \"Edit this recipe\".",
           "Result": "Drop the crafted item on the \"Result\" zone, from the sidebar or a compendium, then set the quantity made. The \"Materials\" field is filled in with a quarter of its price (Companion rule): change or clear it if needed.",
           "Ingredients": "Drop the items used up on \"Ingredients\" and set how many are needed. Optional: the materials cost is often enough.",
           "Tools": "Drop on \"Required tools\" what the character must own without using it up, such as an alchemist's kit.",
           "Requirements": "Optional: add requirements (profession, path, talent, ancestry). Drop one or type a word like \"blacksmith\"; any one is enough to craft.",
-          "Roll": "Pick a roll (Intellect for a simple item, per the Companion) with its boons or banes, or \"No roll\". The time is only shown to players. On a failure, the ingredients and materials are lost.",
-          "Teach": "Click the names of the characters who know the recipe, such as those with the right profession. They are told.",
-          "Done": "Click \"Done\". Players craft from this tab. To approve each crafting yourself, turn it on in the module settings.",
-          "Example": "Example, the Assassin's Poison Crafting: result Poison, materials 1 cp, tool Alchemist's kit, time 1 minute, no roll."
+          "Roll": "The Companion asks for no roll to craft: the profession, tools, materials and time are enough. For an item simple enough for anyone to make, the GM can ask for an Intellect roll. The time is only shown to the players. On a failure, the ingredients and materials are lost.",
+          "Teach": "Click the names of the characters who know the recipe, on the workbench or in the editor. They are told.",
+          "Done": "Click \"Done\" to see the workbench as players will. Players craft from this tab. To approve each crafting yourself, turn it on in the module settings.",
+          "Example": "Example, the Assassin's Manufacture Poison: result Poison, materials 5 cp, tool Alchemist's kit, requirement Manufacture Poison, time 1 minute, no roll."
         },
         "Player": {
           "Character": "If you have several characters, pick the one crafting in the banner.",
-          "Read": "Each recipe shows what it makes, the ingredients (what you have / what is needed), the tools to own, the materials cost and any roll. What is missing is shown in orange.",
-          "Craft": "When nothing is missing, click \"Craft\". The roll uses your character's bonuses and succeeds on 10 or more. On a failure, the ingredients and materials are lost.",
+          "Read": "Pick a recipe in the list: search it by name, filter by station (cauldron, forge, workbench) or keep only those you can make (green ring). The workbench shows the ingredients (what you have / what is needed) and tools on the left, the station in the middle and what it makes on the right. What is missing is shown in orange.",
+          "Craft": "When nothing is missing, the cauldron bubbles: click \"Craft\". The roll uses your character's bonuses and succeeds on 10 or more. On a failure, the ingredients and materials are lost.",
           "Immediate": "The item goes straight into your inventory, and the ingredients and money are removed.",
           "Approval": "Your request goes to the GM, who approves or rejects it. Nothing is used up before approval, and you can cancel it while it waits."
         }
@@ -368,7 +396,24 @@
       "RequirementPlaceholder": "blacksmith, alchemist…",
       "AddRequirement": "Add",
       "RequirementDropHint": "Drop a profession, path, talent or ancestry, or type a word: it is enough for the name of something the character has to contain it (\"smith\" matches \"Artisan (blacksmith)\").",
-      "RequiresOneOf": "Requires:"
+      "RequiresOneOf": "Requires:",
+      "Station": "Station",
+      "Stations": {
+        "all": "All",
+        "cauldron": "Cauldron",
+        "forge": "Forge",
+        "workbench": "Workbench"
+      },
+      "Search": "Search a recipe or an ingredient…",
+      "ReadyOnly": "Only what I can make",
+      "NoMatch": "No recipe matches.",
+      "Via": "uses {name}",
+      "FindUses": "Show the recipes that use {name}",
+      "NewRecipe": "New recipe",
+      "EditRecipe": "Edit this recipe",
+      "ConfirmRemove": "Delete the \"{name}\" recipe? Pending requests for it will be cancelled.",
+      "HalfTime": "half the time (Recipe Reference)",
+      "New": "New"
     },
     "Harvest": {
       "Title": "Harvest",
@@ -406,6 +451,67 @@
       "Nothing": "Nothing found",
       "NewRealm": "New world",
       "NewBiome": "New biome"
+    },
+    "Lab": {
+      "Title": "Laboratory",
+      "Help": {
+        "Title": "What the books say",
+        "Incantation": "Incantations (core rulebook): write a spell you have learned, or copy an incantation you possess, with a writing kit and special inks worth half the incantation's price. It takes 1 hour.",
+        "Identify": "Identify Substance (Alchemy 0, Demon Lord's Companion): learn a potion's name, what it does and its recipe. The recipe joins the character's crafting recipes.",
+        "Brew": "Brew Potion (Alchemy 1, Demon Lord's Companion): an hour with the alchemist's kit fills a container with one dose of a potion whose recipe you know, with no other ingredient. With Recipe Reference (Brewmaster, Occult Philosophy), it takes half the time.",
+        "Mix": "Mixing potions (Demon Lord's Companion): pouring one potion into another has unpredictable results; the GM rolls 3d6 on the table below."
+      },
+      "Rank": "rank {rank}",
+      "Castings": "{left}/{max} castings",
+      "NoPotion": "No potion in the inventory.",
+      "Incantation": {
+        "Title": "Write an incantation",
+        "Kit": "Writing kit",
+        "Rule": "Inks worth half the incantation's price, 1 hour of work.",
+        "Ink": "inks {cost}",
+        "Write": "Write",
+        "Copy": "Copy",
+        "NoSpell": "This character knows no spell."
+      },
+      "Alchemy": {
+        "Title": "Alchemy spells"
+      },
+      "Identify": {
+        "Button": "Identify",
+        "Unknown": "Identify Substance (Alchemy 0): this character does not know this spell."
+      },
+      "Brew": {
+        "Button": "Brew",
+        "Unknown": "Brew Potion (Alchemy 1): this character does not know this spell.",
+        "NoRecipe": "No known potion recipe: identify a potion or ask the GM to teach you one.",
+        "Time": "1 hour",
+        "TimeReference": "30 minutes (Recipe Reference)"
+      },
+      "Mix": {
+        "Title": "Mix potions",
+        "Pick": "Pick a potion…",
+        "Button": "Mix",
+        "NeedTwo": "Mixing takes at least two potions.",
+        "Table": "Mixing table (3d6)",
+        "RollFlavor": "Mixing potions: {names}",
+        "ExplosionFlavor": "The mixture explodes: damage in a 5-yard-radius sphere",
+        "Outcome": {
+          "transformed": "18: the potions become a new potion of the GM's choice, whose duration is three times normal.",
+          "doubled": "16-17: all the mixed potions' effects occur normally, but each effect's duration is twice normal.",
+          "combined": "13-15: all the mixed potions' effects occur normally.",
+          "oneFades": "9-12: one potion of the GM's choice loses its magic; its effect ends.",
+          "allFade": "6-8: both potions lose their magic; their effects end.",
+          "poison": "4-5: the mixture becomes poison. A creature affected must get a success on a Strength challenge roll or take damage equal to half its Health and become poisoned for 1 minute; while poisoned, it repeats the roll at the end of each round or takes 1d6 damage.",
+          "explosion": "3: the mixture explodes in a 5-yard-radius sphere: 5d6 damage to everything in the area, half on a successful Agility challenge roll. A mixture made inside a creature allows no roll."
+        },
+        "Item": {
+          "transformed": "Transformed mixture (potion of the GM's choice)",
+          "doubled": "Potion mixture (durations doubled)",
+          "combined": "Potion mixture",
+          "oneFades": "Potion mixture (one lost its magic)",
+          "poison": "Poisoned mixture"
+        }
+      }
     }
   }
 }

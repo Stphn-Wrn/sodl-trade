@@ -45,13 +45,14 @@ export function toolStatus(recipe, inventory) {
 
 // A requirement is met by a profession, path, talent or ancestry copied from the dropped one,
 // or whose name contains the requirement, so "Forgeron" matches a profession named "Artisan (forgeron)".
+// Shipped recipes also list the other names of the requirement, such as the English one of an untranslated book.
 function hasTrait(requirement, traits) {
-  const wanted = normalizeName(requirement.name);
+  const wanted = [requirement.name, ...(requirement.aliases ?? [])].map(normalizeName).filter((name) => name !== "");
   return traits.some((trait) => {
     if (requirement.sourceUuid && (trait.sourceUuids ?? []).includes(requirement.sourceUuid)) {
       return true;
     }
-    return wanted !== "" && normalizeName(trait.name).includes(wanted);
+    return wanted.some((name) => normalizeName(trait.name).includes(name));
   });
 }
 

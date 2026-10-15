@@ -64,3 +64,38 @@ export function prepareReceivedItem(source, quantity) {
   }
   return data;
 }
+
+function stackKey(item) {
+  return `${item.type}|${String(item.name ?? "").trim()}|${String(item.system?.description ?? "").trim()}`;
+}
+
+function quantityOf(item) {
+  const quantity = Math.trunc(Number(item.system?.quantity));
+  if (!Number.isFinite(quantity) || quantity < 1) {
+    return 1;
+  }
+  return quantity;
+}
+
+// A crafted item joins the stack the character already has (same type, name and description)
+// instead of adding a line; two crafted copies of the same thing make one stack too.
+export function stackCrafted(owned, crafted) {
+  const totals = new Map();
+  const create = [];
+  for (const item of crafted) {
+    const key = stackKey(item);
+    const existing = owned.find((candidate) => stackKey(candidate) === key);
+    if (existing) {
+      const current = totals.get(existing.id) ?? quantityOf(existing);
+      totals.set(existing.id, current + quantityOf(item));
+      continue;
+    }
+    const pending = create.find((candidate) => stackKey(candidate) === key);
+    if (pending) {
+      pending.system.quantity = quantityOf(pending) + quantityOf(item);
+      continue;
+    }
+    create.push(item);
+  }
+  return { create, update: [...totals].map(([id, quantity]) => ({ _id: id, "system.quantity": quantity })) };
+}

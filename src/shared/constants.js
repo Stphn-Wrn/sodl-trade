@@ -12,6 +12,7 @@ export const CRAFT_APPROVAL_SETTING = "requireCraftApproval";
 export const CHAT_CRAFT_SETTING = "chatCraft";
 export const HARVEST_SETTING = "harvest";
 export const HARVEST_SCARCITY_SETTING = "harvestScarcity";
+export const SEEN_RECIPES_SETTING = "seenRecipes";
 export const SOCKET_CHANNEL = `module.${MODULE_ID}`;
 
 export function modulePath(relativePath) {

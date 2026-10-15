@@ -53,6 +53,37 @@ export function toCraftingInventory(actor) {
   };
 }
 
+// The laboratory's view of a character: their gear (with what kind of consumable it is), their purse and their spells.
+export function toLabInventory(actor) {
+  const crafting = toCraftingInventory(actor);
+  const gear = actor.items.filter((item) => TRADABLE_TYPES.includes(item.type));
+  return {
+    ...crafting,
+    items: crafting.items.map((entry) => {
+      const item = gear.find((candidate) => candidate.id === entry.id);
+      return {
+        ...entry,
+        img: item.img,
+        consumableType: item.system.consumabletype ?? "",
+        resourceKey: item.flags?.["sodl-trade"]?.resource ?? null,
+        description: item.system.description ?? "",
+        value: item.system.value,
+        contents: item.system.contents ?? []
+      };
+    }),
+    spells: actor.items
+      .filter((item) => item.type === "spell")
+      .map((item) => ({ id: item.id, name: item.name, img: item.img, rank: Number(item.system.rank) || 0, tradition: item.system.tradition ?? "", system: { castings: item.system.castings } }))
+  };
+}
+
+// A character's gear seen as resources: the catalog resource each item was created from, its sources and its quantity.
+export function toResourceInventory(actor) {
+  return actor.items
+    .filter((item) => TRADABLE_TYPES.includes(item.type))
+    .map((item) => ({ id: item.id, name: item.name, img: item.img, resourceKey: item.flags?.["sodl-trade"]?.resource ?? null, sourceUuids: sourceUuidsOf(item), quantity: toQuantity(item.system.quantity) }));
+}
+
 export function resolveRole(trade, user, ownsActor) {
   if (user.isGM) {
     return GM_ROLE;

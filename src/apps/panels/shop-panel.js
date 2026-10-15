@@ -1,5 +1,5 @@
 import { MODULE_ID, SHOP_APPROVAL_SETTING, modulePath } from "../../shared/constants.js";
-import { errorMessage, isFeatureEnabled, ownedCharacterIds, t } from "../../shared/foundry-adapter.js";
+import { errorMessage, isFeatureEnabled, t } from "../../shared/foundry-adapter.js";
 import { LocalizedError } from "../../shared/i18n.js";
 import { sendRequest } from "../../socket.js";
 import { AVAILABILITIES, openCategories } from "../../trade/shop.js";
@@ -100,13 +100,12 @@ function orderView(order) {
   };
 }
 
-function visibleOrders(isGM) {
+function visibleOrders(isGM, ownIds) {
   const orders = readShop().orders ?? [];
   if (isGM) {
     return orders;
   }
-  const mine = ownedCharacterIds();
-  return orders.filter((order) => mine.includes(order.actorId));
+  return orders.filter((order) => ownIds.includes(order.actorId));
 }
 
 function toEntry(item) {
@@ -210,7 +209,7 @@ export const shopPanel = {
       isEmpty: categories.length === 0,
       canRestock: categories.some((category) => category.canRestock),
       requireApproval: game.settings.get(MODULE_ID, SHOP_APPROVAL_SETTING),
-      orders: visibleOrders(base.isGM).map(orderView)
+      orders: visibleOrders(base.isGM, base.ownIds).map(orderView)
     };
   },
 

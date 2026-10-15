@@ -1,0 +1,107 @@
+<section class="sodl-trade-panel sodl-lab" data-panel="lab" {{#unless lab.visible}}hidden{{/unless}}>
+  <details class="sodl-trade-help" {{#if isGM}}open{{/if}}>
+    <summary><i class="fas fa-circle-question"></i> {{localize "SODLTRADE.Lab.Help.Title"}}</summary>
+    <ul>
+      <li>{{localize "SODLTRADE.Lab.Help.Incantation"}}</li>
+      <li>{{localize "SODLTRADE.Lab.Help.Identify"}}</li>
+      <li>{{localize "SODLTRADE.Lab.Help.Brew"}}</li>
+      <li>{{localize "SODLTRADE.Lab.Help.Mix"}}</li>
+    </ul>
+  </details>
+
+  {{#if acting}}
+  <div class="sodl-trade-box">
+    <header class="sodl-trade-box-header">
+      <span><i class="fas fa-scroll"></i> {{localize "SODLTRADE.Lab.Incantation.Title"}}</span>
+      <span class="sodl-trade-requirement {{#if lab.scriptorium.hasKit}}is-owned{{else}}is-missing{{/if}}"><i class="fas fa-feather"></i> {{localize "SODLTRADE.Lab.Incantation.Kit"}}</span>
+    </header>
+    <p class="sodl-trade-hint">{{localize "SODLTRADE.Lab.Incantation.Rule"}}</p>
+    <ul class="sodl-trade-offer sodl-trade-catalog">
+      {{#each lab.scriptorium.spells}}
+      <li>
+        <img src="{{this.img}}" alt="">
+        <span class="sodl-trade-item-name">{{this.name}} <small>{{localize "SODLTRADE.Lab.Rank" rank=this.rank}} · {{localize "SODLTRADE.Lab.Incantation.Ink" cost=this.ink}}</small></span>
+        <button type="button" data-action="labWrite" data-spell-id="{{this.id}}" {{#if this.blocked}}disabled title="{{this.blocked}}"{{/if}}><i class="fas fa-pen-nib"></i> {{localize "SODLTRADE.Lab.Incantation.Write"}}</button>
+      </li>
+      {{else}}
+      <li class="sodl-trade-empty">{{localize "SODLTRADE.Lab.Incantation.NoSpell"}}</li>
+      {{/each}}
+      {{#each lab.scriptorium.incantations}}
+      <li>
+        <img src="{{this.img}}" alt="">
+        <span class="sodl-trade-item-name">{{this.name}} <small>{{localize "SODLTRADE.Lab.Rank" rank=this.rank}} · {{localize "SODLTRADE.Lab.Incantation.Ink" cost=this.ink}}</small></span>
+        <button type="button" data-action="labCopy" data-item-id="{{this.id}}" {{#if this.blocked}}disabled title="{{this.blocked}}"{{/if}}><i class="fas fa-copy"></i> {{localize "SODLTRADE.Lab.Incantation.Copy"}}</button>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+
+  <div class="sodl-trade-box">
+    <header class="sodl-trade-box-header">
+      <span><i class="fas fa-flask"></i> {{localize "SODLTRADE.Lab.Alchemy.Title"}}</span>
+    </header>
+    {{#with lab.alchemy.identify}}
+    <p class="sodl-trade-label">{{this.name}} {{#if this.castings}}<small>{{this.castings}}</small>{{/if}}</p>
+    <ul class="sodl-trade-offer sodl-trade-catalog">
+      {{#each @root.lab.potions}}
+      <li>
+        <img src="{{this.img}}" alt="">
+        <span class="sodl-trade-item-name">{{this.name}}</span>
+        <button type="button" data-action="labIdentify" data-item-id="{{this.id}}" {{#if ../this.blocked}}disabled title="{{../this.blocked}}"{{/if}}><i class="fas fa-magnifying-glass"></i> {{localize "SODLTRADE.Lab.Identify.Button"}}</button>
+      </li>
+      {{else}}
+      <li class="sodl-trade-empty">{{localize "SODLTRADE.Lab.NoPotion"}}</li>
+      {{/each}}
+    </ul>
+    {{else}}
+    <p class="sodl-trade-hint">{{localize "SODLTRADE.Lab.Identify.Unknown"}}</p>
+    {{/with}}
+
+    {{#with lab.alchemy.brew}}
+    <p class="sodl-trade-label">{{this.name}} {{#if this.castings}}<small>{{this.castings}}</small>{{/if}} <small><i class="fas fa-hourglass-half"></i> {{@root.lab.alchemy.brewTime}}</small></p>
+    <ul class="sodl-trade-offer sodl-trade-catalog">
+      {{#each @root.lab.alchemy.recipes}}
+      <li>
+        <img src="{{this.img}}" alt="">
+        <span class="sodl-trade-item-name">{{this.name}}{{#if this.blocked}} <small class="sodl-craft-blocked">{{this.blocked}}</small>{{/if}}</span>
+        <button type="button" data-action="labBrew" data-recipe-id="{{this.id}}" {{#if this.blocked}}disabled{{/if}}{{#if ../this.blocked}}disabled title="{{../this.blocked}}"{{/if}}><i class="fas fa-fire-flame-curved"></i> {{localize "SODLTRADE.Lab.Brew.Button"}}</button>
+      </li>
+      {{else}}
+      <li class="sodl-trade-empty">{{localize "SODLTRADE.Lab.Brew.NoRecipe"}}</li>
+      {{/each}}
+    </ul>
+    {{else}}
+    <p class="sodl-trade-hint">{{localize "SODLTRADE.Lab.Brew.Unknown"}}</p>
+    {{/with}}
+  </div>
+
+  <div class="sodl-trade-box">
+    <header class="sodl-trade-box-header">
+      <span><i class="fas fa-vial-circle-check"></i> {{localize "SODLTRADE.Lab.Mix.Title"}}</span>
+    </header>
+    {{#if lab.canMix}}
+    <div class="sodl-lab-mix">
+      <select data-lab-mix>
+        <option value="">{{localize "SODLTRADE.Lab.Mix.Pick"}}</option>
+        {{#each lab.potions}}<option value="{{this.id}}" data-quantity="{{this.quantity}}">{{this.name}} (×{{this.quantity}})</option>{{/each}}
+      </select>
+      <i class="fas fa-plus"></i>
+      <select data-lab-mix>
+        <option value="">{{localize "SODLTRADE.Lab.Mix.Pick"}}</option>
+        {{#each lab.potions}}<option value="{{this.id}}" data-quantity="{{this.quantity}}">{{this.name}} (×{{this.quantity}})</option>{{/each}}
+      </select>
+      <button type="button" class="is-primary" data-action="labMix" disabled><i class="fas fa-blender"></i> {{localize "SODLTRADE.Lab.Mix.Button"}}</button>
+    </div>
+    {{else}}
+    <p class="sodl-trade-hint">{{localize "SODLTRADE.Lab.Mix.NeedTwo"}}</p>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  <details class="sodl-trade-box sodl-lab-table" {{#if isGM}}open{{/if}}>
+    <summary class="sodl-trade-box-header"><span><i class="fas fa-dice"></i> {{localize "SODLTRADE.Lab.Mix.Table"}}</span></summary>
+    <table>
+      {{#each lab.mixingTable}}<tr><th>{{this.range}}</th><td>{{this.text}}</td></tr>{{/each}}
+    </table>
+  </details>
+</section>

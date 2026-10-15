@@ -112,6 +112,11 @@ export function postCraftOrderEvent(event, order) {
   return post(CHAT_CRAFT_SETTING, { event: `craft-order-${event}`, text, showOffers: false, canOpen: false, openCrafting: event === "ordered" }, { actorIds: [order.actorId], alias: t("SODLTRADE.Crafting.Title") });
 }
 
+// An extension's crafting news, sent to the same audience as the module's own crafting messages.
+export function postCraftingChat({ event, text, actorIds, alias }) {
+  return post(CHAT_CRAFT_SETTING, { event, text, showOffers: false, canOpen: false }, { actorIds, alias });
+}
+
 export function postHarvestEvent({ actor, succeeded, found }, place) {
   let event = "harvested";
   if (!succeeded) {
@@ -122,4 +127,10 @@ export function postHarvestEvent({ actor, succeeded, found }, place) {
   const items = describeOffer({ items: found, wealth: emptyWealth() }, t);
   const text = t(`SODLTRADE.Chat.${event}`, { name: actor.name, place, items });
   return post(CHAT_CRAFT_SETTING, { event, text, showOffers: false, canOpen: false }, { actorIds: [actor.id], alias: t("SODLTRADE.Harvest.Title") });
+}
+
+// The laboratory's events: incantations written, potions identified, brewed by spell, or mixed.
+export function postLabEvent(actor, event, data) {
+  const text = t(`SODLTRADE.Chat.lab.${event}`, { name: actor.name, ...data });
+  return post(CHAT_CRAFT_SETTING, { event: `lab-${event.replace(".", "-")}`, text, showOffers: false, canOpen: false }, { actorIds: [actor.id], alias: t("SODLTRADE.Lab.Title") });
 }

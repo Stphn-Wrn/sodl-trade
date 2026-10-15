@@ -183,23 +183,47 @@
   padding-left: 16px;
 }
 
+/* Tabs: icon and label, compact, so the module's six parts fit on one line. */
 .sodl-trade-tabs {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   margin-bottom: 8px;
   border-bottom: 1px solid var(--trade-border);
 }
 
 .sodl-trade-tabs button {
-  flex: 1;
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  height: 34px;
+  padding: 0 6px;
   border: none;
-  border-bottom: 3px solid transparent;
-  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 6px 6px 0 0;
   background: none;
+  color: var(--trade-muted);
+  font-size: 13px;
+  line-height: 1;
   cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
 }
 
-.sodl-trade-tabs button:hover {
+.sodl-trade-tabs button > span:not(.sodl-trade-badge-count) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sodl-trade-tabs button i {
+  flex: 0 0 auto;
+  font-size: 12px;
+}
+
+.sodl-trade-tabs button:hover:not(:disabled) {
+  color: inherit;
   background: var(--trade-surface);
 }
 
@@ -209,8 +233,14 @@
 }
 
 .sodl-trade-tabs button.is-active {
+  color: inherit;
   font-weight: bold;
   border-bottom-color: var(--trade-waiting);
+  background: var(--trade-surface);
+}
+
+.sodl-trade-tabs button.is-active i {
+  color: var(--trade-waiting);
 }
 
 .sodl-trade-offer input {
@@ -237,6 +267,19 @@
 
 .sodl-trade-hub-header {
   margin-bottom: 8px;
+}
+
+.sodl-trade-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  color: var(--trade-muted);
+}
+
+.sodl-trade-preview select {
+  width: auto;
+  max-width: 220px;
 }
 
 .sodl-trade-acting {
@@ -828,11 +871,6 @@
   width: 100%;
 }
 
-.sodl-trade-recipe-result {
-  margin: 4px 0;
-  font-weight: bold;
-}
-
 .sodl-trade-ingredient-count {
   font-size: 12px;
   white-space: nowrap;
@@ -850,12 +888,6 @@
   margin-top: 6px;
   font-size: 12px;
   color: var(--trade-muted);
-}
-
-.sodl-trade-recipe-blocked {
-  margin: 4px 0 0;
-  text-align: left;
-  color: var(--trade-waiting);
 }
 
 .sodl-trade-recipe-requirements {
@@ -886,6 +918,1158 @@
   border-color: var(--trade-accepted);
 }
 
+/* Crafting workshop: a grimoire of recipes above a workbench with a cauldron. */
+.sodl-trade {
+  --craft-gold: #c9932e;
+}
+
+/* The panel is the container, since the workshop's own columns depend on its width. */
+.sodl-trade-panel[data-panel="crafting"] {
+  container-type: inline-size;
+}
+
+.sodl-workshop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+.sodl-workshop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.sodl-trade input.sodl-workshop-search {
+  width: 100%;
+}
+
+.sodl-workshop-stations {
+  display: flex;
+  gap: 4px;
+}
+
+.sodl-trade button.sodl-workshop-station {
+  flex: 1 1 auto;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--trade-border);
+  border-radius: 4px;
+  background: var(--trade-surface);
+  font-size: 12px;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.sodl-trade button.sodl-workshop-station.is-active {
+  border-color: var(--craft-gold);
+  color: var(--craft-gold);
+}
+
+.sodl-workshop-ready {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.sodl-workshop-recipes {
+  display: flex;
+  flex-direction: column;
+  max-height: 260px;
+  margin: 0;
+  padding: 0 2px 0 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.sodl-trade button.sodl-workshop-recipe {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: auto;
+  padding: 3px 8px 3px 4px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  line-height: 1.2;
+  text-align: left;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.sodl-trade button.sodl-workshop-recipe:hover {
+  background: var(--trade-surface);
+}
+
+.sodl-trade button.sodl-workshop-recipe.is-selected {
+  border-color: var(--craft-gold);
+  background: rgba(201, 147, 46, 0.12);
+}
+
+.sodl-workshop-recipe img {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+}
+
+.sodl-workshop-recipe-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sodl-workshop-recipe-text > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sodl-workshop-recipe-text > span {
+  font-size: 13px;
+}
+
+.sodl-workshop-recipe-text > small {
+  font-size: 11px;
+  color: var(--craft-gold);
+}
+
+.sodl-workshop-recipe.is-ready img {
+  box-shadow: 0 0 0 2px var(--trade-accepted);
+}
+
+/* Wide windows split the tab in two: the recipes on the left scroll on their own,
+   the workbench on the right stays in place. */
+@container (min-width: 600px) {
+  .sodl-workshop {
+    grid-template-columns: 240px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    flex: 1 1 auto;
+    min-height: 320px;
+  }
+
+  .sodl-workshop-list {
+    min-height: 0;
+    padding-right: 10px;
+    border-right: 1px solid var(--trade-border);
+  }
+
+  .sodl-workshop-recipes {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+  }
+
+  .sodl-workshop-benches {
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
+/* The window's content is measured, so the crafting tab can fill its height when it is wide enough to split. */
+.sodl-trade .window-content {
+  container: sodl-hub / inline-size;
+}
+
+@container sodl-hub (min-width: 620px) {
+  .sodl-trade-panel[data-panel="crafting"]:not([hidden]) {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    flex-shrink: 1;
+    min-height: 0;
+  }
+}
+
+.theme-light .sodl-workshop-group-header {
+  background: rgb(236, 232, 224);
+}
+
+.sodl-workshop-group + .sodl-workshop-group {
+  margin-top: 6px;
+}
+
+.sodl-workshop-group ul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sodl-workshop-group-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--trade-border);
+  background: rgb(24, 24, 30);
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--craft-gold);
+}
+
+.sodl-workshop-group-header small {
+  font-weight: normal;
+  color: var(--trade-muted);
+}
+
+.sodl-workshop-new {
+  flex: 0 0 auto;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: var(--craft-gold);
+  color: #1b1d24;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.sodl-workshop-benches {
+  container-type: inline-size;
+  min-width: 0;
+}
+
+.sodl-craft-header .sodl-craft-edit {
+  margin-left: auto;
+  font-size: 12px;
+}
+
+/* The GM's form for one recipe takes the workbench's place: drops on the left, settings on the right. */
+.sodl-craft-editor {
+  padding: 10px;
+  border: 1px solid var(--craft-gold);
+  border-radius: 8px;
+  background: var(--trade-surface);
+  animation: sodl-craft-appear 0.18s ease-out;
+}
+
+.sodl-craft-editor-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.sodl-craft-editor-header img {
+  width: 36px;
+  height: 36px;
+  border: none;
+}
+
+.sodl-craft-editor-header > i {
+  width: 36px;
+  font-size: 22px;
+  text-align: center;
+  color: var(--trade-muted);
+}
+
+.sodl-trade input.sodl-craft-editor-name {
+  flex: 1;
+  height: 32px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.sodl-craft-editor-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.sodl-craft-editor .sodl-trade-recipe-fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@container (min-width: 520px) {
+  .sodl-craft-editor-columns {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.sodl-craft-editor-column {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.sodl-craft-bench:not([hidden]) {
+  animation: sodl-craft-appear 0.18s ease-out;
+}
+
+.sodl-craft-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.sodl-craft-header .sodl-craft-title {
+  margin: 0;
+}
+
+.sodl-craft-station-name {
+  font-size: 12px;
+  color: var(--trade-muted);
+}
+
+/* The forge: a hot ingot on a black anvil, the hammer at rest beside its stump. */
+.sodl-forge {
+  --puff-smoke: rgba(255, 140, 40, 0.65);
+  --puff-glow: #ffd27a;
+}
+
+.sodl-forge-heat {
+  opacity: 0.15;
+  transition: opacity 0.4s ease;
+}
+
+.sodl-forge-ground {
+  fill: rgba(0, 0, 0, 0.5);
+}
+
+.sodl-forge-cracks {
+  fill: none;
+  stroke: #0e0905;
+  stroke-width: 2;
+}
+
+.sodl-forge-rings {
+  fill: #4a3220;
+  stroke: #1a110a;
+  stroke-width: 2;
+}
+
+.sodl-forge-anvil {
+  stroke: #030203;
+  stroke-width: 2;
+}
+
+.sodl-forge-edge {
+  stroke: #77707a;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.sodl-forge-runes {
+  fill: none;
+  stroke: #ff8a2a;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  opacity: 0.1;
+}
+
+.sodl-forge-ingot {
+  fill: #3b1a10;
+  stroke: #120805;
+  stroke-width: 1;
+  transition: fill 0.4s ease;
+}
+
+.sodl-forge-ingot-glow {
+  fill: #ff7a1a;
+  opacity: 0;
+}
+
+.sodl-forge-handle {
+  stroke: #3d2616;
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.sodl-forge-head {
+  fill: #2a2528;
+  stroke: #050405;
+  stroke-width: 1.5;
+}
+
+.sodl-forge-hammer {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+}
+
+.sodl-forge-tongs {
+  fill: none;
+  stroke: #26211f;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.sodl-forge-sparks circle {
+  fill: #ffcf6a;
+  transform-box: fill-box;
+  opacity: 0;
+}
+
+.is-lit .sodl-forge-heat {
+  opacity: 1;
+  animation: sodl-cauldron-pulse 2.6s ease-in-out infinite;
+}
+
+.is-lit .sodl-forge-runes {
+  opacity: 0.6;
+  filter: drop-shadow(0 0 3px #ff8a2a);
+}
+
+.is-lit .sodl-forge-ingot {
+  fill: #ff8a2a;
+}
+
+.is-lit .sodl-forge-ingot-glow {
+  opacity: 0.8;
+  animation: sodl-cauldron-pulse 1.8s ease-in-out infinite;
+}
+
+.is-lit .sodl-forge-sparks circle {
+  animation: sodl-forge-spark 2.8s ease-out infinite;
+}
+
+.is-lit .sodl-forge-sparks circle:nth-child(1) { --spark-x: -18px; animation-delay: 0s; }
+.is-lit .sodl-forge-sparks circle:nth-child(2) { --spark-x: 16px; animation-delay: 0.5s; }
+.is-lit .sodl-forge-sparks circle:nth-child(3) { --spark-x: -26px; animation-delay: 1.1s; }
+.is-lit .sodl-forge-sparks circle:nth-child(4) { --spark-x: 24px; animation-delay: 1.6s; }
+.is-lit .sodl-forge-sparks circle:nth-child(5) { --spark-x: 4px; animation-delay: 2s; }
+.is-lit .sodl-forge-sparks circle:nth-child(6) { --spark-x: -8px; animation-delay: 2.4s; }
+
+.is-boiling .sodl-forge-hammer {
+  animation: sodl-forge-strike 0.25s ease-in 4;
+}
+
+.is-boiling .sodl-forge-sparks circle {
+  animation: sodl-forge-spark 0.5s ease-out infinite;
+}
+
+/* The workbench: tools on a wall, a saw and a mallet on the plank, a candle for light. */
+.sodl-workbench {
+  --puff-smoke: rgba(196, 160, 110, 0.75);
+  --puff-glow: rgba(240, 210, 160, 0.8);
+}
+
+.sodl-bench-wall {
+  fill: #140f0b;
+  stroke: #0a0705;
+  stroke-width: 2;
+}
+
+.sodl-bench-pegs path {
+  fill: none;
+  stroke: #2e241b;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.sodl-bench-pegs .sodl-bench-hung {
+  fill: #221a13;
+  stroke: #3a2d21;
+  stroke-width: 2;
+}
+
+.sodl-bench-light {
+  opacity: 0.1;
+  transition: opacity 0.4s ease;
+}
+
+.sodl-bench-leg {
+  fill: #24170d;
+  stroke: #110a05;
+  stroke-width: 1.5;
+}
+
+.sodl-bench-top {
+  stroke: #110a05;
+  stroke-width: 2;
+}
+
+.sodl-bench-grain {
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 1;
+}
+
+.sodl-bench-blade {
+  fill: #5d5960;
+  stroke: #1d1b1e;
+  stroke-width: 1;
+}
+
+.sodl-bench-teeth {
+  fill: none;
+  stroke: #2a272b;
+  stroke-width: 1;
+}
+
+.sodl-bench-handle,
+.sodl-bench-mallet rect {
+  fill: #4a2f1b;
+  stroke: #1a0f07;
+  stroke-width: 1.5;
+}
+
+.sodl-bench-mallet path {
+  stroke: #4a2f1b;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.sodl-bench-shavings path {
+  fill: none;
+  stroke: #a07a4a;
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+
+.sodl-bench-candle {
+  fill: #cfc2a0;
+  stroke: #5a4f3a;
+  stroke-width: 1;
+}
+
+.sodl-bench-wick {
+  stroke: #111;
+  stroke-width: 1.5;
+}
+
+.sodl-bench-flame {
+  fill: #ffcf6a;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  opacity: 0;
+}
+
+.is-lit .sodl-bench-light {
+  opacity: 1;
+  animation: sodl-cauldron-pulse 3s ease-in-out infinite;
+}
+
+.is-lit .sodl-bench-flame {
+  opacity: 1;
+  filter: drop-shadow(0 0 4px #ffb347);
+  animation: sodl-cauldron-flicker 0.35s ease-in-out infinite alternate;
+}
+
+.is-boiling .sodl-bench-shavings path {
+  transform-box: fill-box;
+  animation: sodl-bench-jump 0.3s ease-out 3;
+}
+
+.sodl-craft-bench {
+  container-type: inline-size;
+  padding: 10px;
+  border: 1px solid var(--trade-border);
+  border-radius: 8px;
+  background: radial-gradient(ellipse at 50% 45%, rgba(110, 160, 60, 0.12), transparent 60%), rgba(0, 0, 0, 0.25);
+}
+
+.sodl-craft-title {
+  margin: 0 0 8px;
+  border: none;
+  font-size: 20px;
+  text-align: center;
+}
+
+/* The station on the left, what goes in and what comes out on the right. */
+.sodl-craft-stage {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.sodl-craft-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+@container (max-width: 380px) {
+  .sodl-craft-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.sodl-craft-column {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.sodl-craft-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sodl-craft-slot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px 3px 3px;
+  border: 1px solid var(--trade-border);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.sodl-craft-slot img {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 4px;
+}
+
+.sodl-craft-slot-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sodl-craft-count {
+  font-size: 12px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.sodl-craft-slot.is-findable {
+  cursor: pointer;
+  transition: border-color 0.12s ease;
+}
+
+.sodl-craft-slot.is-findable:hover {
+  border-color: var(--craft-gold);
+}
+
+.sodl-craft-slot.is-tool {
+  border-style: dashed;
+}
+
+.sodl-craft-slot.is-missing {
+  border-color: var(--trade-waiting);
+}
+
+.sodl-craft-slot.is-missing img {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.sodl-craft-slot.is-missing .sodl-craft-count {
+  color: var(--trade-waiting);
+}
+
+.sodl-craft-slot.is-empty {
+  justify-content: center;
+  padding: 8px;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--trade-muted);
+}
+
+.sodl-craft-result-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sodl-craft-arrow {
+  color: var(--trade-muted);
+}
+
+.sodl-craft-result-frame {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 2px solid var(--trade-border);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* The icon fills the round frame, so its square background does not show in the corners. */
+.sodl-craft-result-frame img {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.sodl-craft-bench.is-ready .sodl-craft-result-frame {
+  border-color: var(--craft-gold);
+  box-shadow: 0 0 12px rgba(201, 147, 46, 0.45);
+}
+
+.sodl-craft-bench:not(.is-lit) .sodl-craft-result-frame img {
+  filter: grayscale(0.8) brightness(0.7);
+}
+
+.sodl-craft-result-name {
+  font-weight: bold;
+}
+
+/* The iron cauldron, shared by the crafting workbench and extensions that draw one (the essence alchemy).
+   Cold and murky until its bench is lit; it boils over while a brew is under way. */
+.sodl-station {
+  --puff-smoke: rgba(50, 56, 46, 0.95);
+  --puff-glow: var(--brew-glow, #ff9a3c);
+  position: relative;
+  justify-self: center;
+  width: 170px;
+}
+
+.sodl-cauldron {
+  --brew-core: #3a4529;
+  --brew-edge: #0b1007;
+  --brew-glow: #5d7a34;
+}
+
+.is-lit .sodl-cauldron {
+  --brew-core: #8fcf5c;
+  --brew-edge: #16300d;
+  --brew-glow: #7fc24a;
+}
+
+.is-ready .sodl-cauldron {
+  --brew-core: #b9ef86;
+  --brew-glow: #9de060;
+}
+
+.is-boiling .sodl-cauldron {
+  --brew-core: #ecffd2;
+}
+
+.sodl-station-art {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+/* Animated parts turn and grow around their own box; groups keep their SVG transforms as drawn. */
+.sodl-cauldron-flame,
+.sodl-cauldron-embers circle,
+.sodl-cauldron-swirl,
+.sodl-cauldron-bubbles circle,
+.sodl-cauldron-drip,
+.sodl-cauldron-smoke ellipse {
+  transform-box: fill-box;
+}
+
+.sodl-cauldron-brew-core {
+  stop-color: var(--brew-core);
+  transition: stop-color 0.4s ease;
+}
+
+.sodl-cauldron-brew-edge {
+  stop-color: var(--brew-edge);
+}
+
+.sodl-cauldron-tripod {
+  fill: #141113;
+  stroke: #141113;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sodl-cauldron-tripod path {
+  fill: none;
+}
+
+.sodl-cauldron-chain {
+  stroke: #2b2528;
+  stroke-width: 4;
+  stroke-dasharray: 5 2;
+}
+
+.sodl-cauldron-bail,
+.sodl-cauldron-ear {
+  fill: none;
+  stroke: #1c181a;
+  stroke-width: 3.5;
+}
+
+.sodl-cauldron-coals {
+  opacity: 0.35;
+  transition: opacity 0.4s ease;
+}
+
+.sodl-cauldron-log {
+  stroke: #1d120c;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.sodl-cauldron-flame {
+  transform-origin: 50% 100%;
+  opacity: 0.45;
+  transform: scale(0.35);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.sodl-cauldron-flame.is-outer {
+  fill: #6e1408;
+}
+
+.sodl-cauldron-flame.is-middle {
+  fill: #c2410c;
+}
+
+.sodl-cauldron-flame.is-inner {
+  fill: #fbbf24;
+}
+
+.sodl-cauldron-embers circle {
+  fill: #ffb347;
+  opacity: 0;
+}
+
+.sodl-cauldron-bone path {
+  stroke: #8a8070;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.sodl-cauldron-bone circle {
+  fill: #8a8070;
+}
+
+.sodl-cauldron-foot {
+  fill: #0b090a;
+}
+
+.sodl-cauldron-body {
+  stroke: #030203;
+  stroke-width: 2;
+}
+
+.sodl-cauldron-rust {
+  fill: #3d1f12;
+  opacity: 0.35;
+  filter: blur(2px);
+}
+
+.sodl-cauldron-band {
+  fill: none;
+  stroke: #0a0809;
+  stroke-width: 7;
+}
+
+.sodl-cauldron-rivets circle {
+  fill: #3a3336;
+  stroke: #0a0809;
+  stroke-width: 1;
+}
+
+.sodl-cauldron-runes path {
+  fill: none;
+  stroke: var(--brew-glow);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.12;
+  transition: opacity 0.4s ease;
+}
+
+.sodl-cauldron-shine {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.sodl-cauldron-rim {
+  fill: #262123;
+  stroke: #030203;
+  stroke-width: 3;
+}
+
+.sodl-cauldron-mouth {
+  fill: #050405;
+}
+
+.sodl-cauldron-swirl {
+  fill: none;
+  stroke: var(--brew-glow);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  transform-origin: center;
+  opacity: 0;
+}
+
+.sodl-cauldron-light {
+  fill: var(--brew-glow);
+  opacity: 0;
+}
+
+.sodl-cauldron-bubbles circle {
+  fill: var(--brew-core);
+  transform-origin: center;
+  opacity: 0;
+}
+
+.sodl-cauldron-drip {
+  fill: var(--brew-glow);
+  transform-origin: 50% 0;
+  opacity: 0.15;
+}
+
+.sodl-cauldron-smoke ellipse {
+  fill: #59625a;
+  transform-origin: center;
+  opacity: 0;
+}
+
+.is-lit .sodl-cauldron-coals {
+  opacity: 1;
+  animation: sodl-cauldron-pulse 2.6s ease-in-out infinite;
+}
+
+.is-lit .sodl-cauldron-flame {
+  opacity: 0.95;
+  transform: scale(1);
+  animation: sodl-cauldron-flicker 0.5s ease-in-out infinite alternate;
+}
+
+.is-lit .sodl-cauldron-flame.is-middle {
+  animation-duration: 0.4s;
+}
+
+.is-lit .sodl-cauldron-flame.is-inner {
+  animation-duration: 0.3s;
+}
+
+.is-lit .sodl-cauldron-embers circle {
+  animation: sodl-cauldron-ember 2.4s ease-out infinite;
+}
+
+.is-lit .sodl-cauldron-embers circle:nth-child(2) { animation-delay: 0.7s; }
+.is-lit .sodl-cauldron-embers circle:nth-child(3) { animation-delay: 1.3s; }
+.is-lit .sodl-cauldron-embers circle:nth-child(4) { animation-delay: 1.9s; }
+
+.is-lit .sodl-cauldron-runes path {
+  opacity: 0.6;
+  filter: drop-shadow(0 0 3px var(--brew-glow));
+  animation: sodl-cauldron-pulse 3.2s ease-in-out infinite;
+}
+
+.is-lit .sodl-cauldron-liquid {
+  filter: drop-shadow(0 0 8px var(--brew-glow));
+}
+
+.is-lit .sodl-cauldron-swirl {
+  opacity: 0.4;
+  animation: sodl-cauldron-spin 7s linear infinite;
+}
+
+.is-lit .sodl-cauldron-light {
+  opacity: 0.35;
+}
+
+.is-lit .sodl-cauldron-bubbles circle {
+  animation: sodl-cauldron-bubble 2s ease-in infinite;
+}
+
+.is-lit .sodl-cauldron-bubbles circle:nth-child(2) { animation-delay: 0.6s; }
+.is-lit .sodl-cauldron-bubbles circle:nth-child(3) { animation-delay: 1.2s; }
+.is-lit .sodl-cauldron-bubbles circle:nth-child(4) { animation-delay: 1.6s; }
+
+.is-lit .sodl-cauldron-drip {
+  opacity: 0.8;
+  animation: sodl-cauldron-drip 3.5s ease-in infinite;
+}
+
+.is-lit .sodl-cauldron-drip:last-of-type {
+  animation-delay: 1.7s;
+}
+
+.is-lit .sodl-cauldron-smoke ellipse {
+  animation: sodl-cauldron-smoke 4.5s ease-out infinite;
+}
+
+.is-lit .sodl-cauldron-smoke ellipse:nth-child(2) { animation-delay: 1.5s; }
+.is-lit .sodl-cauldron-smoke ellipse:nth-child(3) { animation-delay: 3s; }
+
+.sodl-station-puff {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  width: 150px;
+  height: 100px;
+  margin-left: -75px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 60%, var(--puff-smoke) 0 20%, transparent 45%),
+    radial-gradient(circle at 65% 45%, var(--puff-smoke) 0 24%, transparent 50%),
+    radial-gradient(circle at 50% 70%, var(--puff-glow) 0 12%, transparent 40%);
+  filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.is-boiling .sodl-station-art {
+  animation: sodl-cauldron-shake 0.12s linear 8;
+}
+
+.is-boiling .sodl-cauldron-liquid {
+  filter: drop-shadow(0 0 16px var(--brew-glow));
+}
+
+.is-boiling .sodl-cauldron-bubbles circle {
+  animation: sodl-cauldron-bubble 0.4s ease-in infinite;
+}
+
+.is-boiling .sodl-cauldron-flame {
+  opacity: 1;
+  transform: scale(1.3);
+}
+
+.is-boiling .sodl-station-puff {
+  animation: sodl-cauldron-puff 1s ease-out forwards;
+}
+
+.sodl-craft-flyer {
+  position: fixed;
+  z-index: 10000;
+  border: none;
+  pointer-events: none;
+}
+
+.sodl-craft-known {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.sodl-craft-tags {
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.sodl-craft-bench .sodl-trade-recipe-requirements {
+  justify-content: center;
+}
+
+.sodl-craft-blocked {
+  margin: 6px 0 0;
+  text-align: center;
+  color: var(--trade-waiting);
+}
+
+.sodl-trade button.sodl-craft-brew {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 6px;
+  border-color: var(--craft-gold);
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.sodl-trade button.sodl-craft-brew:not(:disabled):hover {
+  box-shadow: 0 0 10px rgba(201, 147, 46, 0.6);
+}
+
+@keyframes sodl-cauldron-flicker {
+  from { transform: scale(0.94, 0.86); }
+  to { transform: scale(1.04, 1.1); }
+}
+
+@keyframes sodl-cauldron-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@keyframes sodl-cauldron-ember {
+  0% { opacity: 0; transform: translate(0, 0); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(6px, -40px); }
+}
+
+@keyframes sodl-cauldron-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sodl-cauldron-bubble {
+  0% { opacity: 0; transform: translateY(0) scale(0.3); }
+  40% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px) scale(1.3); }
+}
+
+@keyframes sodl-cauldron-drip {
+  0%, 60% { transform: scaleY(1); }
+  85% { transform: scaleY(1.5); }
+  100% { transform: scaleY(1); }
+}
+
+@keyframes sodl-cauldron-smoke {
+  0% { opacity: 0; transform: translateY(10px) scale(0.6); }
+  30% { opacity: 0.5; }
+  100% { opacity: 0; transform: translateY(-50px) scale(1.8); }
+}
+
+@keyframes sodl-cauldron-shake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(-2px, 1px) rotate(-1.2deg); }
+  75% { transform: translate(2px, -1px) rotate(1.2deg); }
+}
+
+@keyframes sodl-cauldron-puff {
+  0% { opacity: 0; transform: translateY(10px) scale(0.3); }
+  35% { opacity: 0.95; }
+  100% { opacity: 0; transform: translateY(-50px) scale(1.7); }
+}
+
+@keyframes sodl-craft-appear {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sodl-forge-spark {
+  0% { opacity: 0; transform: translate(0, 0); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--spark-x, 10px), -34px); }
+}
+
+@keyframes sodl-forge-strike {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-38deg); }
+}
+
+@keyframes sodl-bench-jump {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sodl-craft-bench * {
+    animation: none !important;
+  }
+}
+
 /* Counter on the toolbar button; the button draws its icon with ::before, so the counter uses ::after. */
 #scene-controls [data-control="sodlTrade"] {
   position: relative;
@@ -907,4 +2091,161 @@
   line-height: 16px;
   text-align: center;
   pointer-events: none;
+}
+
+/* Laboratory: incantations, alchemy spells and potion mixing, as the books describe them. */
+.sodl-lab .sodl-trade-hint {
+  margin: 0 0 6px;
+  text-align: left;
+}
+
+.sodl-lab .sodl-trade-label small,
+.sodl-lab .sodl-trade-item-name small {
+  font-weight: normal;
+  color: var(--trade-muted);
+}
+
+.sodl-lab .sodl-trade-item-name small.sodl-craft-blocked {
+  display: block;
+  margin: 0;
+  text-align: left;
+  color: var(--trade-waiting);
+}
+
+.sodl-lab .sodl-trade-catalog button {
+  flex: 0 0 auto;
+  width: auto;
+  white-space: nowrap;
+}
+
+.sodl-lab-mix {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sodl-lab-mix select {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.sodl-lab-mix button {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.sodl-lab-table summary {
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.sodl-lab-table[open] summary {
+  margin-bottom: 6px;
+}
+
+.sodl-lab-table table {
+  margin: 0;
+  border: none;
+  font-size: 12px;
+}
+
+.sodl-lab-table th {
+  width: 3.5em;
+  text-align: center;
+  vertical-align: top;
+}
+
+/* Panel toolbar: one quiet line. The main action is filled, the setup actions are plain text,
+   teaching and the help sit on the right. */
+.sodl-panel-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--trade-border);
+}
+
+.sodl-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+}
+
+.sodl-trade .sodl-panel-actions button,
+.sodl-trade .sodl-trade-shop-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  color: var(--trade-muted);
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: none;
+}
+
+.sodl-trade .sodl-panel-actions button:hover,
+.sodl-trade .sodl-trade-shop-toolbar button:hover {
+  background: var(--trade-surface);
+  color: inherit;
+}
+
+.sodl-trade .sodl-panel-actions button.is-primary,
+.sodl-trade .sodl-trade-shop-toolbar button.is-primary {
+  margin-right: 6px;
+  border-color: var(--trade-waiting);
+  background: var(--trade-waiting);
+  color: #1b1d24;
+  font-weight: bold;
+}
+
+.sodl-trade .sodl-panel-actions button.is-primary:hover,
+.sodl-trade .sodl-trade-shop-toolbar button.is-primary:hover {
+  background: #dba744;
+  color: #1b1d24;
+}
+
+.sodl-trade .sodl-panel-help-toggle {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  margin-left: auto;
+  padding: 0;
+  border: 1px solid var(--trade-border);
+  border-radius: 50%;
+  background: none;
+  color: var(--trade-muted);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.sodl-trade .sodl-panel-help-toggle:hover,
+.sodl-trade .sodl-panel-help-toggle.is-active {
+  border-color: var(--trade-waiting);
+  color: var(--trade-waiting);
+}
+
+.sodl-panel-help {
+  font-size: 12px;
+}
+
+/* A help still folded in its panel stays a discreet line rather than a full bar. */
+.sodl-trade-help:not([open]) {
+  padding: 2px 0;
+  background: none;
+}
+
+.sodl-trade-help:not([open]) summary {
+  font-weight: normal;
+  font-size: 12px;
+  color: var(--trade-muted);
 }
